@@ -1,0 +1,186 @@
+
+{% extends "base.html" %}
+{% block titlee %}Помощь{% endblock %}
+{% block meta_descr %}Раздел помощи поможет разобраться с интерфейсом сайта. Здесь вы найдете ответы на вопросы, а также описание дополнительных возможностей и различных информационных элементов.{% endblock %}
+
+{% block nav_help %}active{%endblock%}
+{% block content %}
+
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Помощь</div>
+</div>
+<div class="ui divider"></div>
+
+
+<div class="ui ordered list">
+  <a class="item" href="#how">Как работает bustime.ru</a>
+  <div class="item">
+    <a href="#help">Введение</a>
+    <div class="list">
+      		<a class="item" href="#matrix">Сетка маршрутов и табло прибытия</a>
+			<a class="item" href="#symbols">Обозначения</a>
+			<a class="item" href="#selector">Кнопка выбора маршрута</a>
+    </div>
+  </div>
+  <a class="item" href="#advanced">Дополнительные возможности</a>
+  <!-- <a class="item" href="#stars">Поощрения</a> -->
+</div>
+
+
+<iframe width="420" height="315" src="https://www.youtube.com/embed/pWFzIOLVaqE" frameborder="0" allowfullscreen></iframe>
+
+<div class="ui divider"></div>
+			<h1 class="ui header" id="how">Как работает bustime.ru</h2>
+			Предоставляемые данные являются результатом анализа GPS данных текущего местоположения транспорта. Общественный городской транспорт оснащён специальными устройствами, которые отправляют текущее местоположение техники определённое по спутникам в режиме реального времени через мобильный Интернет. Процесс состоит из следующих этапов:
+			<ol>
+				<li><b>Данные</b>  cпутниковой навигации <b>передаются на сервер</b></li>
+				<li>На сервере данные записываются в базу данных и <b>отправляются на сервер Bustime</b></li>
+				<li>Сервер Bustime <b>анализирует</b> точки местонахождения транспорта и отправляет подключенным пользователям</b> обновлённую информацию</li>
+			</ol>
+			<div style="font-size:4rem;text-align:center">
+				<i class="fa red fa-globe icon"></i><i class="fa fa-arrow-right orange icon"></i>
+				<i class="fa red fa-bus icon"></i><i class="fa fa-arrow-right orange icon"></i>
+				<i class="fa red fa-server icon"></i><i class="fa fa-arrow-right orange icon"></i>
+				<img style="max-height: 5rem; margin-bottom:-1rem" src="/static/img/bustime-2.0.png">
+			</div>
+
+<h3 class="ui header">работает на следующих устройствах:</h3>
+<div class="ui big list">
+  <div class="item">
+    <i class="phone icon"></i>
+    <div class="content">телефонах без JavaScript/WAP</div>
+  </div>
+  <div class="item">
+    <i class="mobile icon"></i>
+    <div class="content">
+      смартфонах
+    </div>
+  </div>
+  <div class="item">
+    <i class="tablet icon"></i>
+    <div class="content">
+      планшетах
+    </div>
+  </div>
+    <div class="item">
+    <i class="laptop icon"></i>
+    <div class="content">
+     ноутбуках
+    </div>
+  </div>
+  <div class="item">
+    <i class="desktop icon"></i>
+    <div class="content">
+     компьютерах
+    </div>
+  </div>
+      <div class="item">
+    <i class="fa-tv icon"></i>
+    <div class="content">
+     телевизорах
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="ui divider"></div>
+			<h1 class="ui header" id="help">Введение</h1>
+			<h2 id="matrix">Сетка маршрутов и табло прибытия</h2>
+			<img src="/static/img/help/help2-1.png"><br/>
+			Выберите нужный вам маршрут из списка. Цвет кнопки зависит от количества активного транспорта.
+			<img src="/static/img/help/help1.png"><br/>
+			Если удается определить ближайшую остановку, то выводится прогнозируемое расписание прибытия транспорта для этой остановки. Вы можете выбрать другую остановку с помощью поля поиска. Направление остановки указано в названии. Остановки трамвая помечены изображением.
+
+
+			<h2 id="symbols">Обозначения</h2>
+			<table class="ui table">
+				<tr>
+					<td style="width:64px"><img src="/static/img/cat-male.png"></td>
+					<td>Кот появляется при клике на остановку, что устанавливает звуковое оповещение по приезду транспорта. Эти обозначения видят все пользователи сайта, и, например, водитель может увидеть что вы ждете транспорт на данной остановке.</td>
+				</tr>
+				<tr>
+					<td><img src="/static/img/tea-cup-icon.png"></td>
+					<td>Чашка чая обозначает транспортное средство на конечной остановке.</td>
+				</tr>
+
+				<tr>
+					<td><i style="font-size:32px" class="fa fa-moon-o icon"></i></td>
+					<td>Луна - ночное время, данные сервера не обновляются. </td>
+				</tr>
+			</table>
+
+
+
+			<h2 id="selector">Кнопка выбора маршрута</h2>
+			<div class="ui two column stackable grid"><div class="row"><div class="column">
+					<img src="/static/img/help/help2-2.png">
+					<img src="/static/img/help/help2-3.png">
+					<img src="/static/img/help/help2-4.png">
+			    </div><div class="column">
+					В центре кнопки выбора указано <b>название маршрута</b>.<br/>
+					Ниже - <b>количество транспорта</b> в одну и другую сторону.<br/>
+					Иконка типа транспорта означает <b>трамвай</b> или <b>троллейбус</b>.<br/>
+					Значок процента для маршрутов со скидками на пересадку.<br/>	<br/>
+			    </div>
+			    </div>
+			 </div>
+
+			<h2>Схема маршрута</h2>
+			<img src="/static/img/help/help2-5.png">
+			<br/>
+			На схеме маршрута отображены все остановки. Местонахождение транспорта (автобуса, трамвая, троллейбуса) отображается изображением. Рядом с названием остановки указано прогнозируемое время прибытия.<br/><br/> Если нажать на остановку, то вы установите звуковое оповещение по прибытию. Это также будет отображено в виде кота, ожидающего автобус, которого видят все пользователи сайта, включая водителей.
+
+
+			<div class="ui divider"></div>
+			<h1 class="ui header" id="advanced">Дополнительные возможности</h2>
+			Откройте настройки <i class="fa fa-cog fa-fw fa-lg"></i> с помощью кнопки сверху чтобы установить дополнительные параметры.
+			Здесь вы можете:
+			<ul>
+				<li>отключить звук</li>
+				<li>отключить оповещения об изменении количества единиц транспорта на маршруте</li>
+				<li>отключить автопоиск текущего местонахождения по GPS (ближайшие к вам остановки автоматически появляться не будут)</li>
+				<li>очистить список любимых маршрутов</li>
+				<!-- <li>изменить стиль оформления</li>
+				<li>изменить город по умолчанию</li> -->
+		    </ul>
+			Для Красноярска доступен виджет баланса транспортной карты, введите номер карты сверху чтобы видеть обновляемый баланс.<br/><br/>
+			Версия сайта Bustime <a href="http://www.bustime.ru/classic/" target="_blank">для классических телефонов</a> позволяет открывать и просматривать сайт на телефонах, которые не поддерживают современные технологии.
+
+<!-- <div class="ui divider"></div>
+			<h1 class="ui header" id="stars">Поощрения</h2>
+			<div class="ui two column grid"><div class="column">
+
+			<table class="ui table">
+				<thead>
+				    <tr>
+				        <th>кол-во <i class="fa fa-star brand-brown"></i></th>
+				        <th>символ</th>
+				        <th>подарок</th>
+				    </tr>
+				</thead>
+				<tr>
+					<td style="width:11%">1</td>
+					<td style="width:22%"><img src="http://www.bustime.ru/static/img/badge_first_star.png"></td>
+					<td>Вы получаете значок первой звезды</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td><img src="http://www.bustime.ru/static/img/badge_medal_3.png"></td>
+					<td>Вы получаете медаль</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td><img src="http://www.bustime.ru/static/img/badge_eden.png"></td>
+					<td>Вы получаете значок преданной собачки в верхнюю панель</td>
+				</tr>
+			</table></div>
+			<div class="column">
+				Поделитесь <b>персональной ссылкой</b> (из раздела настроек <i class="fa fa-cog fa-fw fa-lg"></i>) с вашими друзьями и <b>получайте звездочки</b> за каждый переход нового пользователя по <b>этой ссылке</b>. Подарки, которые вы можете получить.
+		</div>
+		</div> -->
+
+{% endblock %}

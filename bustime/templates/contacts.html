@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titlee %}Контакты{% endblock %}
+{% block meta_descr %}Контактная информация для поддержки и связи с администрацией сайта Время Автобуса.{% endblock %}
+
+{% block nav_contacts %}active{%endblock%}
+{% block content %}
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Контакты</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui two column stackable grid"><div class="column">
+<h3 class="ui header">
+  Социальная группа
+  <div class="sub header">новости проекта, поддержка, обсуждения</div>
+</h3>
+
+<i class="fa fa-map-marker icon"></i> Санкт-Петербург<br/>
+<i class="fa fa-vk icon"></i> <a target="_blank" href="http://vk.com/bustimeweb">Bustime - Время автобуса!</a>
+<br/><br/>
+
+
+<h3 class="ui header">
+  Остап Остащенко
+  <div class="sub header">мобильные приложения Android и iOS</div>
+</h3>
+<i class="fa fa-map-marker icon"></i> Красноярск<br/>
+<i class="fa fa-envelope-o icon"></i> <a href="mailto:ostap.ostaschenko@gmail.com" style="color:red">ostap.ostaschenko@gmail.com</a>
+<br/><br/>
+
+
+<h3 class="ui header">
+  Андрей Перлиев
+  <div class="sub header">развитие проекта, другие вопросы</div>
+</h3>
+<i class="fa fa-map-marker icon"></i> Калининград<br/>
+<i class="fa fa-phone icon"></i> +7 (903) 921-4337<br/>
+<i class="fa fa-envelope-o icon"></i> <a href="mailto:andrey.perliev@gmail.com" style="color:red">andrey.perliev@gmail.com</a>
+<br/>
+
+
+</div><div class="column">
+{% if msg %}<div class="ui big positive message">
+Ваше сообщение успешно отправлено.</div>
+{% endif %}
+<h3 class="ui header">
+  Отправить сообщение
+  <div class="sub header">быстрый способ связи с нами</div>
+</h3>
+<form action="./" method="post" class="ui form">{% csrf_token %}
+	<div class="field">
+    <!-- <label>Сообщение</label> -->
+    <textarea rows="3" name="msg" placeholder="Напишите ваше сообщение здесь"></textarea>
+  </div>
+  <button class="ui orange button" type='submit'>отправить</button>
+</form>
+</div></div>
+<br/><br/>
+
+
+
+
+{% endblock %}

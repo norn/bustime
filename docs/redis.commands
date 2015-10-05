@@ -1,0 +1,6 @@
+info
+select <db>
+dbsize
+keys *
+help
+

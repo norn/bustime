@@ -1,0 +1,116 @@
+{% extends "backoffice/base.html" %}
+{% block active_dash %}active{% endblock %}
+{% block title %}Приборы{% endblock %}
+{% block content %}
+
+
+<div class="space-6"></div>
+
+
+
+
+
+<div class="row-fluid">
+	<div class="span9">
+		<div class="widget-box transparent">
+			<div class="widget-header widget-header-flat">
+				<h4 class="lighter">
+					<i class="icon-star orange"></i>
+					Города
+				</h4>
+
+				<div class="widget-toolbar">
+					<a href="#" data-action="collapse">
+						<i class="icon-chevron-up"></i>
+					</a>
+				</div>
+			</div>
+
+			<div class="widget-body">
+				<div class="widget-main no-padding">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									ID
+								</th>
+								<th>
+									Название
+								</th>
+
+								<th class="hidden-phone">
+									статус
+								</th>
+
+								<th>
+									последнее обновление
+								</th>
+
+								<th class="hidden-phone">
+									<i class="icon-caret-right blue"></i>
+									событий обновлено
+								</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							{%for city in  cities%}
+							<tr>    <td>{{city.id}}</td>
+								<td>{{city.name}}</td>
+
+								<td>
+									{%if city.active%}
+									<span class="label label-success arrowed-in arrowed-in-right">активен</span>
+									{%else%}
+									<span class="label label-warning arrowed arrowed-right">выключен</span>
+									{%endif%}
+								</td>
+
+								<td>
+									{%for c,v in stats.last_updates.items%}
+									 {%if city.id == c%}
+									   <b class="green">{{v.0}}</b>
+									 {%endif%}
+									{%endfor%}
+
+								</td>
+								<td>
+									{%for c,v in stats.last_updates.items%}
+									 {%if city.id == c%}
+									   {{v.1}}
+									 {%endif%}
+									{%endfor%}
+								</td>
+
+							</tr>
+							{%endfor%}
+						</tbody>
+					</table>
+				</div><!-- /widget-main -->
+			</div><!-- /widget-body -->
+		</div><!-- /widget-box -->
+	</div>
+
+    <div class="span3">
+    <a href="{% url "socket_serv_start" %}">
+    <button class="btn btn-success btn-block">
+<!--<i class="ace-icon fa fa-flask align-top bigger-125"></i>--><i class="icon-beaker bigger-125"></i> Запустить сервер сокетов</button></a>
+    <br/>
+    <a href="{% url "socket_serv_restart" %}">
+    <button class="btn btn-warning btn-block">
+    <i class="icon-refresh bigger-125"></i> Перезапустить</button></a>
+    <br/>
+
+    <a href="{% url "socket_serv_stop" %}">
+    <button class="btn btn-danger btn-block"><!--<i class="ace-icon fa fa-bolt bigger-125"></i>--><i class="icon-bolt bigger-125"></i> Остановить сервер сокетов</button></a>
+      
+    </div>
+
+
+</div>
+
+<div class="hr hr32 hr-dotted"></div>
+
+<div class="row-fluid">
+</div>
+{% endblock %}

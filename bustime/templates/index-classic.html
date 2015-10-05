@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titlee %}Выбор города - Классическая версия - Время Автобуса{% endblock %}
+{% block meta_descr %}Классическая версия сайта подходит для старых устройств не поддерживающих современные технологии.{% endblock %}
+
+{% block nav_classic %}active{%endblock%}
+{%block js%}{% endblock %}
+
+{% block content %}
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Классические версии</div>
+</div>
+<div class="ui divider"></div>
+
+
+
+<h1 class="ui header">
+	Ссылки на все классические версии:
+	<div class="sub header">для устройств без поддержки новых технологий</div>
+</h1>
+<div class="huge ui list">
+{%for c in cities%}
+{% ifchanged c.name.0 %}<h2 class="ui header">{{c.name.0}}</h2>{%endifchanged%}
+ <a class="item" href="http://www.bustime.ru/{{c.slug}}/classic/">{{c.name}}</a><br/>
+{%endfor%}
+</div>
+
+{% endblock %}

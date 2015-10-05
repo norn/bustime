@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titlee %}{{bus.ttype_name}} {{bus.name}} - Расписание - {{city.name}}{% endblock %}
+{% block meta_descr %}{{bus.ttype_name}} {{bus.name}} - расписание в {{bus.city.name_gde}}{% endblock %}
+
+{%block extra_head%}
+<link rel="canonical" href="http://www.bustime.ru{{bus.get_absolute_url_schedule}}">
+{% endblock %}
+{% block nav_schedule %}active{%endblock%}
+{%block content%}
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <a class="section" href="/{{city.slug}}/">Общественный транспорт в {{city.name_gde}}</a>
+  <div class="ui divider"> / </div>
+<a class="section" href="/{{city.slug}}/schedule/">Расписание</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">{{bus.ttype_name}} {{bus.name}}</div>
+</div>
+<div class="ui divider"></div>
+
+
+<h1 class="ui center aligned header">Расписание: {{bus.ttype_name}} {{bus.name}}, {{bus.city.name}}</h1>
+
+
+<div class="ui two column grid">
+<div class="column">
+<h2 class="ui header">{{bus.napr_a}}</h2>
+<table class="ui table">
+{%for r in route0%}
+<tr><td>
+	<h3 class="ui header">{{r.busstop.name}}</h3>
+	{% if r.times %}<div class="ui blue labels">{%endif%}
+    {% for t in r.times %}
+	{% ifchanged t.hour%}<br/><br/>{% endifchanged %}
+	<div class="ui label">
+	  <i class="fa fa-clock-o icon"></i> {{t}}
+	</div>
+	{% endfor %}
+    {% if r.times %}</div>{%endif%}
+</td></tr>
+{%endfor%}
+</table>
+</div>
+<div class="column">
+<h2 class="ui header">{{bus.napr_b}}</h2>
+<table class="ui table">
+{%for r in route1%}
+<tr><td>
+	<h3 class="ui header">{{r.busstop.name}}</h3>
+	{% if r.times %}<div class="ui blue labels">{%endif%}
+    {% for t in r.times %}
+	{% ifchanged t.hour%}<br/><br/>{% endifchanged %}
+	<div class="ui label">
+	  <i class="fa fa-clock-o icon"></i> {{t}}
+	</div>
+	{% endfor %}
+    {% if r.times %}</div>{%endif%}
+</td></tr>
+{%endfor%}
+</table>
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+rm -rf ../semantic.json
+#P=full
+P=page
+#P=main
+
+ln -s addons/semantic/semantic-$P.json ../semantic.json
+
+gulp build
+#gulp watch
+
+echo "Old sizes: "
+ls -la /r/bustime/bustime/bustime/static/css/semantic-$P.css
+ls -la /r/bustime/bustime/bustime/static/js/semantic-$P.min.js
+
+cp dist/semantic.min.css /r/bustime/bustime/bustime/static/css/semantic-$P.css
+cp dist/semantic.min.js  /r/bustime/bustime/bustime/static/js/semantic-$P.min.js
+
+echo "New sizes: "
+ls -la /r/bustime/bustime/bustime/static/css/semantic-$P.css
+ls -la /r/bustime/bustime/bustime/static/js/semantic-$P.min.js

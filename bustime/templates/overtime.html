@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% load cache %}
+{% block content %}
+<script>{% include "_js_init.html" %}</script>
+<br/><br/>
+<div class="ui icon large message">
+  <i class="fa-clock-o icon"></i>
+  <div class="content">
+    <div class="header">
+      Вы превысили суточный лимит использования сайта
+    </div>
+    <p>Активируйте <a href="/pro/">профессиональную подписку</a> чтобы отключить ограничения.</p>
+    <p>Если у вас есть пин-код от действующей подписки, то вы можете активировать его ниже</p>
+  </div>
+</div>
+<div class="ui grid"><div class="center aligned column">
+            <br/><br/>
+            {% if us.pro_demo_date.date == now.date %}
+            Сегодня профессиональный режим вы уже пробовали.
+            {%else%}
+            <a href="/pro-demo/">
+            <button class="ui red icon right labeled button"><i class="fa fa-birthday-cake icon"></i> Попробовать бесплатно, 30 мин</button>
+            </a>
+            {%endif%}<br/><br/>
+            <form action="/pin/" method="post">
+                <div class="ui action input">
+                  <input type="text" name="pin" placeholder="пин-код">
+                  <button class="ui teal button" type='submit'><i class="fa fa-diamond icon"></i> ввод</button>
+                </div>
+            </form><br/>
+</div></div>
+<br/><br/>
+
+{% endblock %}

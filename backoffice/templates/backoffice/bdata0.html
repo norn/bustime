@@ -1,0 +1,52 @@
+{% extends "backoffice/base.html" %}
+{% block active_bdata0 %}active{% endblock %}
+{% block title %}Bdata Mode 0{% endblock %}
+{% block title_mini %}{{city.name}}{% endblock %}
+{% block content %}
+
+
+<div class="space-6"></div>
+
+
+
+<div class="row-fluid">
+	<div class="span6">
+		<div class="widget-box transparent">
+			<div class="widget-body">
+				<div class="widget-main no-padding">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									<i class="icon-caret-right blue"></i>
+									Bus Id
+								</th>
+
+								<th class="hidden-phone">
+									<i class="icon-caret-right blue"></i>
+									Data
+								</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							{%for k,v in  bdata0.items%}
+							<tr>
+								<td>{{k}}</td>
+								<td>{{v}}</td>
+							</tr>
+							{%endfor%}
+						</tbody>
+					</table>
+				</div><!-- /widget-main -->
+			</div><!-- /widget-body -->
+		</div><!-- /widget-box -->
+	</div>
+
+
+
+</div>
+
+<div class="hr hr32 hr-dotted"></div>
+
+{% endblock %}

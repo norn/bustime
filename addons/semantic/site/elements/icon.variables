@@ -1,0 +1,6 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@fontName: 'fontawesome-webfont';
+@fontPath: '/static/fonts';

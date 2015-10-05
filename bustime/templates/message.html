@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% load cache %}
+
+{% block content %}
+<h1 class="ui header">Важное сообщение</h1>
+<div class="ui large warning message">
+{{ message }}
+</div>
+
+{% endblock %}

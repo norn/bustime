@@ -1,0 +1,43 @@
+{% extends "base.html" %}{% load cache %}
+
+{% block titlee %}Режим радара{% endblock %}
+{% block meta_descr %}В режиме радара вы можете видеть общественный транспорт вокруг себя в радиусе 1500 метров. Ваше местоположение будет определенно и отображено на карте. {% endblock %}
+
+{% block extra_head %}
+<!--
+<link rel="stylesheet" href="http://openlayers.org/en/v3.3.0/css/ol.css" type="text/css">
+<script src="http://openlayers.org/en/v3.3.0/build/ol.js" type="text/javascript"></script>
+-->
+{% endblock %}
+
+{% block content %}
+<script>
+{% include "_js_init.html" %}
+city_monitor_mode = 1;
+</script>
+
+{% if us.premium %}
+<script>
+radar_mode = 1;
+</script>
+
+<div class="ui grid">
+  <div class="column">
+    <div id="lmap"></div>
+  </div>
+</div>
+
+{% else %}
+  <br/><br/>
+  <center>Доступ в этот раздел разрешен только премиум пользователям!</center>
+  <br/><br/>
+  <br/><br/>
+{% endif %}
+
+
+
+
+
+
+
+{% endblock %}

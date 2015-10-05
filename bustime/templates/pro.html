@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block titlee %}Премиум{% endblock %}
+{% block meta_descr %}Здесь вы можете приобрести профессиональную подписку для сайта Время Автобуса. Поддержите проект и наслаждайтесь дополнительным функционалом и отключенной рекламой.{% endblock %}
+
+{% block nav_pro %}active{%endblock%}
+{% block content %}
+
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Премиум</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">Преимущества премиум подписки</h1>
+
+<div class="ui large list">
+  <div class="item">
+  	<i class="fa fa-diamond icon"></i>
+    <div class="content">
+      <div class="header">Отключение всех рекламных блоков</div>
+    </div>
+  </div>
+  <div class="item">
+  	<i class="fa fa-diamond icon"></i>
+    <div class="content">
+      <div class="header">Круглосуточный доступ без ограничений</div>
+    </div>
+  </div>
+  <div class="item">
+  	<i class="fa fa-diamond icon"></i>
+    <div class="content">
+      <div class="header">Отображение регистрационных номеров</div>
+    </div>
+  </div>
+  <div class="item">
+  	<i class="fa fa-diamond icon"></i>
+    <div class="content">
+      <div class="header">До 30 любимых маршрутов</div>
+    </div>
+  </div>
+
+  <div class="item">
+  	<i class="fa fa-diamond icon"></i>
+    <div class="content">
+      <div class="header">Оформление автобуса на выбор</div>
+    </div>
+  </div>
+
+  <div class="item">
+  	<i class="fa fa-diamond icon"></i>
+    <div class="content">
+      <div class="header">Выбор аватарок для водителя и кондуктора</div>
+    </div>
+  </div>
+</div>
+
+	<table class="ui unstackable table">
+	<thead>
+        <tr>
+            <th>цена</th>
+            <th>срок действия</th>
+            <th>стоимость в день</th>
+        </tr>
+    </thead>
+	<tr>
+		<td>100 руб.</td>
+		<td>5 дней</td>
+		<td>20 руб./день</td>
+	</tr>
+	<tr>
+		<td>300 руб.</td>
+		<td>30 дней + 1 бесплатно</td>
+		<td>10 руб./день</td>
+	</tr>
+	<tr class="positive">
+		<td>500 руб.</td>
+		<td>60 дней + 3 бесплатно</td>
+    <td>8.33 руб./день</td>
+	</tr>
+	</table>
+
+
+
+<h2 class="ui header">Всего пара простых шагов для активации!
+	<div class="sub header">запрос будет обработан в течении 4 часов после получения SMS</div>
+</h2>
+
+<div class="ui large positive message">
+<div class="ui ordered list">
+  <div class="item">Пополните счет телефона Билайн <b>+7-903-921-4337</b> (время для звонков: 13:00 - 19:00)</div>
+  <div class="item">Отправьте SMS с временем платежа и идентификатором <b>{{us.id}}</b></div>
+</div>
+</div>
+
+{% endblock %}

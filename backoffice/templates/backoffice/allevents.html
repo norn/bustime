@@ -1,0 +1,45 @@
+{% extends "backoffice/base.html" %}
+{% block active_allevents %}active{% endblock %}
+{% block title %}События{% endblock %}
+{% block title_mini %}{{city.name}}{% endblock %}
+{% block content %}
+
+
+<div class="space-6"></div>
+
+
+
+<div class="row-fluid">
+	<div class="span12">
+		<div class="widget-box transparent">
+			<div class="widget-body">
+				<div class="widget-main no-padding">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr><th>Ключ</th>
+								<th>Время</th>
+
+								<th>
+									Автобус
+								</th> <th>Остановка</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							{%for k,e in  allevents.items%}
+							<tr><td>{{k}}</td>
+								<td>{{e.timestamp}}</td>
+								<td>{{e.bus}}</td> <td>{{e.busstop_nearest}}</td>
+							</tr>
+							{%endfor%}
+						</tbody>
+					</table>
+				</div><!-- /widget-main -->
+			</div><!-- /widget-body -->
+		</div><!-- /widget-box -->
+	</div>
+</div>
+
+<div class="hr hr32 hr-dotted"></div>
+
+{% endblock %}

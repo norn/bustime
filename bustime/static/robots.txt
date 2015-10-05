@@ -1,0 +1,6 @@
+User-Agent: *
+Disallow: /?r=
+Disallow: /?c=
+Disallow: /classic/b/
+User-agent: proximic
+Crawl-delay: 30

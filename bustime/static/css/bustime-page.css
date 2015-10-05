@@ -1,0 +1,204 @@
+/* set main colors */
+/* http://colorschemedesigner.com/csd-3.5/#1z32qtfw0w0w0  */
+/*http://www.google.com/design/spec/style/color.html#color-color-palette*/
+
+.yheader {
+    border-bottom: 1px solid #ecc745;
+}
+.color-0 {
+    color: #ffe216;
+}
+.color-0-bg {
+    background-color: #ffe216;
+}
+.color-0-bg-i {
+    background-color: #ffe216 !important;
+}
+
+.color-1 {
+    color: #E11359;
+}
+.color-1-bg {
+    background-color: #E11359;
+}
+.color-1-1 {
+    color: #F04C83;
+}
+.color-1-1-bg {
+    background-color: #F04C83;
+}
+.color-1-2 {
+    color: #F077A0;
+}
+.color-1-2-bg {
+    background-color: #F077A0;
+}
+
+.color-2 {
+    color: #12839E;
+}
+.color-2-bg {
+    background-color: #12839E;
+}
+.color-2-1 {
+    color: #45B4CE;
+}
+.color-2-1-bg {
+    background-color: #45B4CE;
+}
+.color-2-2 {
+    color: #6ABBCE;
+}
+.color-2-2-bg {
+    background-color: #6ABBCE;
+}
+.color-white-bg {
+  background-color: #fff;
+}
+
+.brand-brown {
+    color: #434641;
+}
+.brand-orange {
+    color: #ff7316;
+}
+
+.t0_coloramount0 {
+    background: #d2d2d2;
+}
+.t0_coloramount1 {
+    background: #ffffb5;
+}
+.t0_coloramount2 {
+    background: #FFE216;
+    /*background: -webkit-linear-gradient(#ffe216, #ffd94c);*/
+    background: -moz-linear-gradient(#ffe216, #ffd94c);
+    background: -o-linear-gradient(#ffe216, #ffd94c);
+    background: linear-gradient(#ffe216, #ffd94c);
+}
+
+.t1_coloramount0 {
+    background: #e7f3e7;
+}
+.t1_coloramount1 {
+    background: #c8f2c8;
+}
+.t1_coloramount2 {
+    background: #a1ffa1;
+    background: -webkit-linear-gradient(#a1ffa1, #85ff85);
+    background: -moz-linear-gradient(#a1ffa1, #85ff85);
+    background: -o-linear-gradient(#a1ffa1, #85ff85);
+    background: linear-gradient(#a1ffa1, #85ff85);
+}
+
+.t2_coloramount0 {
+    background: #ebf1f5;
+}
+.t2_coloramount1 {
+    background: #e2f1fa;
+}
+.t2_coloramount2 {
+    background: #d3e7ff;
+    background: -webkit-linear-gradient(#d3e7ff, #c7e0ff);
+    background: -moz-linear-gradient(#d3e7ff, #c7e0ff);
+    background: -o-linear-gradient(#d3e7ff, #c7e0ff);
+    background: linear-gradient(#d3e7ff, #c7e0ff);
+}
+
+.logo_header {
+    font-size: 22px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #E11359;
+}
+.logo_header:hover {
+    color: #a20000;
+}
+
+.bustime-logo {
+    background-image: url(/static/img/bustime-logo.png);
+    width: 96px;
+    height: 96px;
+    display: block;
+    margin-bottom: 7px;
+}
+.bustime-logo-pro {
+    background-image: url(/static/img/bustime-logo-pro.png);
+    width: 96px;
+    height: 96px;
+    display: block;
+    margin-bottom: 7px;
+}
+
+
+.fixed.launch.button {
+  position: fixed;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  left: 0px;
+  top: 58px;
+  height: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  z-index: 5;
+}
+
+
+.main_container {
+    margin-top: 1em;
+}
+
+.rating_gosnum{
+    text-decoration: underline;
+    margin-left: 0.3em;
+    font-weight: bold;
+}
+
+.busnumber_s {
+    display: inline-block;
+    z-index: 4;
+    /*background: #ffe216;*/
+    width: 80px;
+    height:80px;
+    padding: 0;
+    padding-top: 31px;
+    margin: 2px 2px;
+    border: 1px solid #cfcfcf;
+    /*border-bottom: 2px solid #e7e73e;*/
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+    color: #444;
+    font-weight: bold;
+    border-radius: 4px;
+}
+.busnumbers {
+    /*for backward compatibility with bustime.css*/
+    display: inline-block;
+}
+
+.bus_selected {
+    background: #E11359 !important;
+    color: #ffffff !important;
+}
+.busnumber_s:hover {
+    background-color: #12839e;
+    color: #E9EDDE;
+}
+
+/* for retina  */
+
+@media
+screen and (-webkit-min-device-pixel-ratio: 1.5),
+screen and (-moz-min-device-pixel-ratio: 1.5),
+screen and (min-device-pixel-ratio: 1.5) {
+    .bustime-logo {
+        background-image: url(/static/img/bustime-logo@2x.png);
+        background-size: 96px 96px;
+    }
+    .bustime-logo-pro {
+        background-image: url(/static/img/bustime-logo-pro@2x.png);
+        background-size: 96px 96px;
+    }
+}

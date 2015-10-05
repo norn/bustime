@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script src="http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU&coordorder=longlat"
+            type="text/javascript"></script>
+
+<h2>Редактирование Автобусных остановок <a href="">ОБНОВИТЬ</a></h2>
+<a href="?page={{page}}">след страница {{page}}</a>
+<div id="ymap" style="width: 900px; height: 850px;"></div>
+<form>{% csrf_token %}
+<script type="text/javascript">
+    var placemarks=[];
+    function close_menu() {
+        $('#menu').remove();
+        }
+    function save_busstop(busstop) {
+        var coords=placemarks[busstop].geometry.getCoordinates();
+            $.ajax({
+            type: "POST",
+            url: "",
+            data: { "busstop":busstop, "name": $('#menu input[name="busstop_name"]').val(), "csrfmiddlewaretoken": $('input[name="csrfmiddlewaretoken"]').val(), "coord_x":coords[0], "coord_y":coords[1], "moveto": $('#menu input[name="busstop_moveto"]').val()}
+            }).done(function( msg ) {
+            $('#menu').remove();
+            placemarks[busstop].options.set("preset", "twirl#darkblueIcon");
+            //placemarks[busstop].balloonclose();
+            });
+
+
+    }
+    ymaps.ready(init);
+    function init () {
+            var layerGoogle = function() {
+                return new ymaps.Layer('http://mt0.google.com/vt/lyrs=m@176000000&hl=ru&%c', {
+                    projection: ymaps.projection.sphericalMercator
+                });
+            };
+            
+            var googleMap = new ymaps.MapType('GoogleMap', [layerGoogle]);
+            ymaps.mapType.storage.add('google#map', googleMap);
+
+            var myMap = new ymaps.Map('ymap', {
+                    center: [{{first.point.x}}, {{first.point.y}}],
+                    zoom: 16,
+                    type: "google#map"
+            });
+
+            var yandexSelectorItem = new ymaps.control.ListBoxItem({
+                data: {
+                    content: "Народная"
+                }
+            });
+            yandexSelectorItem.events.add("click", function(e) {
+                this.setType("yandex#publicMap");
+            }, myMap);
+
+            var yandeSelectorItem = new ymaps.control.ListBoxItem({
+                data: {
+                    content: "Спутник"
+                }
+            });
+            yandeSelectorItem.events.add("click", function(e) {
+                this.setType("yandex#satellite");
+            }, myMap);
+
+            var googleSelectorItem = new ymaps.control.ListBoxItem({
+                data: {
+                    content: "Google"
+                }
+            });
+            googleSelectorItem.events.add("click", function(e) {
+                this.setType("google#map");
+            }, myMap);
+
+            var typeSelector = new ymaps.control.ListBox({
+                data: {
+                    title: "Слой"
+                },
+                items: [googleSelectorItem, yandexSelectorItem, yandeSelectorItem]
+            });
+            myMap.controls.add(typeSelector).add('zoomControl');
+
+
+        {%for e in busstops%}
+            var menuContent =
+                        '<div id="menu">{{e.name}}<br /> <input type="text" size="30" value="{{e.name}}" name="busstop_name"/> \
+                         <br/>куда едет?<input type="text" size="30" value="{{e.moveto}}" name="busstop_moveto"/> \
+                         <div align="center"><input type="button" value="Сохранить" onclick="save_busstop({{e.id}});" /></div>\
+                         </div>';
+            placemarks[{{e.id}}]=new ymaps.Placemark([{{e.point.x}},  {{e.point.y}}], {balloonContent:menuContent, iconContent: "{{e.id}}", id: {{e.id}} }, {draggable: false, preset: "{%if e.moveto%}twirl#darkblueIcon{%else%}twirl#redIcon{%endif%}"});
+            myMap.geoObjects.add(placemarks[{{e.id}}]);
+        {%endfor%}
+    }
+</script>
+
+</form>
+{% endblock %}

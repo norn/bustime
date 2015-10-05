@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block titlee %}Настройки{% endblock %}
+{% block meta_descr %}Настройки позволяют отключить звук, управлять различными оповещения и делать другие изменения{% endblock %}
+
+{% block nav_settings %}active{%endblock%}
+{% block content %}
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Настройки</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header" >Настройки
+<div class="sub header">идентификатор: {{us.id}}</div></h1>
+<br/>
+      <div class="ui two column grid stackable">
+        <div class="column">
+             <form action="/settings/" method="post" class="sform">{% csrf_token %}
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="sound" {% if us.sound %}checked="checked"{%endif%}>
+              <label><i class="fa fa-volume-up fa-fw"></i> Звук</label>
+            </div><br/><br/>
+
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="sound_plusone" {% if us.sound_plusone %}checked="checked"{%endif%}>
+              <label><i class="fa fa-bullhorn fa-fw"></i> Оповещение +1</label>
+            </div><br/><br/>
+
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="speed_show" {% if us.speed_show %}checked="checked"{%endif%}>
+              <label><i class="fa fa-dashboard fa-fw"></i> Показывать свою скорость</label>
+            </div><br/><br/>
+
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="font_big" {% if us.font_big %}checked="checked"{%endif%}>
+              <label><i class="fa fa-font fa-fw"></i> Красивый шрифт (чуть медленнее)</label>
+            </div>
+
+            {% if us.premium %}<br/><br/>
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="gps_off" {% if us.gps_off %}checked="checked"{%endif%}>
+              <label><i class="fa fa-globe fa-fw"></i> Отключить автопоиск по GPS</label>
+            </div><br/><br/>
+
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="multi_all" {% if us.multi_all %}checked="checked"{%endif%}>
+              <label><i class="fa fa-binoculars fa-fw"></i> Отображать всё</label>
+            </div>
+            {% endif %}
+
+        </div> <!-- div col end -->
+
+        <div class="column">
+             <!-- <i class="fa fa-picture-o fa-fw"></i> Оформление
+                 <select name="us_theme" class="ui dropdown" style="width:100%">
+                 <option value="0" {% if us.theme == 0 %}selected="selected"{%endif%}>Оригинальный</option>
+                 <option value="1" {% if us.theme == 1 %}selected="selected"{%endif%}>Оливковый</option>
+                 <option value="2" {% if us.theme == 2 %}selected="selected"{%endif%}>Хэллоуин</option>
+                 <option value="3" {% if us.theme == 3 %}selected="selected"{%endif%}>Карбон</option>
+                 <option value="4" {% if us.theme == 4 %}selected="selected"{%endif%}>Инкогнито</option>
+                 <option value="7" {% if us.theme == 7 %}selected="selected"{%endif%}>Кровь и Песок</option>
+                 <option value="8" {% if us.theme == 8 %}selected="selected"{%endif%}>8 Бит</option>
+                 <option value="10" {% if us.theme == 10 %}selected="selected"{%endif%}>День Валентина</option>
+                 <option value="11" {% if us.theme == 11 %}selected="selected"{%endif%}>Новый Год 2015</option>
+                 <option value="12" {% if us.theme == 12 %}selected="selected"{%endif%}>Игры престолов</option>
+             </select><br/><br/> -->
+
+             {% if us.premium %}
+             <select name="busfavor_amount" class="">
+              <option value="5" {% if us.busfavor_amount == 5 %}selected{%endif%}>5 любимых маршрутов</option>
+               <option value="10" {% if us.busfavor_amount == 10 %}selected{%endif%}>10 любимых маршрутов</option>
+               <option value="20" {% if us.busfavor_amount == 20 %}selected{%endif%}>20 любимых маршрутов</option>
+               <option value="30" {% if us.busfavor_amount == 30 %}selected{%endif%}>30 любимых маршрутов</option>
+             </select><br/><br/>
+             {% endif %}
+             </form>
+            {% if transaction %}
+            <button class="ui labeled icon basic button green"><i class="fa fa-money icon"></i>Пин код: <b>{{transaction.pin}}</b><br/>
+            (до {{transaction.end_time.date}})</button><br/><br/>
+            {% endif %}
+
+            <form action="/pin/" method="post">
+                <div class="ui action input">
+                  <input type="text" name="pin" placeholder="пин-код">
+                  <button class="ui teal button" type='submit'><i class="fa fa-diamond icon"></i> ввод</button>
+                </div>
+            </form><br/>
+
+            <button class="ui fluid right labeled icon button" onclick="window.location.href = '/us/reset-bus-favorites/';">
+            <i class="fa fa-star-o icon"></i> Очистить любимые</button>
+
+            {% if transaction.vip %}
+            <br/>
+            <a href="/icon-editor/"><button class="ui fluid right labeled icon button">
+            <i class="fa fa-paw icon"></i> Редактор наклеек</button></a>
+            {% endif %}
+        </div>
+      </div>
+
+  <div class="ui grid"><div class="center aligned column">
+    <div class="ui button" onclick="window.location.href = '/';">Отменить</div>
+    <div class="ui positive right labeled icon button" onclick="$('.sform').submit();">
+      Сохранить<i class="fa fa-check icon"></i>
+    </div>
+  </div></div>
+
+
+{% endblock %}

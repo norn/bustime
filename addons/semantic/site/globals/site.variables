@@ -1,0 +1,20 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@pageBackground      : #fdfdfd;
+@yellow         : #FFE216;
+@yellowBackground : #FFE216;
+@primaryColor   : @yellow;
+@secondaryColor : @purple;
+
+@importGoogleFonts : false;
+@fontName          : "PT Sans";
+@fontSmoothing     : antialiased;
+@headerFont        : PT Sans, Open Sans, FreeSans,Arimo,"Droid Sans",Helvetica,Arial,sans-serif;
+@pageFont          : PT Sans, Open Sans, FreeSans,Arimo,"Droid Sans",Helvetica,Arial,sans-serif;
+
+@googleFontName    : @fontName;
+@importGoogleFonts : false;
+@googleFontSizes   : '400,700,400italic,700italic';
+@googleSubset      : 'cyrillic';

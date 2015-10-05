@@ -1,0 +1,2 @@
+./manage.py shell
+#bpython -i manage.py shell

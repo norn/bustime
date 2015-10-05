@@ -1,0 +1,190 @@
+{% spaceless %}<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <title>{% block titlee %}{% if force_city %}Где сейчас автобусы в {{us.city.name_gde}}? Данные в режиме онлайн{%else%}Время Автобуса: онлайн отслеживание общественного транспорта{%endif%}{% endblock %}</title>
+  <meta name="description" content="{% block meta_descr %}{% if force_city %}Подробная информация об общественном транспорте {{us.city.name_o}}. Непрерывные обновления в реальном времени. {% if us.city.name == "Томск" %}Троллейбусы и трамваи {%else%}Автобусы{%endif%} на карте, маршруты, расписание.{%else%}Узнайте где сейчас едет нужный вам автобус, троллейбус или трамвай в режиме онлайн. Информация о маршрутах и другие полезные сервисы для пассажиров.{%endif%}{% endblock %}">
+  {% if main_page %}
+  <meta property="og:url" content="http://www.bustime.ru/">
+  <meta property="og:description" content="{% if force_city %}Подробная информация об общественном транспорте {{us.city.name_o}}. Непрерывные обновления в реальном времени. {% if us.city.name == "Томск" %}Троллейбусы и трамваи {%else%}Автобусы{%endif%} на карте, маршруты, расписание.{%else%}Узнайте где сейчас едет нужный вам автобус, троллейбус или трамвай в режиме онлайн. Информация о маршрутах и другие полезные сервисы для пассажиров.{%endif%}">
+  {% endif %}
+  <meta property="og:title" content="{% block title %}Время Автобуса{% endblock %}">
+  <meta property="og:image" content="http://www.bustime.ru/static/img/bustime-2.0.png">
+  <meta property="vk:image" content="http://www.bustime.ru/static/img/bustime-2.0.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#b30000">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name='yandex-verification' content='7c3105fdd9a6e1bc' />
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="image_src" href="http://www.bustime.ru/static/img/bustime-2.0.png"> <!-- for vk_share -->
+  <link rel="apple-touch-icon" href="/static/img/icon_60px.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/icon_76px.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/icon_120px.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/icon_152px.png" />
+  <!-- <link rel="icon" sizes="192x192" href="/static/img/icon_192.png"> -->
+
+  {% block stylesheet %}
+  {% if us.font_big %}<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=cyrillic,latin' rel='stylesheet' type='text/css'>{% endif %}
+
+  {% if test %}
+    <!-- <link rel="stylesheet" href="/static/css/semantic-full.min.css" type="text/css" /> -->
+    <link rel="stylesheet" href="/static/css/leaflet.css" />
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    {% if main_page %}
+    <link rel="stylesheet" href="/static/css/semantic-main.css" type="text/css" />
+    <link rel="stylesheet" href="/static/css/bustime-page.css" type="text/css" />
+    <link rel="stylesheet" href="/static/css/bustime-main.css" type="text/css" />
+    {% else %}
+    <link rel="stylesheet" href="/static/css/semantic-page.css" type="text/css" />
+    <link rel="stylesheet" href="/static/css/bustime-page.css" type="text/css" />
+    {% endif %}
+  {% else %}
+    {% if main_page %}
+      <link rel="stylesheet" href="/static/css/base-main-477.css" type="text/css" />
+    {% else %}
+      <link rel="stylesheet" href="/static/css/base-page-474.css" type="text/css" />
+    {% endif %}
+  {% endif %}
+
+  {% if us.theme %}<link rel="stylesheet" href="/static/css/bustime-theme-{{us.theme}}.css" type="text/css" />{% endif %}
+  {% if us.premium and main_page %}<link rel="stylesheet" href="/static/css/bustime-premium.css" type="text/css" />{% endif %}
+  {% if us.premium and main_page and us.vip %}<link rel="stylesheet" href="/static/css/bustime-premium-vip.css" type="text/css" />{% endif %}
+  {% endblock %}
+
+  {% if not test %}{% include "_ga.html"%}{%endif%}
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+{% block body %}
+<body>
+
+<div class="ui sidebar inverted vertical menu">
+  {% if main_page %}
+     <div class="item">
+      <a class="ui small orange icon button" target="_blank" href="https://play.google.com/store/apps/details?id=com.indie.bustime" title="Приложение для Android"><i class="fa fa-android icon"></i></a>
+      <a class="ui small orange icon button" target="_blank" href="https://itunes.apple.com/ru/app/bustime-vrema-avtobusa!/id879310530" title="Приложение для Apple"><i class="fa fa-apple icon"></i></a>
+      <!-- <a class="ui tiny orange icon button" target="_blank" href="https://vk.com/bustimeweb" title="группа в Вконтакте"><i class="fa fa-vk icon"></i></a> -->
+      <div class="ui small orange icon button" onclick="radio_play()" title="Электронная музыка из Швейцарии, Нидерландов и Болгарии"><i class="fa-music icon" skip_seconds="{{radio.skip_seconds}}"></i></div>
+      {% if avg_temp > 0 %}+{%endif%}{{avg_temp}}&deg;
+    </div>
+  {% endif %}
+
+    <a class="item {% block nav_main %}{%endblock%}" href="/">Время Автобуса<i class="fa fa-home icon"></i></a>
+    <!-- <a class="item {% block nav_settings %}{% endblock %}" href="/settings/">Настройки <i class="fa fa-cog icon"></i></a> -->
+    <a class="item {% block nav_rating %}{% endblock %}" href="{{us.city.get_absolute_url}}rating/">Рейтинг<i class="fa fa-line-chart icon"></i></a>
+    <a class="item {% block nav_schedule %}{%endblock%}" href="{{us.city.get_absolute_url}}schedule/">Расписание<i class="fa fa-calendar-o icon"></i></a>
+    <a class="item" href="{{us.city.get_absolute_url}}monitor/">Статистика<i class="fa fa-coffee icon"></i></a>
+    <a class="item {% block nav_classic %}{%endblock%}" href="http://www.bustime.ru{{us.city.get_absolute_url_classic}}">Классика<i class="fa fa-phone icon"></i></a>
+    {% if us.premium %}
+    <a class="item {% block nav_radar %}{%endblock%}" href="/radar/">Радар<i class="fa fa-map-o icon"></i></a>{% endif %}
+    <a class="item {% block nav_help %}{% endblock %}" href="/help/">Помощь <i class="fa fa-life-ring icon"></i></a>
+    {% if us.city.name == "Красноярск" %}
+    <a class="item {% block nav_pro %}{% endblock %}" href="/pro/">Премиум <i class="fa fa-diamond icon"></i></a>{%endif%}
+     <!-- <a class="item" href="/about/">Блог</a> -->
+    <a class="item {% block nav_contacts %}{% endblock %}" href="/contacts/">Контакты <i class="fa fa-envelope-o icon"></i></a>
+    <a class="item {% block nav_about %}{% endblock %}" href="/about/">О проекте <i class="fa fa-question icon"></i></a>
+
+    <div class="item">
+      <div class="menu">
+        <a class="item {%if us.city.id == 10%}active{%endif%}" href="/kazan/">
+          Казань</a>
+        <a class="item {%if us.city.id == 3%}active{%endif%}" href="/krasnoyarsk/">
+          Красноярск</a>
+        <a class="item {%if us.city.id == 9%}active{%endif%}" href="/perm/">
+          Пермь</a>
+        <a class="item {%if us.city.id == 5%}active{%endif%}" href="/spb/">
+          Санкт-Петербург</a>
+        <a class="item {%if us.city.id == 7%}active{%endif%}" href="/tomsk/">
+          Томск</a>
+      </div>
+    </div>
+
+
+
+
+  </div>
+  <div class="pusher"> <!-- sidebar pusher -->
+    <div class="ui center aligned padded grid yheader"> <!-- mobile tablet computer only -->
+      <div class="three wide column color-0-bg"></div>
+        <div class="ten wide column color-0-bg">
+                <center>
+                <a href="http://www.bustime.ru" class="bustime-logo{%if us.premium%}-pro{%endif%}" alt='Время Автобуса' title="Время Автобуса">
+                </a></center>
+
+                <a class="logo_header" href="http://www.bustime.ru" title="Время Автобуса - показывает онлайн где сейчас едут автобусы, троллейбусы и трамваи">Время Автобуса</a>
+                <div style="height:7px"></div>
+                <center><div id="vk_like"></div></center>
+          </div>
+          <div class="three wide column color-0-bg">
+          </div>
+      </div>
+
+      <!-- TABLETS <div class="ui tablet computer only grid"><div class="column"> -->
+
+      <div class="main_container ui container">
+      {% block content %}{% endblock %}
+      </div>
+
+
+      <div class="ui container footer_container">
+        <div class="ui divider"></div>
+        <div class="ui horizontal small divided link list">
+        <div class="item">{% now "Y" %} Время Автобуса</div>
+        <a class="item" href="/contacts/">Контакты</a>
+        <a class="item" href="http://www.bustime.ru{{us.city.get_absolute_url_classic}}">Классика</a>
+        <a class="item" href="/help/">Помощь</a>
+        </div>
+
+      {% if main_page %}
+      <div class="ui vertical small link list">
+        {% if us.city.name == "Красноярск" %}
+        <a class="item" href="http://www.mu-kgt.ru/" target="_blank" rel="nofollow">МКУ Красноярскгортранс</a>
+        <a class="item" href="http://www.krasinform.ru/" target="_blank" rel="nofollow">ЗАО КрасИнформ</a>
+        {% elif us.city.name == "Санкт-Петербург" %}
+        <a class="item" href="http://transport.orgp.spb.ru/" target="_blank" rel="nofollow">Организатор перевозок</a>
+        {% elif us.city.name == "Пермь" %}
+        <a class="item" href="http://gortransperm.ru/" target="_blank" rel="nofollow">МБУ Городское
+управление транспорта</a>
+        {% elif us.city.name == "Казань" %}
+        <a class="item" href="http://data.kzn.ru/" target="_blank">Открытые данные Казани</a>
+        {% endif %}
+      </div>
+      {% endif %}<br/>
+
+
+      <!-- <div class="ui mobile only grid"> -->
+      {% if not classic %}
+      <div class="ui blue launch right attached fixed large button" onclick="$('.ui.sidebar').sidebar('toggle');">
+        {% if us.premium %}<i class="fa fa-diamond icon"></i>{% else %}<i class="fa fa-bars icon"></i>{% endif %}
+        <span class="text">Меню</span>
+      </div>
+      {% endif %}
+
+    </div> <!-- sidebar pusher -->
+
+  {% block js %}
+  {% if test %}
+    {% if main_page %}
+    <script data-main="/static/js/require-main" src="/static/js/require-2.1.20.js"></script>
+    {% else %}
+    <script data-main="/static/js/require-page" src="/static/js/require-2.1.20.js"></script>
+    {% endif %}
+  {%else%}
+    {% if main_page %}
+      <script data-main="/static/js/main-built-{% if not us.sound %}nosound-{%endif%}604" src="/static/js/require-2.1.20.js"></script>
+    {% else %}
+      <script data-main="/static/js/page-built-563" src="/static/js/require-2.1.20.js"></script>
+    {% endif %}
+  {%endif%}
+  {% endblock %}
+
+{% block body_end %}{% endblock %}
+
+{% if not test %}{% include "yandex_metrica.html" %}{%endif%}
+</body>
+{% endblock %}
+</html>{% endspaceless %}

@@ -1,0 +1,12 @@
+The Rain System
+1    2              3    4          5    6
+->   |              |    |          |    |
+   ->|analyze events| -> |websockets| -> | client
+ ->  |              |    |  (rain)  |    |
+
+1. updates from provider
+2. analyze and processevents, filter updated only
+3. update only events
+4. get updates and save the state for RPC
+5. websoket updates to client
+6. client (js/ios etc.)

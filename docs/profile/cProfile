@@ -1,0 +1,11 @@
+#https://docs.python.org/2/library/profile.html
+
+import cProfile
+cProfile.run('test1(x)')
+cProfile.run('test1(x)', 'outfile')
+import pstats
+p = pstats.Stats('outfile')
+p.sort_stats('cumulative').print_stats()
+
+#python -m cProfile [-o output_file] [-s sort_order] myscript.py)
+python -m cProfile -s cumulative outfile

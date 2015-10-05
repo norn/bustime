@@ -55,3 +55,15 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# norn
+zbusd/ssl
+zbusd/supervisor
+zbusd/trash
+zbusd/crawler-krsk.py
+zbusd/perm-crawler.py
+.hg
+.hgignore
+log
+backoffice/static/
+bustime/local_settings.py

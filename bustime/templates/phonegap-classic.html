@@ -1,0 +1,83 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+
+<head>
+    <meta charset="UTF-8"/>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>-->
+    <link rel="stylesheet" href="static/css/pure-min.css">
+    <link rel="stylesheet" href="static/css/bustime-phonegap.css" type="text/css" />
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/autobahn.min.js"></script>
+    <script type="text/javascript" src="static/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="static/js/detectmobilebrowser.js"></script>
+    <script type="text/javascript" src="static/js/jquery.mb.audio.js"></script>
+    <script type="text/javascript" src="static/js/bustime.js"></script>
+
+<title>{% block title %}Время Автобуса! Красноярск{% endblock %}</title>
+</head>
+
+{% block body %}
+<body>
+<div class="container">
+<audio id="audio_bus_is_arriving" src="static/img/bus_is_arriving.wav" preload="auto"></audio>
+
+<!--
+<div style="float:left;width:240px;padding:10px;text-align:center">
+ Баланс Транспортной Карты:
+ <form class="pure-form">
+   <input class="form" type="text" id="id_tcard" name="tcard" style="width:170px;font-size:12px;" value="{% if tcard %}{{tcard.num}}{%else%}{% endif %}" placeholder="Номер вашей карты">
+   <div id="id_tcard_balance" style="color:red;font-size:16px;font-weight:bold;margin:6px;">{% if tcard %}{{tcard.balance}} руб.{% endif %}</div>
+   <input type="button" class="pure-button pure-button-active" onclick="tcard_check()" value="проверить и запомнить">
+ </form>
+</div>-->
+
+
+{%for b in buses%}
+ <a class="busnumber" name="{{b}}" bus_id="{{b.id}}" href="{{b.get_absolute_url}}">{{b}}
+
+ <div class="busamount">
+  <span id="busamount_{{b.id}}_a" class="busamoun">-</span>/<span id="busamount_{{b.id}}_b" class="busamoun">-</span>
+ </div>
+ </a>
+{%endfor%}
+
+<div id="bustable" style="clear:both;display:none">
+
+<div class="separ">
+Обновление каждые 15 секунд. Маршрут: <span id="updated" style="font-weight:bold">{{now}}</span>
+</div>
+
+
+<div class="bus_panel">
+ <h2 id="napr_a">направление A</h2>
+ <div id="html_a_updated"></div>
+ <div id="html_a"></div>
+</div>
+
+<div class="bus_panel">
+ <h2 id="napr_b">направление B</h2>
+ <div id="html_b_updated"><div style="margin-top:400px">.</div></div>
+ <div id="html_b"></div>
+</div>
+
+</div>
+
+
+<div id="updated_widget" class="widget">
+ <span id="updated_widget_weather">{{weather.temperature}}</span>°C
+ <img id="update-icon" style="width:16px;height:16px;margin-bottom:-3px" src="static/img/update-icon.png" />
+ <span id="updated_widget_time" style="font-weight:bold">{% now "Y-m-d H:i:s" %}</span>
+</div>
+
+
+<div style="padding:10px 0px 10px;margin:auto;text-align:center;clear:both"></div>
+{# include "yandex_metrica.html" #}
+</div>
+<div id="megafooter" style="padding:10px 0px 10px;margin:auto;text-align:center;clear:both">
+Разработка и поддержка: <a href="http://www.di-emo.ru" target="_blank">"Цифровые Эмоции"</a>.
+Данные: МКУ "Красноярскгортранс".
+</div>
+
+</body>
+{% endblock %}
+</html>

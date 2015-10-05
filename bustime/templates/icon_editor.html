@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% load cache %}
+
+{% block content %}
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Наклейки</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">
+Редактор наклеек<div class="sub header">сделай транспорт красивее</div>
+</h1>
+
+<div class="ui grid">
+	<div class="center aligned column">
+
+<form action="./" method="post">{% csrf_token %}
+<table class="ui table">
+<thead>
+	<tr>
+		<th>id</th>
+		<th>создана</th>
+		<th>активность</th>
+		<th>номер</th>
+		<th>картинка</th>
+	</tr></thead>
+{% for si in icons %}
+<tr>
+    <td>{{si.id}}</td>
+    <td>{{si.ctime.date}}</td>
+    <td><input class="ui checkbox" type="checkbox" name="{{si.id}}_active" {% if si.active %}checked{% endif %}></td>
+    <td><div class="ui input"><input type="text" name="{{si.id}}_gosnum" value="{{si.gosnum}}" /></div></td>
+    <td><img src="{{si.img}}" title="{{si.img}}"/><br/></td>
+</tr>
+{% endfor %}
+</table>
+<br/>
+<button class="ui red icon labeled button" type='submit'><i class="fa fa-floppy-o icon"></i> Сохранить </button>
+<br/><br/>
+
+</div></div>
+
+{% endblock %}

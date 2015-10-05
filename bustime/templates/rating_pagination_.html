@@ -1,0 +1,7 @@
+<div class="ui grid"><div class="column">
+  <div class="ui pagination right menu">
+  {% for p in vehicles.paginator.page_range %}
+  <a class="{% if p == vehicles.number %}active {%endif%}item" href="/{{city.slug}}/rating/{{for_date|date:"Y-n"}}/page-{{p}}/{%if comments%}?comments=1{%endif%}">{{p}}</a>
+  {% endfor %}
+</div>
+</div></div>

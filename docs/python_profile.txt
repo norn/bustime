@@ -1,0 +1,3 @@
+https://pypi.python.org/pypi/memory_profil
+https://github.com/rkern/line_profiler
+http://stackoverflow.com/questions/110259/which-python-memory-profiler-is-recommended

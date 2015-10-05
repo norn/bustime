@@ -1,0 +1,99 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/css/jquery.mobile-1.3.2.min.css" />
+    <link rel="stylesheet" href="static/css/jquery.mobile-bustime.css" />
+
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/jquery.mobile-1.3.2.min.js"></script>
+    <script type="text/javascript" src="static/js/autobahn.min.js"></script>
+    <script type="text/javascript" src="static/js/detectmobilebrowser.js"></script>
+    <script type="text/javascript" src="static/js/jquery.mb.audio.js"></script>
+    <script type="text/javascript" src="static/js/bustime-jmobile.js"></script>
+
+<title>{% block title %}Время Автобуса! Красноярск{% endblock %}</title>
+</head>
+
+<body>
+<audio id="audio_bus_is_arriving" src="static/img/bus_is_arriving.wav" preload="auto"></audio>
+
+
+<div data-role="page" id="main">
+<div data-role="header" data-position="inline" class="ui-header ui-bar-b"><h1>Время Автобуса</h1>
+            {# <a href="" onclick="exitFromApp()" data-role="button" data-icon="delete" data-iconpos="notext" data-mini="true" data-inline="true" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" title="Exit" class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-right ui-btn-icon-notext ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Exit</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a> #}
+</div>
+
+    <div data-role="content">
+        <div class="ui-grid-a">
+        <div class="ui-block-a">
+            <ul data-role="listview" data-count-theme="c" data-inset="true">
+            {%for b in buses|slice:":41" %}
+                <li><a class="busnumber" href="#bus" name="{{b}}" bus_id="{{b.id}}" data-transition="slide">{{b}}
+                <span class="ui-li-count"><span class="busamoun" id="busamount_{{b.id}}_a">-</span>/
+                <span class="busamoun" id="busamount_{{b.id}}_b">-</span></span></a></li>
+            {%endfor%}</ul>
+        </div>
+
+        <div class="ui-block-b">
+            <ul data-role="listview" data-count-theme="c" data-inset="true">
+
+            {%for b in buses|slice:"41:" %}
+            <li><a class="busnumber" href="#bus" name="{{b}}" bus_id="{{b.id}}" data-transition="slide">{{b}}
+                <span class="ui-li-count"><span class="busamoun" id="busamount_{{b.id}}_a">-</span>/
+                <span class="busamoun" id="busamount_{{b.id}}_b">-</span></span></a></li>
+            {%endfor%}</ul>
+        </div>
+</div><!-- /grid-a -->
+    </div><!-- /content -->
+
+<div data-role="footer" data-theme="b" class="ui-footer ui-bar-b">
+        <h4 class="ui-title" role="heading" aria-level="1">www.bustime.ru</h4>
+    </div>
+</div><!-- /page -->
+
+
+
+
+
+<div data-role="page" id="bus">
+
+    <div data-role="header" class="ui-header ui-bar-b" role="banner">
+
+        <a href="#main" data-icon="arrow-l" class="ui-btn-left ui-btn ui-btn-corner-all ui-btn-icon-left ui-btn-up-d" data-corners="true" data-wrapperels="span" data-theme="d" data-direction="reverse" data-transition="slide">
+            <span class="ui-btn-inner ui-btn-corner-all" ><span class="ui-btn-text">Назад</span><span class="ui-icon ui-icon-arrow-l ui-icon-shadow">&nbsp;</span></span></a>
+            <h1 class="ui-title" role="heading" aria-level="1" id="updated">Маршрут</h1>
+            {# <a href="" onclick="exitFromApp()" data-role="button" data-icon="delete" data-iconpos="notext" data-mini="true" data-inline="true" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" title="Exit" class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-right ui-btn-icon-notext ui-btn-up-c"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text">Exit</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a> #}
+        </div>
+
+        <div data-role="content">
+
+
+            <div data-role="navbar">
+                <ul>
+                    <li><a id="switch_a" href="" onclick="nswitcher(0)" class="ui-btn-active">
+                        <span id="napr_a">Направление А</span>
+                        <br/>
+                        <span id="html_a_updated"></span></a></li>
+                    <li><a id="switch_b" href="" onclick="nswitcher(1)">
+                        <span id="napr_b">Направление B</span>
+                        <br/>
+                        <span id="html_b_updated"></span></a></li>
+                </ul>
+            </div><!-- /navbar -->
+            <div id="html_a"></div>
+            <div id="html_b" style="display: none"></div>
+
+            <a href="#main" data-role="button">Маршруты</a>
+        </div><!-- /content -->
+
+        <div data-role="footer" data-theme="b" class="ui-footer ui-bar-b">
+            <h4 class="ui-title" role="heading" aria-level="1">www.bustime.ru </h4>
+        </div>
+</div><!-- /page -->
+
+</body>
+</html>
+

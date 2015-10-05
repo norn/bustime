@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titlee %}{{city.name}} - Классическая версия{% endblock %}
+{% block meta_descr %}Выбор маршрута общественного траснпорта в городе {city.name}}. Классическая версия.{% endblock %}
+
+{% block extra_head %}
+<link rel="canonical" href="http://www.bustime.ru{{city.get_absolute_url_classic}}">
+{% endblock %}
+{%block js%}{% endblock %}
+{% block nav_classic %}active{%endblock%}
+
+{%block content%}
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <a class="section" href="/{{city.slug}}/">Общественный транспорт в {{city.name_gde}}</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Классическая версия</div>
+</div>
+<div class="ui divider"></div>
+
+{% if device == "opera_mini" %}
+ <div class="ui warning message">
+ Вы на классической версии сайта так как ваш браузер <b>Opera Mini</b> не поддерживает JavaScript.<br/><br/>
+ Пожалуйста воспользуйтесь браузером Chrome чтобы получить преимущество полной версии сайта Bustime
+ </div>
+{%endif%}
+
+<h1 class="ui header">{{city.name}}
+	<div class="sub header">версия для устройств без поддержки новых технологий</div>
+</h1>
+{%for b in buses%}
+{% ifchanged b.ttype %}<h2 class="ui header" id="ttype{{b.ttype}}">{{b.ttype_names}}</h2>{% endifchanged %}
+<a class="busnumber_s
+t{{b.ttype}}_{% if b.amount_int < 1 or not b.amount_int %}coloramount0{%elif b.amount_int < 3%}coloramount1{%else%}coloramount2{%endif%}"
+href="http://www.bustime.ru{{b.get_absolute_url_classic}}">{{b.name}}</a>
+
+{%endfor%}
+
+{% endblock %}

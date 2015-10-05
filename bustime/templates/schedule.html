@@ -1,0 +1,49 @@
+{% extends "base.html" %}{% load cache %}
+{% block titlee %}Расписание общественного транспорта в {{city.name_gde}}{% endblock %}
+{% block meta_descr %}Все маршруты городского транспорта в {{city.name_gde}}. Подробная информация по остановкам.{% endblock %}
+
+{% block nav_schedule %}active{%endblock%}
+{% block content %}
+
+<div class="ui breadcrumb">
+  <a class="section" href="/">Главная</a>
+  <div class="ui divider"> / </div>
+  <a class="section"  href="http://www.bustime.ru/{{city.slug}}/">
+	Общественный транспорт в {{city.name_gde}}</a>
+	<div class="ui divider"> / </div>
+  <div class="active section">Расписание</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">
+	Расписание маршрутов общественного транспорта в Красноярске
+	<div class="sub header">Для просмотра местонахождения транспорта в реальном времени перейдите на <a href="{{us.city.get_absolute_url}}">страницу онлайн отслеживания</a></div>
+</h1>
+
+<!-- <div class="ui top attached tabular menu">
+  {%for b in buses%}
+  {% ifchanged b.ttype %}
+  <a class="item {%if forloop.counter == 1%}active{%endif%}">
+    {{b.ttype_name}}
+  </a>
+  {% endifchanged %}
+  {%endfor%}
+</div> -->
+
+<div class="ui segments">
+{%for b in buses%}
+	{% ifchanged b.ttype %}
+	{%if forloop.counter != 1%}</div>{%endif%}
+	<div class="ui segment type{{b.ttype}}">
+	<h2 class="ui header">{{b.ttype_names}}</h2>
+	{% endifchanged %}
+
+<a class="busnumber_s t{{b.ttype}}_coloramount1" bname="{{b}}" btype="{{b.ttype}}" bus_id="{{b.id}}" href="http://www.bustime.ru{{b.get_absolute_url_schedule}}" title="{{b.ttype_name}} {{b.name}}">{{b}}</a>
+
+
+
+{%endfor%}
+</div></div>
+
+
+{% endblock %}
