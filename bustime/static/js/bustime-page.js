@@ -2,9 +2,9 @@ document_ready = function() {
     var FastClick = require('fastclick');
     FastClick.attach(document.body);
 
-    $(".launch").click(function() {
-        $('.ui.sidebar').sidebar('toggle');
-    });
+    //$(".launch").click(function() {
+    //    $('.ui.sidebar').sidebar('toggle');
+    //});
 
     VK.init({
         apiId: 3767256,

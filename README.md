@@ -1,8 +1,8 @@
-![Время Автобуса](http://www.bustime.ru/static/img/bustime-logo-2.0.png)
+![Время Автобуса](http://www.bustime.ru/static/img/bustime-logo.png)
 
 # Время Автобуса / Bustime
 
-Время Автобуса - web приложение основанное на Python/Django, которое позволяет показывать
+Время Автобуса - web приложение основанное на Python/Django, которое показывает
 где в данный момент едет общественный транспорт используя координаты GPS. Данный исходный код
 работает на сайте [www.bustime.ru](https://www.bustime.ru/).
 
@@ -21,11 +21,20 @@ Features/Возможности
 2. Устанавливаете там virtualenv и ставите все пакеты из docs/pips/pips.freeze
 3. Инициируете Django
 4. Заполняете базу данных городами, остановками и автобусами
-5. Устанавливаете supervisor и демоны из списка addons
+5. Генерируете Список остановок для авто-заполнения utils/nbusstops-export.py
+6. Отредактируйте zbusupd.py в зависимости от городов
+7. Устанавливаете supervisor и демоны из списка addons
+8. Скрещиваете пальцы и запускаете
 
-Опционально можете установить [Semantic UI](http://semantic-ui.com/) и 
-оптимизатор [r.js](http://requirejs.org/docs/optimization.html).
-Скрипты для сборки CSS и JS в файлах 99-release-*.sh
+
+
+Опционально можете установить:
+* [Semantic UI](http://semantic-ui.com/)
+* [оптимизатор r.js](http://requirejs.org/docs/optimization.html)
+* [GeoLite2 для автоопределения города по IP](http://dev.maxmind.com/geoip/geoip2/geolite2/)
+
+скрипты для сборки CSS и JS в файлах 99-release-*.sh
+
 
 #### Contacts/Контакты
 
