@@ -1,43 +1,34 @@
-![Время Автобуса](http://busti.me/static/img/bustime-logo.png)
+# Bustime - public trasport online
 
-# Время Автобуса / Bustime
+Python/django app process and visualize public transport vehicle positions using GPS coordinates.
 
-Время Автобуса - web приложение основанное на Python/Django, которое показывает
-где в данный момент едет общественный транспорт используя координаты GPS. Данный исходный код
-работает на сайте [busti.me](https://busti.me/).
+Checkout [busti.me](https://busti.me/) for example.
 
-Графика и некоторые части функционала могут быть не опубликованы под открытой лицензией.
+## Features
+* high optimization for rapid server replies
+* websocket real-time updates
+* modern HTML5 standard compliance
+* simplified version for older devices and browsers (even with no JS)
+* Rainsys system updates only changed information (broadcasted via websocket)
+* "MultiBus" technology allows to track all vehicles of selected route
 
-Features/Возможности
-* Высокая оптимизация компонентов. Обратите внимание как всё молниеносно быстро открывается и обновляется.
-* Под капотом мощнейшая система распределения данных по технологии HTML5 Websockets
-* Соответствие современным стандартам HTML5
-* Упрощенная классическая версия для старых устройств и браузеров
-* Фирменная технология "Дождь" 
-* Фирменная технология "Мульти-автобус"
+## How to install
+1. Install Linux OS (tested with Ubuntu 14.04 LTS)
+2. Make virtualenv and install pip packages from ```docs/pips/pips.freeze```
+3. Initialize Django environment
+4. Fill in city, bus, bus stop and route tables
+5. Generate list of stops for JS at ```utils/nbusstops-export.py```
+6. Edit zbusupd.py according to active cities
+7. Install supervisor and daemons from the ```addons``` list
+8. Run
 
-## Install/Установка
-1. Устанавливаете Ubuntu 14.04 LTS
-2. Устанавливаете там virtualenv и ставите все пакеты из docs/pips/pips.freeze
-3. Инициируете Django
-4. Заполняете базу данных городами, остановками и автобусами
-5. Генерируете Список остановок для авто-заполнения utils/nbusstops-export.py
-6. Отредактируйте zbusupd.py в зависимости от городов
-7. Устанавливаете supervisor и демоны из списка addons
-8. Скрещиваете пальцы и запускаете
-
-
-
-Опционально можете установить:
+Optionally you could install:
 * [Semantic UI](http://semantic-ui.com/)
-* [оптимизатор r.js](http://requirejs.org/docs/optimization.html)
-* [GeoLite2 для автоопределения города по IP](http://dev.maxmind.com/geoip/geoip2/geolite2/)
+* [r.js optimizer](http://requirejs.org/docs/optimization.html)
+* [GeoLite2 for user's city detection by IP address](http://dev.maxmind.com/geoip/geoip2/geolite2/)
 
-скрипты для сборки CSS и JS в файлах 99-release-*.sh
+Scripts for building CSS and JS: 99-release-*.sh
 
-#### License/Лицензия
-Время Автобуса выпущен под свободной лицензией [MIT](LICENSE)
+#### License
+Published under [MIT](LICENSE) license.
 
-#### Contacts/Контакты
-
-Пишите письма на [andrey.perliev@gmail.com](mailto:andrey.perliev@gmail.com)
