@@ -30,5 +30,5 @@ With this method of transmission, there is no need for dispatch information, bec
 ## Retransmission
 Bustime can retransmit incoming data via the Websocket and Bustime protocols. It will allow to publish data via API for other developers without additional load on the transport company's servers.
 
-## Responsible for data transmission:
+## Responsible for data transmission
 The organization directly providing the transportation service or the city transportation department.

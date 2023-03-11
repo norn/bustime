@@ -30,5 +30,5 @@ Con este método de transmisión, no hay necesidad de información de despacho, 
 ## Retransmisión
 Bustime puede retransmitir los datos entrantes a través de los protocolos Websocket y Bustime. Permitirá publicar datos vía API para otros desarrolladores sin carga adicional en los servidores de la empresa de transporte.
 
-## Responsable de la transmisión de datos:
+## Responsable de la transmisión de datos
 La organización que presta directamente el servicio de transporte o el departamento de transporte de la ciudad.
