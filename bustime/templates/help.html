@@ -1,186 +1,183 @@
-
 {% extends "base.html" %}
-{% block titlee %}Помощь{% endblock %}
-{% block meta_descr %}Раздел помощи поможет разобраться с интерфейсом сайта. Здесь вы найдете ответы на вопросы, а также описание дополнительных возможностей и различных информационных элементов.{% endblock %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Справочник" %}{% endblock %}
+{% block meta_descr %}{% trans "Раздел помощи поможет разобраться с интерфейсом сайта" %}. {% trans "Здесь вы найдете ответы на вопросы, а также описание дополнительных возможностей и различных информационных элементов" %}.{% endblock %}
 
 {% block nav_help %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/help/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/help/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/help/" />
+{% endfor %}
+
+{% endblock %}
+
 {% block content %}
 
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">Помощь</div>
-</div>
-<div class="ui divider"></div>
-
-
-<div class="ui ordered list">
-  <a class="item" href="#how">Как работает bustime.ru</a>
-  <div class="item">
-    <a href="#help">Введение</a>
-    <div class="list">
-      		<a class="item" href="#matrix">Сетка маршрутов и табло прибытия</a>
-			<a class="item" href="#symbols">Обозначения</a>
-			<a class="item" href="#selector">Кнопка выбора маршрута</a>
-    </div>
-  </div>
-  <a class="item" href="#advanced">Дополнительные возможности</a>
-  <!-- <a class="item" href="#stars">Поощрения</a> -->
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Справочник" %}</div>
 </div>
 
-
-<iframe width="420" height="315" src="https://www.youtube.com/embed/pWFzIOLVaqE" frameborder="0" allowfullscreen></iframe>
-
 <div class="ui divider"></div>
-			<h1 class="ui header" id="how">Как работает bustime.ru</h2>
-			Предоставляемые данные являются результатом анализа GPS данных текущего местоположения транспорта. Общественный городской транспорт оснащён специальными устройствами, которые отправляют текущее местоположение техники определённое по спутникам в режиме реального времени через мобильный Интернет. Процесс состоит из следующих этапов:
-			<ol>
-				<li><b>Данные</b>  cпутниковой навигации <b>передаются на сервер</b></li>
-				<li>На сервере данные записываются в базу данных и <b>отправляются на сервер Bustime</b></li>
-				<li>Сервер Bustime <b>анализирует</b> точки местонахождения транспорта и отправляет подключенным пользователям</b> обновлённую информацию</li>
-			</ol>
-			<div style="font-size:4rem;text-align:center">
-				<i class="fa red fa-globe icon"></i><i class="fa fa-arrow-right orange icon"></i>
-				<i class="fa red fa-bus icon"></i><i class="fa fa-arrow-right orange icon"></i>
-				<i class="fa red fa-server icon"></i><i class="fa fa-arrow-right orange icon"></i>
-				<img style="max-height: 5rem; margin-bottom:-1rem" src="/static/img/bustime-2.0.png">
-			</div>
+<div class="ui container">
 
-<h3 class="ui header">работает на следующих устройствах:</h3>
-<div class="ui big list">
-  <div class="item">
-    <i class="phone icon"></i>
-    <div class="content">телефонах без JavaScript/WAP</div>
-  </div>
-  <div class="item">
-    <i class="mobile icon"></i>
-    <div class="content">
-      смартфонах
-    </div>
-  </div>
-  <div class="item">
-    <i class="tablet icon"></i>
-    <div class="content">
-      планшетах
-    </div>
-  </div>
-    <div class="item">
-    <i class="laptop icon"></i>
-    <div class="content">
-     ноутбуках
-    </div>
-  </div>
-  <div class="item">
-    <i class="desktop icon"></i>
-    <div class="content">
-     компьютерах
-    </div>
-  </div>
-      <div class="item">
-    <i class="fa-tv icon"></i>
-    <div class="content">
-     телевизорах
-    </div>
-  </div>
+<center><img src="/static/img/help/help-number.png"></center>
+<div class="ui large segment">
+          <p>{% trans "Выберите маршрут из списка, чтобы открыть схему маршрута" %}. {% trans "Цвет кнопки зависит от количества активного транспорта." %}
+          {% trans "В центре указано название, а ниже количество транспортных средств на маршруте в прямом и обратном направлении" %}. {% trans "Знак процента указывает на маршруты со скидками" %}.</p>
 </div>
 
+<table class="ui large celled table">
+  <thead>
+    <tr>
+    <th>{% trans "Символ и значение" %}</th>
+    <th>{% trans "Описание" %}</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/bus/"><img style="max-width:64px" src="/static/img/theme/modern/bus.svg">
+      <br/>{% trans "Автобус" %}</a></td>
+      <td data-label="description">{% trans "Крупное моторное транспортное средство, предназначенное для перевозки большого числа пассажиров по заданным маршрутам в пределах города или междугородных сообщений." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/trolleybus/"><img style="max-width:64px" src="/static/img/theme/modern/trolleybus.svg">
+      <br/>{% trans "Троллейбус" %}</td>
+      <td data-label="description">{% trans "Электрическое транспортное средство, использующее контактные провода для питания и предназначенное для перевозки пассажиров по городским маршрутам." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/tramway/"><img style="max-width:64px" src="/static/img/theme/modern/tramway.svg"><br/>{% trans "Трамвай" %}</td>
+      <td data-label="description">{% trans "Рельсовое транспортное средство, передвигающееся по специально проложенным путям и предназначенное для перевозки пассажиров в пределах городской транспортной системы." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/bus-taxi/"><img style="max-width:64px" src="/static/img/theme/modern/bus-taxi.svg"><br/>{% trans "Маршрутное такси" %}</td>
+      <td data-label="description">{% trans "Небольшой пассажирский автобус, курсирующий по фиксированному маршруту с возможностью высадки и посадки пассажиров в любом удобном месте по пути следования." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/bus-intercity/"><img style="max-width:64px" src="/static/img/theme/modern/bus-intercity.svg"><br/>{% trans "Междугородний автобус" %}</td>
+      <td data-label="description">{% trans "Крупное пассажирское транспортное средство, предназначенное для перевозки людей на длительные расстояния между различными городами, обеспечивающее комфортные условия во время поездки." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/metro/"><img style="max-width:64px" src="/static/img/theme/modern/metro.svg"><br/>{% trans "Метро" %}</td>
+      <td data-label="description">{% trans "Подземная или наземная железнодорожная система общественного транспорта, состоящая из электрических поездов, предназначенных для быстрого и массового перемещения пассажиров по городу и его пригородам." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/train/"><img style="max-width:64px" src="/static/img/theme/modern/train.svg"><br/>{% trans "Поезд" %}</td>
+      <td data-label="description">{% trans "Состав из нескольких вагонов, тянущийся локомотивом по рельсам и предназначенный для перевозки пассажиров и грузов на дальние расстояния между городами и регионами." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/water/"><img style="max-width:64px" src="/static/img/theme/modern/ferry.svg"><br/>{% trans "Водный транспорт" %}</td>
+      <td data-label="description">{% trans "Водное транспортное средство, предназначенное для перевозки пассажиров по водным маршрутам, часто используемое в прибрежных городах и для туристических экскурсий." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/airplane/"><img style="max-width:64px" src="/static/img/theme/modern/airplane.svg"><br/>{% trans "Самолёт" %}</td>
+      <td data-label="description">{% trans "Быстрое воздушное транспортное средство, используемое для перевозки пассажиров и грузов на дальние расстояния между городами и странами, обеспечивая регулярное и удобное сообщение." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/carpool/"><img style="max-width:64px" src="/static/img/theme/modern/carpool.svg"><br/>{% trans "Попутка" %}</td>
+      <td data-label="description">{% trans "Способ совместного использования автомобиля несколькими людьми, чтобы сократить расходы на топливо, снизить нагрузку на дороги и уменьшить выбросы в окружающую среду." %}</td>
+    </tr>
+    <tr>
+      <td data-label="name" class="center aligned"><a class="header" href="/help/taxi/"><img style="max-width:64px" src="/static/img/theme/modern/taxi.svg"><br/>{% trans "Такси" %}</td>
+      <td data-label="description">{% trans "Персонализированные поездки по запросу, обеспечивающие гибкость и удобство для пассажиров по сравнению с фиксированными маршрутами традиционных общественных транспортных средств." %}</td>
+    </tr>
+  </tbody>
+</table>
 
 
-
-<div class="ui divider"></div>
-			<h1 class="ui header" id="help">Введение</h1>
-			<h2 id="matrix">Сетка маршрутов и табло прибытия</h2>
-			<img src="/static/img/help/help2-1.png"><br/>
-			Выберите нужный вам маршрут из списка. Цвет кнопки зависит от количества активного транспорта.
-			<img src="/static/img/help/help1.png"><br/>
-			Если удается определить ближайшую остановку, то выводится прогнозируемое расписание прибытия транспорта для этой остановки. Вы можете выбрать другую остановку с помощью поля поиска. Направление остановки указано в названии. Остановки трамвая помечены изображением.
-
-
-			<h2 id="symbols">Обозначения</h2>
-			<table class="ui table">
+<h2 class="ui header">{% trans "Индикаторы" %}</h2>
+<table class="ui large celled table">
+  <thead>
+    <tr>
+    <th class="center aligned">{% trans "Символ и значение" %}</th>
+    <th>{% trans "Описание" %}</th>
+  </tr></thead>
 				<tr>
-					<td style="width:64px"><img src="/static/img/cat-male.png"></td>
-					<td>Кот появляется при клике на остановку, что устанавливает звуковое оповещение по приезду транспорта. Эти обозначения видят все пользователи сайта, и, например, водитель может увидеть что вы ждете транспорт на данной остановке.</td>
+					<td class="center aligned"><i class="fa fa-user" style="font-size:24px"></i></td>
+					<td>{% trans "Символ пассажира появляется при нажатии на остановку, что устанавливает звуковое оповещение по приезду транспорта. Обозначение видят все пользователи Bustime. Водители могут видеть, что вы ждете транспорт на данной остановке." %}</td>
 				</tr>
 				<tr>
-					<td><img src="/static/img/tea-cup-icon.png"></td>
-					<td>Чашка чая обозначает транспортное средство на конечной остановке.</td>
+					<td class="center aligned"><i class="fa fa-coffee" style="font-size:24px"></i></td>
+					<td>{% trans "Индикатор статуса транспортного средства, находящегося на конечной остановке." %}</td>
 				</tr>
 
-				<tr>
-					<td><i style="font-size:32px" class="fa fa-moon-o icon"></i></td>
-					<td>Луна - ночное время, данные сервера не обновляются. </td>
-				</tr>
+<!-- 				<tr>
+					<td><i style="font-size:32px" class="fa-moon-o icon"></i></td>
+					<td>{% trans "Индикатор ночного времени, данные сервера не обновляются." %}</td>
+				</tr> -->
 			</table>
 
+<div class="ui divider"></div>
 
 
-			<h2 id="selector">Кнопка выбора маршрута</h2>
-			<div class="ui two column stackable grid"><div class="row"><div class="column">
-					<img src="/static/img/help/help2-2.png">
-					<img src="/static/img/help/help2-3.png">
-					<img src="/static/img/help/help2-4.png">
-			    </div><div class="column">
-					В центре кнопки выбора указано <b>название маршрута</b>.<br/>
-					Ниже - <b>количество транспорта</b> в одну и другую сторону.<br/>
-					Иконка типа транспорта означает <b>трамвай</b> или <b>троллейбус</b>.<br/>
-					Значок процента для маршрутов со скидками на пересадку.<br/>	<br/>
-			    </div>
-			    </div>
-			 </div>
 
-			<h2>Схема маршрута</h2>
-			<img src="/static/img/help/help2-5.png">
+
+			<h2 class="ui header" id="scheme">{% trans "Схема маршрута" %}</h2>
+			<img src="/static/img/help/route.png" class="ui large image">
 			<br/>
-			На схеме маршрута отображены все остановки. Местонахождение транспорта (автобуса, трамвая, троллейбуса) отображается изображением. Рядом с названием остановки указано прогнозируемое время прибытия.<br/><br/> Если нажать на остановку, то вы установите звуковое оповещение по прибытию. Это также будет отображено в виде кота, ожидающего автобус, которого видят все пользователи сайта, включая водителей.
+			{% trans "На схеме маршрута отображены остановки в двух направлениях и текущее местонахождение общественного транспорта. Рядом с названием остановки указано прогнозируемое время прибытия." %}
 
 
 			<div class="ui divider"></div>
-			<h1 class="ui header" id="advanced">Дополнительные возможности</h2>
-			Откройте настройки <i class="fa fa-cog fa-fw fa-lg"></i> с помощью кнопки сверху чтобы установить дополнительные параметры.
-			Здесь вы можете:
+			<h2 class="ui header" id="advanced">{% trans "Дополнительные и специальные возможности" %}</h2>
+			{% trans "Откройте настройки " %}<i class="fa fa-cog fa-fw fa-lg"></i>{% trans " с помощью кнопки сверху чтобы установить дополнительные параметры." %}
+			{% trans "Здесь вы можете:" %}
 			<ul>
-				<li>отключить звук</li>
-				<li>отключить оповещения об изменении количества единиц транспорта на маршруте</li>
-				<li>отключить автопоиск текущего местонахождения по GPS (ближайшие к вам остановки автоматически появляться не будут)</li>
-				<li>очистить список любимых маршрутов</li>
-				<!-- <li>изменить стиль оформления</li>
-				<li>изменить город по умолчанию</li> -->
+				<li>{% trans "отключить звук" %}</li>
+				<li>{% trans "отключить оповещения об изменении количества единиц транспорта на маршруте" %}</li>
+				<li>{% trans "отключить автопоиск текущего местонахождения по GPS (ближайшие к вам остановки автоматически появляться не будут)" %}</li>
+				<li>{% trans "очистить список любимых маршрутов" %}</li>
 		    </ul>
-			Для Красноярска доступен виджет баланса транспортной карты, введите номер карты сверху чтобы видеть обновляемый баланс.<br/><br/>
-			Версия сайта Bustime <a href="http://www.bustime.ru/classic/" target="_blank">для классических телефонов</a> позволяет открывать и просматривать сайт на телефонах, которые не поддерживают современные технологии.
+			{% trans "Приложения адаптированы для" %} 
+<a href="https://www.kamerata.org/bustime4blind/" target="_blank">{% trans "незрячих и слабовидящих" %}</a> 
+{% trans "при участии экспертов по доступной среде " %}
+<a href="https://strategy.government-nnov.ru/" target="_blank">{% trans "Проектного офиса Стратегии развития Нижегородской области" %}</a>.<br>
+			{% trans "Для удобства пользования незрячими и слабовидящими пассажирами Bustime предусматривает следующие возможности:" %}
+			<ul>
+				<li>{% trans "голосовой поиск" %}</li>
+				<li>{% trans "настраиваемое голосовое оповещение" %}</li>
+				<li>{% trans "работа в фоновом режиме" %}</li>
+    	</ul>
 
-<!-- <div class="ui divider"></div>
-			<h1 class="ui header" id="stars">Поощрения</h2>
-			<div class="ui two column grid"><div class="column">
+			<div class="ui divider"></div>
+<h2 class="ui header">{% trans "Как работает Bustime" %}</h2>
+<img class="ui large image" src="/static/img/gps-bus-data.webp">
+<p>
+        {% trans "Bustime предоставляет данные, основанные на анализе GPS-данных текущего местоположения общественного транспорта. Городской транспорт оснащен устройствами, которые в режиме реального времени отправляют информацию о своем местоположении через мобильный интернет. Этот процесс включает несколько этапов:" %}
+    </p>
+    <div class="ui bulleted list">
+        <div class="item">{% trans "Данные спутниковой навигации передаются на сервер" %}</div>
+        <div class="item">{% trans "На сервере данные записываются в базу данных и пересылаются на сервер Bustime" %}</div>
+        <div class="item">{% trans "Сервер Bustime анализирует точки местоположения транспорта и передает обновленную информацию подключенным пользователям" %}</div>
+    </div>
+    <img class="ui large image" src="/static/img/sysadm.png">
+    <p>{% trans "Этот механизм позволяет получать актуальную информацию о местоположении общественного транспорта в реальном времени." %}</p>
+    <p>{% trans "Сайт работает на телефонах без JS, смартфонах, планшетах, ноутбуках, компьютерах, телевизорах" %}.</p>
+    <p>{% trans "Есть отдельные приложения для Android и IOS" %}.</p>
+</div>
+			<div class="ui divider"></div>
+			<h2 class="ui header" id="links">{% trans "Ссылки" %}</h2>
 
-			<table class="ui table">
-				<thead>
-				    <tr>
-				        <th>кол-во <i class="fa fa-star brand-brown"></i></th>
-				        <th>символ</th>
-				        <th>подарок</th>
-				    </tr>
-				</thead>
-				<tr>
-					<td style="width:11%">1</td>
-					<td style="width:22%"><img src="http://www.bustime.ru/static/img/badge_first_star.png"></td>
-					<td>Вы получаете значок первой звезды</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td><img src="http://www.bustime.ru/static/img/badge_medal_3.png"></td>
-					<td>Вы получаете медаль</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td><img src="http://www.bustime.ru/static/img/badge_eden.png"></td>
-					<td>Вы получаете значок преданной собачки в верхнюю панель</td>
-				</tr>
-			</table></div>
-			<div class="column">
-				Поделитесь <b>персональной ссылкой</b> (из раздела настроек <i class="fa fa-cog fa-fw fa-lg"></i>) с вашими друзьями и <b>получайте звездочки</b> за каждый переход нового пользователя по <b>этой ссылке</b>. Подарки, которые вы можете получить.
-		</div>
-		</div> -->
+                <a class="ui labeled blue icon button" href="https://{{domain}}" target="_blank"><i class="fa-globe icon"></i>{% trans "Веб-сайт" %}</a><br/><br/>
+
+				<a class="ui labeled blue icon button" href="https://play.google.com/store/apps/details?id=com.indie.bustime" target="_blank"><i class="fa-android icon"></i>{% trans "Время Автобуса" %} {% trans "для" %} Android (Google Play)</a><br/><br/>
+				<a class="ui labeled blue icon button" href="https://itunes.apple.com/ru/app/id879310530" target="_blank"><i class="fa-apple icon"></i>{% trans "Время Автобуса для" %} iOS</a><br/><br/>
+                                <h3>Android APK {% trans "для" %} Android 7.1+</h3>
+				<a class="ui labeled blue icon button" href="https://bustime.loc/static/other/Bustime-arm64Release-323-android-v7-support.apk" target="_blank"><i class="download icon"></i>{% trans "Время Автобуса" %} {% trans "для" %} Android ARM64 (APK, v323, 2024-07-25)</a><br/><br/>
+				<a class="ui labeled blue icon button" href="https://bustime.loc/static/other/Bustime-armv7Release-322-android-v7-support.apk" target="_blank"><i class="download icon"></i>{% trans "Время Автобуса" %} {% trans "для" %} Android ARMv7 (APK, v323, 2024-07-25)</a><br/><br/>
+
+
+
+
+                        <div class="ui divider"></div>
+                        <h2 class="ui header" id="special">{% trans "Удаление аккаунта" %}</h2>
+                        {% trans "Ознакомиться с инструкцией по удалению своего аккаунта можно " %} <a href="https://{{domain}}/account_deletion/" target="_blank">{% trans "здесь" %}</a><br/><br/><br/><br/>
+
 
 {% endblock %}

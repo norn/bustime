@@ -1,18 +1,27 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 {% block titlee %}{{city.name}} - Классическая версия{% endblock %}
-{% block meta_descr %}Выбор маршрута общественного траснпорта в городе {city.name}}. Классическая версия.{% endblock %}
+{% block meta_descr %}Выбор маршрута общественного траснпорта в {{city.name_gde}}. Классическая версия.{% endblock %}
 
 {% block extra_head %}
-<link rel="canonical" href="http://www.bustime.ru{{city.get_absolute_url_classic}}">
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{us.city.get_absolute_url_classic}}">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url_classic}}">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url_classic}}" />
+{% endfor %}
+
 {% endblock %}
 {%block js%}{% endblock %}
 {% block nav_classic %}active{%endblock%}
 
 {%block content%}
-<div class="ui breadcrumb">
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
   <a class="section" href="/">Главная</a>
   <div class="ui divider"> / </div>
-  <a class="section" href="/{{city.slug}}/">Общественный транспорт в {{city.name_gde}}</a>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
   <div class="ui divider"> / </div>
   <div class="active section">Классическая версия</div>
 </div>
@@ -29,11 +38,11 @@
 	<div class="sub header">версия для устройств без поддержки новых технологий</div>
 </h1>
 {%for b in buses%}
-{% ifchanged b.ttype %}<h2 class="ui header" id="ttype{{b.ttype}}">{{b.ttype_names}}</h2>{% endifchanged %}
+{% ifchanged b.ttype %}<h2 class="ui header" id="ttype{{b.ttype}}">{{b.ttype_names}} ({{b.gcnt}} онлайн)</h2>{% endifchanged %}
 <a class="busnumber_s
 t{{b.ttype}}_{% if b.amount_int < 1 or not b.amount_int %}coloramount0{%elif b.amount_int < 3%}coloramount1{%else%}coloramount2{%endif%}"
-href="http://www.bustime.ru{{b.get_absolute_url_classic}}">{{b.name}}</a>
+href="http://bustime.loc{{b.get_absolute_url_classic}}">{{b.name}}</a>
 
 {%endfor%}
-
+<br/><br/>
 {% endblock %}

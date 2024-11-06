@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Условия использования" %}{% endblock %}
+{% block meta_descr %}{% trans "Условия предоставления услуг" %}.{% endblock %}
+
+{% block nav_register %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/terms/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/terms/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/terms/" />
+{% endfor %}
+
+
+<style type="text/css">
+.pt {
+    /*margin:1rem 0;*/
+    font-size:1.25rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="active section" href="/register/">{% trans "Условия использования" %}</a>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">{% trans "Условия использования" %}
+<div class="sub header">{% trans "редакция" %} 2019-10-17</div></h1>
+
+<div class="pt">
+  <p>{% trans "Используя услуги сайта и приложений Время Автобуса (в дальнейшем именуемые Сервис) вы безоговорочно соглашаетесь с перечисленными условиями." %}
+  <div class="ui ordered list">
+    <div class="item">{% trans "Услуга предоставляется как есть, без ответственности связанной с использованием." %}</div>
+    <div class="item">{% trans "Информация, генерируемая пользователями переходит в собственность Сервиса без ограничений использования, в том числе правом публикации под открытой лицензией." %}</div>
+    <div class="item">{% trans "Пользователям запрещено публиковать информацию, запрещенную законом." %}</div>
+    <div class="item">{% trans "Запрещено использовать ненормативную лексику, а также проявлять неуважение к другим участникам Сервиса." %}</div>
+    <div class="item">{% trans "Мы оставляем за собой право блокировать или ограничивать доступ на своё усмотрение." %}</div>
+    <div class="item">{% trans "Сервис использует cookie для распознавания ваших настроек." %}</div>
+    <div class="item">{% trans "Условия использования Сервиса могут быть изменены в будущем в одностороннем порядке без предупреждения и доступны по адресу " %}<a href="https://{{domain}}/terms/">https://{{domain}}/terms/</a> </div>
+  </div>
+  </p>
+</div>
+
+<br/><br/><br/>
+{% endblock %}

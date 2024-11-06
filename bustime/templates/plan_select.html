@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% load cache %}
+
+{% block nav_city_admin %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/admin/">Диспетчер</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">Выбор предприятия</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui four column stackable grid">
+{% for corg in corgs %}
+<div class="column"><div class="ui fluid vertical menu">
+    {% for o in corg %}
+  <a class="item" href="{{o.id}}/">{{o.name}}</a>
+   {% endfor %}
+</div></div>
+{% endfor %}
+</div>
+<br/><br/>
+
+{% endblock %}

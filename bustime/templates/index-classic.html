@@ -1,12 +1,26 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block titlee %}Выбор города - Классическая версия - Время Автобуса{% endblock %}
 {% block meta_descr %}Классическая версия сайта подходит для старых устройств не поддерживающих современные технологии.{% endblock %}
 
 {% block nav_classic %}active{%endblock%}
 {%block js%}{% endblock %}
 
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/classic/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/classic/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/classic/" />
+{% endfor %}
+
+{% endblock %}
+
 {% block content %}
-<div class="ui breadcrumb">
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
   <a class="section" href="/">Главная</a>
   <div class="ui divider"> / </div>
   <div class="active section">Классические версии</div>
@@ -22,7 +36,7 @@
 <div class="huge ui list">
 {%for c in cities%}
 {% ifchanged c.name.0 %}<h2 class="ui header">{{c.name.0}}</h2>{%endifchanged%}
- <a class="item" href="http://www.bustime.ru/{{c.slug}}/classic/">{{c.name}}</a><br/>
+ <a class="item" href="http://bustime.loc/{{c.slug}}/classic/">{{c.name}}</a><br/>
 {%endfor%}
 </div>
 

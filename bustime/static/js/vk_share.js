@@ -1,5 +1,10 @@
-if (!window.VK) window.VK = {};
-if (!VK.Share) {
+(function() {
+  if (!window.VK) window.VK = {};
+  if (VK.Share) return;
+
+  var head = document.getElementsByTagName('head')[0],
+    tpl = function(a, b) {return a.replace(/\{(\w+?)\}/g, function(c, d) {return b[d] !== void 0 ? b[d] : ''})};
+
   VK.Share = {
     _popups: [],
     _gens: [],
@@ -17,7 +22,7 @@ if (!VK.Share) {
       if (but === but.toString()) but = {type: 'round', text: but};
       if (!but.text) but.text = '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c';
 
-      var old = true, count_style = 'display: none';
+      var old = true, count_style = '';
       if (index === undefined) {
         gen.count = 0;
         gen.shared = (but.type == 'button' || but.type == 'round') ? false : true;
@@ -33,64 +38,70 @@ if (!VK.Share) {
         this._gens[index] = gen;
       }
 
-      var head = document.getElementsByTagName('head')[0];
       if (!this._base_domain) {
         for (var elem = head.firstChild; elem; elem = elem.nextSibling) {
           var m;
-          if (elem.tagName && elem.tagName.toLowerCase() == 'script' && (m = elem.src.match(/(https?:\/\/(?:[a-z0-9_\-\.]*\.)?(?:vk\.com|vkontakte\.ru)\/)js\/api\/share\.js(?:\?|$)/))) {
+          if (elem.tagName && elem.tagName.toLowerCase() == 'script' && (m = elem.src.match(/(https?:\/\/(?:[a-z0-9_\-\.]*\.){0,2}(?:vk\.com|vkontakte\.ru)\/)js\/api\/share\.js(?:\?|$)/))) {
             this._base_domain = m[1];
           }
         }
       }
       this._base_domain = this._base_domain.replace('vkontakte.ru', 'vk.com');
       if (!this._base_domain) {
-        this._base_domain = 'http://vk.com/';
+        this._base_domain = '//vk.com/';
       }
       if (!old && (but.type == 'button' || but.type == 'round')) {
         var elem = document.createElement('script');
         elem.src = this._base_domain + 'share.php?act=count&index=' + index + '&url=' + encodeURIComponent(gen.url);
         head.appendChild(elem);
       }
-      var is2x = window.devicePixelRatio >= 2 ? '_2x' : '';
-      var iseng = but.eng ? '_eng' : '';
-      var a = '<a href="'+this._base_domain+'share.php?url='+encodeURIComponent(gen.url)+'" onmouseup="this._btn=event.button;this.blur();" onclick="return VK.Share.click(' + index + ', this);"', a1 = a+' style="text-decoration:none;">', a2='</a>', a3 = a+' style="display:inline-block;text-decoration:none;">', td1 = '<td style="vertical-align: middle;">', td2 = '</td>';
+
+      var radius = '-webkit-border-radius: {v};-moz-border-radius: {v};border-radius: {v};',
+        strs = {
+          domain: this._base_domain,
+          table: '<table cellspacing="0" cellpadding="0" style="position: relative; cursor: pointer; width: auto; line-height: normal; border: 0; direction: ltr;" ',
+          is2x: window.devicePixelRatio >= 2 ? '_2x' : '',
+          i: index,
+          a2: '</a>',
+          td2: '</td>',
+          font: 'font: 400 12px Arial, Helvetica, sans-serif;letter-spacing: 0.1px;text-shadow: none;',
+          radiusl: tpl(radius, {v: '2px 0px 0px 2px'}),
+          radiusr: tpl(radius, {v: '0px 2px 2px 0px'}),
+          radius: tpl(radius, {v: '2px'}),
+          text: but.text,
+          acolor: 'color: #33567f;',
+          bg: 'background: #6287AE;-webkit-transition: background 200ms linear;transition: background 200ms linear;',
+        };
+      strs.td1 = tpl('<td style="vertical-align: middle;{font}">', strs);
+      strs.a = tpl('<a href="{domain}share.php?url=' + encodeURIComponent(gen.url) + '" onmouseup="this._btn=event.button;this.blur();" onclick="return VK.Share.click({i}, this);"', strs);
+      strs.a1 = tpl('{a} style="{acolor}text-decoration: none;{font}line-height: 16px;">', strs);
+      strs.a3 = tpl('{a} style="display: inline-block;text-decoration: none;">', strs);
+      strs.sprite = tpl("background-size: 19px 59px;background-image: url('{domain}images/icons/like_widget{is2x}.png');", strs);
+      strs.logo = tpl('<div style="{sprite}height: 9px;width: 14px;margin: 4px 0 3px;"></div>', strs);
+
       if (but.type == 'round' || but.type == 'round_nocount' || but.type == 'button' || but.type == 'button_nocount') {
-        var logo = but.eng ? '' : '0px 0px';
-         return '<table cellspacing="0" cellpadding="0" id="vkshare'+index+'" onmouseover="VK.Share.change(1, '+index+');" onmouseout="VK.Share.change(0, '+index+');" onmousedown="VK.Share.change(2, '+index+');" onmouseup="VK.Share.change(1, '+index+');" style="position: relative; width: auto; cursor: pointer; border: 0px;"><tr style="line-height: normal;">'+
-            td1+a+' style="border: none;box-sizing: content-box;background: #5F83AA;-webkit-border-radius: 2px 0px 0px 2px;-moz-border-radius: 2px 0px 0px 2px;border-radius: 2px 0px 0px 2px;display:block;text-decoration: none;padding: 3px 3px 3px 6px;color: #FFFFFF;font-family: tahoma, arial;height: 15px;line-height:15px;font-size: 10px;text-shadow: none;">'+but.text+'<div class="float:right"></div>'+a2+td2+
-            td1+a+' style="border: none;background: #5F83AA;-webkit-border-radius: 0px 2px 2px 0px;-moz-border-radius: 0px 2px 2px 0px;border-radius: 0px 2px 2px 0px;display:block; padding: 3px;'+(but.eng ? 'padding-left: 1px;' : '')+'"><div style="background: url(\'//vk.com/images/icons/share_logo'+is2x+'.png\') 0px '+(but.eng ? '-15px' : '0px')+' no-repeat; background-size: 16px 31px; '+(but.eng ? 'width: 17px;height:9px;margin: 3px 0px;' : 'width: 15px;height: 15px;')+'"></div>'+a2+td2+
-            ((but.type == 'round' || but.type == 'button') ? td1+a+' style="text-decoration: none;font-weight:bold;font-family: tahoma, arial;'+count_style+'"><div style="background: url(\'//vk.com/images/icons/share_logo'+is2x+'.png\') 0px -24px no-repeat; background-size: 16px 31px; width: 4px; height: 7px;position: absolute; margin: 7px 0px 0px 4px;z-index:100;"></div><div id="vkshare_cnt'+index+'" style="border: 1px solid #bbbfc4;background: #FFFFFF;height: 15px;line-height: 15px;5px; padding: 2px 4px;min-width: 12px;margin-left: 7px;border-radius: 2px;-webkit-border-radius: 2px;-moz-border-radius:2px;text-align: center; color: #666c73;font-size: 10px;z-index:99;box-sizing: content-box;">'+gen.count+'</div>'+a2+td2 : '')+
-            '</tr></table>';
+         return tpl('{table}id="vkshare{i}" onmouseover="VK.Share.change(1, {i});" onmouseout="VK.Share.change(0, {i});" onmousedown="VK.Share.change(2, {i});" onmouseup="VK.Share.change(1, {i});"><tr style="line-height: normal;">{td1}{a} style="border: 0;display: block;box-sizing: content-box;{bg}{radiusl}padding: 2px 6px 4px;">{logo}{a2}{td2}{td1}{a} style="color: #FFF;text-decoration: none;border: 0;{bg}{radiusr}{font}line-height: 16px;display:block;padding: 2px 6px 4px 0;height: 19x;">{text}{a2}{td2}'+ ((but.type == 'round' || but.type == 'button') ? '{td1}{a} style="text-decoration: none;{font}line-height: 15px;-webkit-font-smoothing: subpixel-antialiased;' + count_style + '"><div style="{sprite};background-position: 0 -49px;margin: 5px 0 0 4px;width: 5px; height: 10px;position: absolute; z-index:100;"></div><div id="vkshare_cnt{i}" style="border: 1px solid #adbdcc;background: #FFF;font-size:11px;padding: 2px 5px;margin-left: 8px;color: #55677d;z-index: 99;box-sizing: content-box;{radius}">' + gen.count + '</div>{a2}{td2}' : '') + '</tr></table>', strs);
       } else if (but.type == 'link') {
-        return '<table style="position: relative; cursor:pointer; width: auto; line-height: normal;" onmouseover="this.rows[0].cells[1].firstChild.firstChild.style.textDecoration=\'underline\'" onmouseout="this.rows[0].cells[1].firstChild.firstChild.style.textDecoration=\'none\'" cellspacing="0" cellpadding="0"><tr style="line-height: normal;">' +
-               td1+a1+'<img src="//vk.com/images/icons/share_link'+iseng+is2x+'.png" width="16" height="16" style="vertical-align: middle;border:0;"/>'+a2+td2 +
-               td1+a1+'<span style="padding: 0 0 0 5px; color: #2B587A; font-family: tahoma, arial; font-size: 11px;">' + but.text + '</span>'+a2+td2 +
-               '</tr></table>';
+        return tpl('{table}onmouseover="this.rows[0].cells[1].firstChild.style.textDecoration=\'underline\'" onmouseout="this.rows[0].cells[1].firstChild.style.textDecoration=\'none\'"><tr style="line-height: normal;">{td1}{a1}<img src="{domain}images/icons/share_link{is2x}.png" width="16" height="16" style="vertical-align: top;margin-right: 8px;"/>{a2}{td2}{td1}{a1}{text}{a2}{td2}</tr></table>', strs);
       } else if (but.type == 'link_noicon') {
-        return a3+'<span style="position: relative; font-family: tahoma, arial; font-size: 11px; color: #2B587A; line-height: normal;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">' + but.text + '</span>'+a2;
+        return tpl('{a3}<span style="{acolor}position: relative;{font}line-height: normal;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">{text}</span>{a2}', strs);
       } else {
-        return a3+'<span style="position: relative; padding:0;">' + but.text + '</span>'+a2;
+        return tpl('{a3}<span style="position: relative;padding: 0;">{text}</span>{a2}', strs);
       }
     },
     change: function(state, index) {
-      var el = this._ge('vkshare' + index), color;
-      if (state == 0) {
-        color = '#5F83AA';
-      } else if (state == 1) {
-        color = '#6890bb';
-      } else if (state == 2) {
-        color = '#557599';
-      }
-      var els = [el.rows[0].cells[0].firstChild, el.rows[0].cells[1].firstChild];
+      var el = this._ge('vkshare' + index),
+        color = ['#6287AE','#678EB4','#5D7FA4'][state],
+        els = [el.rows[0].cells[0].firstChild, el.rows[0].cells[1].firstChild];
       for (var i in els) {
         els[i].style.backgroundColor = color;
-        els[i].style.color = '#FFFFFF';
+        els[i].style.color = '#FFF';
         if (state == 2) {
-          els[i].style.paddingTop = '4px';
-          els[i].style.paddingBottom = '2px';
-        } else {
           els[i].style.paddingTop = '3px';
           els[i].style.paddingBottom = '3px';
+        } else {
+          els[i].style.paddingTop = '2px';
+          els[i].style.paddingBottom = '4px';
         }
       }
     },
@@ -113,22 +124,24 @@ if (!VK.Share) {
       }
       details.noparse = details.noparse ? 1 : 0;
 
-      var params = {};
-      var fields = ['title', 'description', 'image', 'noparse'];
+      var params = {},
+        fields = ['title', 'description', 'image', 'noparse'];
+
       for (var i = 0; i < fields.length; ++i) {
         if (details[fields[i]]) {
           params[fields[i]] = details[fields[i]];
         }
       }
 
-      var popupName = '_blank';
-      var width = 554;
-      var height = 349;
-      var left = (screen.width - width) / 2;
-      var top = (screen.height - height) / 2;
-      var url = this._base_domain + 'share.php?url=' + details.url;
-      var popupParams = 'scrollbars=0, resizable=1, menubar=0, left=' + left + ', top=' + top + ', width=' + width + ', height=' + height + ', toolbar=0, status=0';
-      var popup = false;
+      var popupName = '_blank',
+        width = 650,
+        height = 610,
+        left = Math.max(0, (screen.width - width) / 2),
+        top = Math.max(0, (screen.height - height) / 2),
+        url = this._base_domain + 'share.php?url=' + encodeURIComponent(details.url),
+        popupParams = 'width='+width+',height='+height+',left='+left+',top='+top+',menubar=0,toolbar=0,location=0,status=0',
+        popup = false;
+
       try {
         var doc_dom = '', loc_hos = '';
         try {
@@ -176,21 +189,21 @@ if (!VK.Share) {
       this._gens[index].count = count;
       var elem = this._ge('vkshare'+index);
       if (elem) {
-        var row = elem.rows[0];
-        if (count) {
-          var c = this._ge('vkshare_cnt'+index);
-          c.innerHTML = count;
-          row.cells[2].firstChild.style.display = 'block';
-        } else {
-          row.cells[2].firstChild.style.display = 'none';
+        var counter = this._ge('vkshare_cnt'+index);
+        if (counter) {
+          if (count) counter.innerHTML = count;
+          elem.rows[0].cells[2].firstChild.style.display = count ? 'block' : 'none';
         }
       }
     }
   }
+
   try {
     VK.Share._loc = location.toString();
   } catch(e) {
     VK.Share._loc = 'http://vk.com/';
   }
-}
+
+})();
+
 try{if (window.stManager) stManager.done('api/share.js');}catch(e){}

@@ -1,0 +1,394 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block nav_city_admin %}active{%endblock%}
+{% block content %}
+<script src="https://cdn.bustime.loc/static/js/admin_vehicle.js?v=5"></script>
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/admin/">Диспетчер</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">Транспортное средство</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui message">
+    <table border="0" width="100%">
+        <tr>
+            <td width="60%">
+                <select class="ui search dropdown" id="vehicle" title="Машины города">
+                  <option value="" {% if vehicle is None %}selected="selected"{% endif %}>Не выбрано</option>
+                  {% for b in city_vehicles %}
+                  <option value="{{b.uniqueid}}" {% if vehicle and vehicle.uniqueid == b.uniqueid %}selected="selected"{% endif %}>{{b.gosnum|default:b.uniqueid}}</option>
+                  {% endfor %}
+                </select>
+                &nbsp;
+                <select class="ui search dropdown" id="cities" title="Город">
+                  <option value="" {% if city is None %}selected="selected"{% endif %}>Не выбрано</option>
+                  {% for c in cities %}
+                  <option value="{{c.slug}}" {% if city and city.slug == c.slug %}selected="selected"{% endif %}>{{c.name}}</option>
+                  {% endfor %}
+                </select>
+                &nbsp;
+                <span id="time_city" title="Время города">{{time_city|date:"d.m.y H:i:s"}}</span>
+            </td>
+            <td id="message" style="text-align:right;">
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="ui grid">
+  <div class="four wide column">
+      <h4 style="text-align:center">uevents[{{city.id}}]</h4>
+      <p>
+          <table style="table-layout:fixed; width:250px; margin:auto;">
+              <col width="40%" align="left"><col width="*">
+              <tr><td style="font-weight:bold;">uniqueid</td>    <td id="uevent.uniqueid" style="text-align:right">{{uevent.uniqueid}}</td></tr>
+              <tr><td style="font-weight:bold;">uid_original</td><td id="uevent.uid_original" style="text-align:right">{{uevent.uid_original|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">gosnum</td>      <td id="uevent.gosnum" style="text-align:right">{{uevent.gosnum|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">timestamp</td>   <td id="uevent.timestamp" style="text-align:right">{{uevent.timestamp|date:"d.m.y H:i:s"}}</td></tr>
+              <tr><td style="font-weight:bold;">src</td>         <td id="uevent.src" style="text-align:right">{{uevent.channel|default:"&nbsp;"}}/{{uevent.src|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">bus.id</td>      <td id="uevent.bus" style="text-align:right">{{uevent.bus|default:"&nbsp;"}}</td></tr>
+              <tr><td id="uevent.bus_uevent" colspan="2" style="text-align:right">{% if bus_uevent %}{{bus_uevent}} {{bus_uevent.city.id}}:{{bus_uevent.city.name}}{% else %}&nbsp;{% endif %}</td></tr>
+              <tr><!--error messages-->
+                    <td id="uevent.messages" colspan="2" style="text-align:center">
+                    </td>
+              </tr>
+          </table>
+      </p>
+      {% if gevent %}
+      <h4 style="text-align:center">gevents[{{city.id}}]</h4>
+      <p>
+          <table style="table-layout:fixed; width:250px; margin:auto;">
+              <col width="40%" align="left"><col width="*">
+              <tr><td style="font-weight:bold;">uniqueid</td>    <td id="gevent.uniqueid" style="text-align:right">{{gevent.uniqueid}}</td></tr>
+              <tr><td style="font-weight:bold;">uid_original</td><td id="gevent.uid_original" style="text-align:right">{{gevent.uid_original|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">gosnum</td>      <td id="gevent.gosnum" style="text-align:right">{{gevent.gosnum|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">timestamp</td>   <td id="gevent.timestamp" style="text-align:right">{{gevent.timestamp|date:"d.m.y H:i:s"}}</td></tr>
+              <tr><td style="font-weight:bold;">src</td>         <td id="gevent.src" style="text-align:right">{{gevent.channel|default:"&nbsp;"}}/{{gevent.src|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">custom</td>      <td id="gevent.custom" style="text-align:right">{{gevent.custom_src|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">x</td>           <td id="gevent.x" style="text-align:right">{{gevent.x}}</td></tr>
+              <tr><td style="font-weight:bold;">y</td>           <td id="gevent.y" style="text-align:right">{{gevent.y}}</td></tr>
+              <tr><td style="font-weight:bold;">speed</td>       <td id="gevent.speed" style="text-align:right">{{gevent.speed}}</td></tr>
+              <tr><td style="font-weight:bold;">bus.id</td>      <td id="gevent.bus" style="text-align:right">{{gevent.bus|default:"&nbsp;"}}</td></tr>
+              <tr><td id="gevent.bus_gevent" colspan="2" style="text-align:right">{% if bus_gevent %}{{bus_gevent}} {{bus_gevent.city.id}}:{{bus_gevent.city.name}}{% else %}&nbsp;{% endif %}</td></tr>
+              <tr><!--error messages-->
+                    <td id="gevent.messages" colspan="2" style="text-align:center">
+                    </td>
+              </tr>
+          </table>
+      </p>
+      {% endif %}
+  </div>
+  <div class="four wide column">
+      <h4 style="text-align:center"><a href="/{{city.slug}}/admin/mapping-table/" target="_blank">mapping</a>[{{city.id}}]</h4>
+      <p>
+          <table style="table-layout:fixed; width:210px; margin:auto;">
+              <tr><td style="font-weight:bold;">xeno_id</td>   <td id="mapping.xeno_id" style="text-align:right">{{mapping.xeno_id|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">gosnum</td>    <td id="mapping.gosnum" style="text-align:right;{% if allevent and allevent.gosnum and allevent.gosnum != mapping.gosnum or vehicle_info and vehicle_info.gosnum and vehicle_info.gosnum != mapping.gosnum %}color:#CC0066{% endif %}">{{mapping.gosnum|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">&nbsp;</td>    <td style="text-align:right">&nbsp;</td></tr>
+              <tr><td style="font-weight:bold;">&nbsp;</td>    <td style="text-align:right">&nbsp;</td></tr>
+              <tr><td style="font-weight:bold;">&nbsp;</td>    <td style="text-align:right">&nbsp;</td></tr>
+              <tr><td style="font-weight:bold; background-color: #A3FFFF">bus.id</td>    <td id="mapping.bus.id" style="text-align:right; background-color: #A3FFFF">{{mapping.bus.id|default:"&nbsp;"}}</td></tr>
+              <tr><td id="mapping.bus" colspan="2" style="text-align:right">{% if mapping.bus %}{{mapping.bus}} {{mapping.bus.city.id}}:{{mapping.bus.city.name}}{% else %}&nbsp;{% endif %}</td></tr>
+          </table>
+      </p>
+  </div>
+  <div class="four wide column">
+      <h4 style="text-align:center">vehicle_info[{{city.id}}]</h4>
+      <p>
+          <table style="table-layout:fixed; width:230px; margin:auto;">
+              <col width="42%" align="left"><col width="*">
+              <tr><td style="font-weight:bold;">uniqueid</td>                           <td id="vehicle_info.uniqueid" style="text-align:right; {% if not vehicle_info %}color:red{% endif %}">{% if not vehicle_info %}Not found!{% else %}{{uniqueid}}{% endif %}</td></tr>
+              <tr><td style="font-weight:bold;">uid_provider</td>                       <td id="vehicle_info.uid_provider" style="text-align:right">{{vehicle_info.uid_provider|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold; background-color: #CCCCFF; {% if vehicle_info.gosnum != uevent.gosnum or vehicle_info.gosnum != gevent.gosnum %}color:red{% endif %}">gosnum</td>   <td id="vehicle_info.gosnum" style="text-align:right; background-color: #CCCCFF">{{vehicle_info.gosnum|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">created_date</td>                       <td id="vehicle_info.created_date" style="text-align:right">{{vehicle.created_date|date:"d.m.y H:i:s"}}</td></tr>
+              <tr><td style="font-weight:bold;">src</td>                                <td id="vehicle_info.src" style="text-align:right">{{vehicle.channel|default:"&nbsp;"}}/{{vehicle.src|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">created_auto</td>                       <td id="vehicle_info.created_auto" style="text-align:right">{% if vehicle.created_auto %}TRUE{% else %}FALSE{% endif %}</td></tr>
+              <tr><td id="vehicle_info.city" colspan="2" style="text-align:right; {% if not vehicle.city or vehicle.city.id != city.id %}color:red{% endif %}">{% if vehicle.city %}{{vehicle.city.id}} {{vehicle.city.name|default:"&nbsp;"}}{% endif %}</td></tr>
+              {% if not vehicle_info and vehicle %}
+              {% if vehicle.city %}
+              <tr><td style="color:red">{{uniqueid}}</td>    <td style="text-align:right; color:red">in vehicle_info[{{vehicle.city.id}}]</td></tr>
+              {% else %}
+              <tr><td style="color:red">{{uniqueid}}</td>    <td style="text-align:right; color:red">city = None</td></tr>
+              {% endif %}
+              {% endif %}
+          </table>
+      </p>
+  </div>
+  <div class="four wide column">
+      <h4 style="text-align:center">allevents[{{city.id}}]</h4>
+      <p>
+          <table style="table-layout:fixed; width:280px; margin:auto;">
+              <col width="40%" align="left"><col width="*">
+              <tr><td style="font-weight:bold;">uniqueid</td>    <td id="allevent.uniqueid" style="text-align:right">{{allevent.uniqueid}}</td></tr>
+              <tr><td style="font-weight:bold;">uid_original</td><td id="allevent.uid_original" style="text-align:right">{{allevent.uid_original|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold; background-color: #CCCCFF">gosnum</td>      <td id="allevent.gosnum" style="text-align:right; ; background-color: #CCCCFF; {% if mapping and mapping.gosnum and allevent.gosnum != mapping.gosnum or vehicle_info and vehicle_info.gosnum and allevent.gosnum != vehicle_info.gosnum %}color:#CC0066{% endif %}">{{allevent.gosnum|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold;">timestamp</td>   <td id="allevent.timestamp" style="text-align:right">{{allevent.timestamp|date:"d.m.y H:i:s"}}</td></tr>
+              <tr><td style="font-weight:bold;">src</td>         <td id="allevent.src" style="text-align:right">{{allevent.channel|default:"&nbsp;"}}/{{allevent.src|default:"&nbsp;"}}</td></tr>
+              <tr><td style="font-weight:bold; background-color: #A3FFFF">bus.id</td>         <td id="allevent.bus" style="text-align:right; background-color: #A3FFFF;  {% if mapping and mapping.bus and allevent.bus and allevent.bus.id != mapping.bus.id %}color:#CC0066{% endif %}">{{allevent.bus.id|default:"&nbsp;"}}</td></tr>
+              <tr><td id="allevent.bus_allvent" colspan="2" style="text-align:right; {% if mapping and mapping.bus and allevent.bus != mapping.bus %}color:#CC0066{% endif %}">{% if allevent.bus %}{{allevent.bus}} {{allevent.bus.city.id}}:{{allevent.bus.city.name}}{% else %}&nbsp;{% endif %}</td></tr>
+
+              <tr><td colspan="2" style="font-weight:bold;">Status:</td></tr>
+              <tr><td style="font-weight:bold;">timestamp_prev</td>    <td id="allevent.timestamp_prev" style="text-align:right">{{allevent.timestamp_prev|date:"d.m.y H:i:s"}}</td></tr>
+              <tr><td style="font-weight:bold;">x_prev</td>    <td id="allevent.x_prev" style="text-align:right">{{allevent.x_prev}}</td></tr>
+              <tr><td style="font-weight:bold;">y_prev</td>    <td id="allevent.y_prev" style="text-align:right">{{allevent.y_prev}}</td></tr>
+              <tr><td style="font-weight:bold;">last_point_update</td>    <td id="allevent.last_point_update" style="text-align:right">{{allevent.last_point_update|date:"d.m.y H:i:s"}}</td></tr>
+              <tr><td id="allevent.x_label" style="font-weight:bold; {% if allevent.x == allevent.x_prev and allevent.y == allevent.y_prev %}color:#CC0066{% endif %}">x</td>    <td id="allevent.x" style="text-align:right">{{allevent.x}}</td></tr>
+              <tr><td id="allevent.y_label" style="font-weight:bold; {% if allevent.x == allevent.x_prev and allevent.y == allevent.y_prev %}color:#CC0066{% endif %}">y</td>    <td id="allevent.y" style="text-align:right">{{allevent.y}}</td></tr>
+              <tr><td style="font-weight:bold;">distance</td>    <td id="distance" style="text-align:right">{{distance}}</td></tr>
+              <tr><td style="font-weight:bold;">speed</td>    <td id="allevent.speed" style="text-align:right">{{allevent.speed}}</td></tr>
+              <tr><td id="allevent.sleeping_label" style="font-weight:bold; {% if allevent.sleeping %}color:#CC0066{% endif %}">sleeping</td>    <td id="allevent.sleeping" style="text-align:right">{{allevent.sleeping}}</td></tr>
+              <tr><td id="allevent.zombie_label" style="font-weight:bold; {% if allevent.zombie %}color:#CC0066{% endif %}">zombie</td>    <td id="allevent.zombie" style="text-align:right">{{allevent.zombie}}</td></tr>
+              <tr><td id="allevent.away_label" style="font-weight:bold; {% if allevent.away %}color:#CC0066{% endif %}">away</td>    <td id="allevent.away" style="text-align:right">{{allevent.away}}</td></tr>
+              <tr><td id="allevent.busstop_nearest_label" style="font-weight:bold; {% if not allevent.busstop_nearest %}color:#CC0066{% endif %}">busstop_nearest</td>    <td id="allevent.busstop_nearest" style="text-align:right">{{allevent.busstop_nearest.busstop_name|default:""}}</td></tr>
+              <tr><td style="font-weight:bold;">last_changed</td>    <td id="allevent.last_changed" style="text-align:right">{{allevent.last_changed|date:"d.m.y H:i:s"}}</td></tr>
+
+          </table>
+      </p>
+  </div>
+</div>
+
+<!--
+<select class="ui search dropdown" id="bus_drop">
+  <option value="0" selected="selected">Не установлен</option>
+  {% for b in buses %}
+  <option value="{{b.id}}">{{b.ttype_name}} {{b.name}}</option>
+  {% endfor %}
+</select>
+-->
+
+<!-- selected vehicle -->
+<table id="current_vehicle_info" class="current_info ui table" >
+<caption><h4>Vehicle[{{uniqueid}}]</h4></caption>
+<thead  class="ui sticky">
+    <tr>
+        <th>uniqueid</th>
+        <th>uid_provider</th>
+        <th>Гос.№</th>
+        <th>Гар.№</th>
+        <th>Город</th>
+        <th>Модель</th>
+        <th>Создано</th>
+        <th>Данные</th>
+        <th>Маршрут</th>
+        <th>управление</th>
+    </tr>
+</thead>
+<tr id="v_{{vehicle.uniqueid}}_row">
+<td id="v_{{vehicle.uniqueid}}_uniqueid">{{vehicle.uniqueid}}</td>
+<td id="v_{{vehicle.uid_provider}}_uid_provider">{{vehicle.uid_provider}}</td>
+<td id="v_{{vehicle.uniqueid}}_gosnum">{{vehicle.gosnum}}</td>
+<td id="v_{{vehicle.uniqueid}}_bortnum">{{vehicle.bortnum}}</td>
+<td id="v_{{vehicle.uniqueid}}_city" {% if not vehicle.city or vehicle.city.id != city.id %}style="color:red"{% endif %}>{% if vehicle.city %}{{vehicle.city.id}} {{vehicle.city.name}}{% else %}&nbsp;{% endif %}</td>
+<td id="v_{{vehicle.uniqueid}}_model">{% if vehicle.model %}{{vehicle.model}}{% else %}&nbsp;{% endif %}</td>
+<td id="v_{{vehicle.uniqueid}}_created_date">{{vehicle.created_date|date:'d.m.y H:i:s'}}</td>
+<td id="v_{{vehicle.uniqueid}}_update">{{uevent.timestamp|date:"d.m.y H:i:s"}}</td>
+<td id="v_{{vehicle.uniqueid}}_bus">{% if bus_uevent %}<div class="ui label">{{bus_uevent.name}}</div>{% else %}&nbsp;{% endif %}</td>
+<td style="text-align:right">
+    <button class="ui icon button" type="button" data-tooltip="Редактировать"
+         {% if edit_level < 2 %} disabled="disabled"{% endif %} onclick="openInNewTab('https://bustime.loc/wiki/bustime/vehicle/?q={{vehicle.uniqueid}}')">
+        <i class="edit icon"></i>
+    </button>
+    &nbsp;
+    <button class="ui icon button" type="button" data-tooltip="Удалить"
+         {% if edit_level < 2 %} disabled="disabled"{% endif %} onclick="delVehicle('{{vehicle.uniqueid}}')">
+        <i class="trash icon"></i>
+    </button>
+</td>
+</tr>
+</table>
+<br/>
+
+
+<!-- vehicles with identical gosnum for selected vehicle (it's ANOMALIES!) -->
+{% if gosnum_vehicles and gosnum_vehicles|length > 1 %}
+<table id="current_info" class="current_info ui table" >
+<caption><h4>Vehicle[{{gosnum}}]</h4></caption>
+<thead  class="ui sticky">
+    <tr>
+        <th>uniqueid</th>
+        <th>uid_provider</th>
+        <th>Гос.№</th>
+        <th>Гар.№</th>
+        <th>Город</th>
+        <th>Модель</th>
+        <th>Создано</th>
+        <th>Данные</th>
+        <th>Маршрут</th>
+        <th>управление</th>
+    </tr>
+</thead>
+{% for g in gosnum_vehicles %}
+<tr id="{{g.uniqueid}}_row">
+<td id="{{g.uniqueid}}_uniqueid" {% if g.uniqueid == uniqueid %}style="font-weight:bold;"{% endif %}><a href="/admin/vehicle/?u={{g.uniqueid}}">{{g.uniqueid}}</a></td>
+<td id="{{g.uid_provider}}_uid_provider">{{g.uid_provider}}</td>
+<td id="{{g.uniqueid}}_gosnum">{{g.gosnum}}</td>
+<td id="{{g.uniqueid}}_bortnum">{{g.bortnum}}</td>
+<td id="{{g.uniqueid}}_city" {% if not g.city or g.city.id != city.id %}style="color:red"{% endif %}>{% if g.city %}{{g.city.id}} {{g.city.name}}{% else %}&nbsp;{% endif %}</td>
+<td id="{{g.uniqueid}}_model">{% if g.model %}{{g.model}}{% else %}&nbsp;{% endif %}</td>
+<td id="{{g.uniqueid}}_created_date">{{g.created_date|date:'d.m.y H:i:s'}}</td>
+<td id="{{g.uniqueid}}_update">&nbsp;</td>
+<td id="{{g.uniqueid}}_bus">&nbsp;</td>
+<td style="text-align:right">
+    <button class="ui icon button" type="button" data-tooltip="Редактировать"
+         {% if edit_level < 2 %} disabled="disabled"{% endif %} onclick="openInNewTab('https://bustime.loc/wiki/bustime/vehicle/?q={{g.uniqueid}}')">
+        <i class="edit icon"></i>
+    </button>
+    &nbsp;
+    <button class="ui icon button" type="button" data-tooltip="Удалить"
+         {% if edit_level < 2 %} disabled="disabled"{% endif %} onclick="delVehicle('{{g.uniqueid}}')">
+        <i class="trash icon"></i>
+    </button>
+</td>
+</tr>
+{% endfor %}
+</table>
+<br/>
+{% endif %}
+
+
+<!-- Versions of vehicle -->
+<details>
+    <summary><b {% if not statuses %}style="color:red;"{% endif %}>Версии</b></summary>
+    <div id='statuses' style="max-height:300px;overflow:auto;white-space:nowrap;border: 1px solid lightgray; border-radius:4px;">
+        {% if vehicle_versions and vehicle_versions|length > 1 %}
+        <table class="current_info ui table">
+        <thead class="ui sticky">
+            <tr>
+                <th>uniqueid</th>
+                <th>uid_provider</th>
+                <th>Гос.№</th>
+                <th>Гар.№</th>
+                <th>Модель</th>
+                <th>Изменено</th>
+                <th>Изменил</th>
+            </tr>
+        </thead>
+        {% for v in vehicle_versions %}
+        <tr>
+        <td>{{v.field_dict.uniqueid}}</td>
+        <td>{{v.field_dict.uid_provider}}</td>
+        <td>{{v.field_dict.gosnum}}</td>
+        <td>{{v.field_dict.bortnum}}</td>
+        <td>{{v.field_dict.model}}</td>
+        <td>{{v.revision.date_created|date:'d.m.y H:i:s'}}</td>
+        <td>{{v.revision.user}}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        <br/>
+        {% endif %}
+    </div>
+</details>
+<br>
+
+
+<!-- VehicleStatus -->
+<details>
+    <summary><b {% if not statuses %}style="color:red;"{% endif %}>Состояния</b></summary>
+    <div id='statuses' style="max-height:300px;overflow:auto;white-space:nowrap;border: 1px solid lightgray; border-radius:4px;">
+    {% if statuses %}
+        <table class="current_info ui table">
+        <thead class="ui sticky">
+            <tr>
+                <th>event_time</th>
+                <th>status</th>
+                <th>zombie</th>
+                <th>sleeping</th>
+                <th>away</th>
+            </tr>
+        </thead>
+        {% for s in statuses %}
+            <tr>
+                <td>{{s.event_time|date:'d.m.y H:i:s'}}</td>
+                <td>{{s.status}}</td>
+                <td>{{s.zombie}}</td>
+                <td>{{s.sleeping}}</td>
+                <td>{{s.away}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+    Not found
+    {% endif %}
+    </div>
+</details>
+<br>
+
+<!-- Uevent -->
+<details>
+<summary><b {% if not sevents %}style="color:red;"{% endif %}>Last 20 events</b></summary>
+    <div id='sevents' style="max-height:300px;overflow:auto;white-space:nowrap;border: 1px solid lightgray; border-radius:4px;">
+    {% if sevents %}
+        <table class="current_info ui table">
+        <thead class="ui sticky">
+            <tr>
+                <th>timestamp</th>
+                <th>bus_id</th>
+                <th>point</th>
+                <th>heading</th>
+                <th>speed</th>
+                <th>custom</th>
+                <th>channel/crc</th>
+            </tr>
+        </thead>
+            {% for s in sevents %}
+            <tr>
+                <td>{{s.timestamp|date:'d.m.y H:i:s'}}</td>
+                <td>{{s.bus_id}}</td>
+                <td>{{s.point}}</td>
+                <td>{{s.heading}}</td>
+                <td>{{s.speed}}</td>
+                <td>{{s.custom}}</td>
+                <td>{{s.channel}}/{{s.src}}</td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+    Not found
+    {% endif %}
+    </div>
+</details>
+<br>
+
+<!-- to_ignore cache -->
+<details>
+<summary><b {% if to_ignore %}style="color:red;"{% endif %}>to_ignore[{{city.id}}] cache</b></summary>
+    <div id='to_ignore' style="max-height:300px;overflow:auto;white-space:nowrap;border: 1px solid lightgray; border-radius:4px;">
+    {{to_ignore|default:""}}
+    </div>
+</details>
+<br>
+
+<!-- to_ignore cache -->
+<details>
+<summary><b {% if anomalies %}style="color:red;"{% endif %}>anomalies[{{city.id}}] cache</b></summary>
+    <div id='anomalies' style="max-height:300px;overflow:auto;white-space:nowrap;border: 1px solid lightgray; border-radius:4px;">
+    {{anomalies|default:""}}
+    </div>
+</details>
+<br>
+
+<script>
+var us_id = {{us.user.id}};
+var city_id = {{city.id}};
+var city_slug = "{{city.slug}}";
+var uniqueid = "{{uniqueid}}";
+var gosnum = "{{gosnum}}";
+// buses data
+var buses = {
+    {% for b in buses %}
+        {{b.id}}: {
+            ttype: "{{b.ttype}}",
+            name: "{{b.name}}"
+        }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+};
+</script>
+{% endblock %}

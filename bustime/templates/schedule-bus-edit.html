@@ -1,0 +1,251 @@
+{% extends "base.html" %}{%load timeorama%}}{% load cache %}{% load l10n %}{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block titlee %}Редактирование расписания маршрута {{bus.name}} ({{bus.ttype_name}}), {{city.name}}{% endblock %}
+{% block meta_descr %}Редактирование расписания маршрута {{bus.name}} ({{bus.ttype_name}}) г. {{bus.city.name_gde}}.{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}bus-{{bus.id}}/edit-schedule/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}bus-{{bus.id}}/edit-schedule/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}bus-{{bus.id}}/edit-schedule/" />
+{% endfor %}
+<script src="https://cdn.bustime.loc/static/js/schedule_bus.js" type="text/javascript"></script>
+<style>
+.ft {
+ color:#555;
+ font-size:1.33em;
+}
+/*hue-rotate(360deg); sepia(0.5);*/
+@keyframes beatanimo {
+    0%   {
+        filter: grayscale(0);
+
+    }
+    50%  {
+        filter: grayscale(0.5);
+    }
+    100% {
+        filter: grayscale(0);
+    }
+}
+.btc {
+    animation: beatanimo 0.5s infinite;
+}
+@media (max-width: 767px) {
+  .ft {
+    font-size:16px;
+  }
+  #lmap {
+      min-height: 400px;
+      height: 100%;
+  }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BusTrip",
+  "isicV4": "H",
+  "name": "{{bus.ttype_name}} {{bus.name}}",
+  "busName": "{{bus.ttype_name}} {{bus.name}}",
+  "description": "{{bus.city.name}}"
+}
+</script>
+{% endblock %}
+
+{% block nav_schedule %}active{%endblock%}
+
+{%block content%}
+<script>
+{% include "_js_init.html" %}
+var bus_id = {{bus.id}};
+var busstops = { {% for b in busstops %}
+    {{b.id}}: {id: {{b.id}}, name:"{{b.name}}", moveto:"{% if b.moveto %}{{b.moveto}}{%endif%}", x:{{b.point.x|unlocalize}}, y:{{b.point.y|unlocalize}} },{% endfor %}
+};
+
+/*
+: 59,54
+. 190 110
+, 188
+  32
+C 67
+X 88
+V 86
+*/
+function js_page_extra() {
+    $(document).ready(function() {
+        $("textarea").keydown(function(event) {
+            // Разрешаем: backspace, delete, tab и escape
+            if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 ||
+                    // Разрешаем: двоеточие и пробел
+                    event.keyCode == 59 || event.keyCode == 32 ||
+                    // Разрешаем: Ctrl+A
+                    (event.keyCode == 65 && event.ctrlKey === true) ||
+                    // Разрешаем: Ctrl+C, Ctrl+X и Ctrl+V
+                    ((event.keyCode == 67 || event.keyCode == 88 || event.keyCode == 86) && event.ctrlKey === true) ||
+                    // Разрешаем: home, end, влево, вправо, вверх, вниз
+                    (event.keyCode >= 35 && event.keyCode <= 40)
+                ) {
+                // Ничего не делаем
+                return;
+            }
+            else if ( event.keyCode == 190 || event.keyCode == 110 ) {
+                // точку меняем на двоеточние
+                setTimeout(function() { event.target.value += ':'; }, 0);
+                event.preventDefault();
+            }
+            else {
+                console.log('event.keyCode=', event.keyCode);
+                // Запрещаем все, кроме цифр на основной клавиатуре, а так же Num-клавиатуре
+                if ((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+                    event.preventDefault();
+                }
+            }
+        });
+    });
+}
+</script>
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/">{{place.name}}</a><i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/timetable/">{% trans "Расписание" %}</a><i class="right angle icon divider"></i>
+    <a class="section" href="{{ bus.get_absolute_url_schedule }}">{{bus.ttype_name}} {{bus.name}}</a><i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Редактирование" %}</div>
+</div>
+<br/>
+<div class="ui warning small message">
+  <p>{% trans "Для удобства, вместо двоеточия(:) можно вводить точку. Разделитель - пробел, другие разделители недопустимы." %}</p>
+</div>
+
+<div class="ui {% if not error %}hidden{% endif %} negative message">
+  <div class="header">
+    {% trans "Ошибка" %}
+  </div>
+  <p>{% trans error %}</p>
+</div>
+
+<div class="ui {% if not okey %}hidden{% endif %} positive message">
+  <p>{% trans okey %}</p>
+</div>
+
+<form method="post" onsubmit="return enableSubmit">{% csrf_token %}
+<div class="ui two column stackable grid">
+    {# направление 0 #}
+    <div class="column">
+        {# заголовок #}
+        {# расписание рабочего дня #}
+        {# первая колонка - лэйблы #}{# вторая колонка - данные #}
+        <table class="ui compact unstackable table">
+            <tr class="active">
+                <th style="text-align:left;">
+                    <b>{% trans "рабочий день" %}</b>
+                </th>
+                <th style="text-align:right;">
+                    {% trans "отправление с" %} {{busstops.0.name}}
+                </th>
+            </tr>
+            {# поле редактирования расписания рабочего дня #}
+            <tr>
+                <td>
+                    <br><br><button type="button" class="mini ui button" onclick="setTextareaValue('tt_start[0]', '{{tt_start0_textarea}}')" title="{% trans "Сбросить изменения" %}"><i class="fa fa-calendar-times-o fa-lg fa-fw"></i></button>
+                    <br><br><br><button name="btn" value="tt_start.0" class="mini ui orange button" onclick="saveField({{bus.id}}, 'tt_start[0]')" title="{% trans "Сохранить" %}"><i class="fa fa-floppy-o fa-lg fa-fw" aria-hidden="true"></i></button>
+                </td>
+                <td>
+                    <!--<div>Отправление с &laquo;{{busstops.0.name}}&raquo;</div>-->
+                    <textarea placeholder="06:00 06:15" id="tt_start[0]" name="tt_start[0]" rows="10" style="width:100%;">{{tt_start0_textarea}}</textarea>
+                </td>
+            </tr>
+        </table>
+
+        {# расписание выходного дня #}
+        {# первая колонка - лэйблы #}{# вторая колонка - данные #}
+        <table class="ui compact unstackable table">
+            <tr class="active">
+                <th style="text-align:left;color:red">
+                    <b>{% trans "выходной день" %}</b>
+                </th>
+                <th style="text-align:right;">
+                    {% trans "отправление с" %} {{busstops.0.name}}
+                </th>
+            </tr>
+            {# поле редактирования выходного дня #}
+            <tr>
+                <td>
+                    <br><br><button type="button" class="mini ui button" onclick="setTextareaValue('holiday[0]', '{{holiday0_textarea}}')" title="{% trans "Сбросить изменения" %}"><i class="fa fa-calendar-times-o fa-lg fa-fw"></i></button>
+                    <br><br><br><button name="btn" value="holiday.0" class="mini ui orange button" onclick="saveField({{bus.id}}, 'holiday[0]')" title="{% trans "Сохранить" %}"><i class="fa fa-floppy-o fa-lg fa-fw" aria-hidden="true"></i></button>
+                </td>
+                <td>
+                    <!--<div>Отправление с &laquo;{{busstops.0.name}}&raquo;</div>-->
+                    <textarea placeholder="06:00 06:15" id="holiday[0]" name="holiday[0]" rows="10" style="width:100%;">{{holiday0_textarea}}</textarea>
+                </td>
+            </tr>
+        </table>
+
+        <!--<div style="text-align:center;">
+            <button name="btn" value="route.0" class="ui green button" onclick="saveNapr({{bus.id}}, 0)">Сохранить направление 1</button>
+        </div>-->
+    </div><!-- column -->
+
+    {# направление 1 #}
+    <div class="column">
+        {# заголовок #}
+        {# расписание рабочего дня #}
+        {# первая колонка - лэйблы #}{# вторая колонка - данные #}
+        <table class="ui compact unstackable table">
+            <tr class="active">
+                <th style="text-align:left;">
+                    <b>{% trans "рабочий день" %}</b>
+                </th>
+                <th style="text-align:right">
+                    {% trans "отправление с" %} {{busstops.1.name}}
+                </th>
+            </tr>
+            {# поле редактирования расписания рабочего дня #}
+            <tr>
+                <td>
+                    <br><br><button type="button" class="mini ui button" onclick="setTextareaValue('tt_start[1]', '{{tt_start1_textarea}}')" title="{% trans "Сбросить изменения" %}"><i class="fa fa-calendar-times-o fa-lg fa-fw"></i></button>
+                    <br><br><br><button name="btn" value="tt_start.1" class="mini ui orange button" onclick="saveField({{bus.id}}, 'tt_start[1]')" title="{% trans "Сохранить" %}"><i class="fa fa-floppy-o fa-lg fa-fw" aria-hidden="true"></i></button>
+                </td>
+                <td>
+                    <textarea placeholder="06:00 06:15" id="tt_start[1]" name="tt_start[1]" rows="10" style="width:100%;">{{tt_start1_textarea}}</textarea>
+                </td>
+            </tr>
+        </table>
+
+        {# расписание выходного дня #}
+        <table class="ui compact unstackable table">
+            <tr class="active">
+                <th style="text-align:left;color:red">
+                    <b>{% trans "выходной день" %}</b>
+                </th>
+                <th  style="text-align:right;">
+                    {% trans "отправление с" %} {{busstops.1.name}}
+                </th>
+            </tr>
+            {# поле редактирования расписания выходного дня #}
+            <tr>
+                <td>
+                    <br><br><button type="button" class="mini ui button" onclick="setTextareaValue('holiday[1]', '{{holiday1_textarea}}')" title="{% trans "Сбросить изменения" %}"><i class="fa fa-calendar-times-o fa-lg fa-fw"></i></button>
+                    <br><br><br><button name="btn" value="holiday.1" class="mini ui orange button" onclick="saveField({{bus.id}}, 'holiday[1]')" title="{% trans "Сохранить" %}"><i class="fa fa-floppy-o fa-lg fa-fw" aria-hidden="true"></i></button>
+                </td>
+                <td>
+                    <textarea placeholder="06:00 06:15" id="holiday[1]" name="holiday[1]" rows="10" style="width:100%;">{{holiday1_textarea}}</textarea>
+                </td>
+            </tr>
+        </table>
+
+        <!--<div style="text-align:center;">
+            <button name="btn" value="route.1" class="ui green button" onclick="saveNapr({{bus.id}}, 1)">Сохранить направление 2</button>
+        </div>-->
+    </div><!-- column -->
+</div>
+
+<br>
+<div style="text-align:center;">
+    <button name="btn" value="route.2" class="ui orange button" onclick="saveNapr({{bus.id}}, 2)" title="{% trans "Сохранить все изменения" %}">{% trans "сохранить" %}</button>
+</div>
+</form>
+<br/><br/>
+{% endblock %}

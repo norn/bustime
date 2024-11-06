@@ -1,0 +1,15 @@
+/* -------------------
+   Accordion Variables
+-------------------- */
+
+@iconMargin: 0 0.5em 0 0;
+
+@styledActiveTitleBackground: @subtleGradient;
+@styledActiveTitleColor: @primaryColor;
+
+@styledActiveChildTitleBackground: transparent;
+
+@styledTitlePadding: 1.25em;
+@styledTitleFontWeight: bold;
+@styledContentPadding: 1.5em 3.25em;
+@styledChildContentPadding: @styledContentPadding;

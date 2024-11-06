@@ -1,0 +1,422 @@
+{# начатый заказ (пассажир, экран 3 в фигме), вставляется в bustime/templates/index.html, div id="search_result" после нажатия Выбрать #}
+{% load i18n order_extras %}
+<div class="ui stackable two column centered grid" style="margin-bottom: 3em;">
+    <div id="order_{{order.id}}" class="column ui unstackable items">
+        <table style="width: 100%; border-collapse:collapse; margin-top:1rem;">
+            <tr>
+                <td>
+                    <h3 id="order_header" class="taxi_header">{% trans 'Ожидайте' %}</h3>
+                </td>
+                <td id="order_{{order.id}}_distance" style="text-align:right;">
+                    {# см. taxi_fresh_pass_car_distance() in bustime_main.js #}
+                </td>
+                <td id="order_{{order.id}}_time" style="text-align:right; font-weight:bold;">
+                    {# см. taxi_fresh_pass_car_distance() in bustime_main.js #}
+                </td>
+            </tr>
+        </table>
+
+        <div class="item">
+            <div class="content" style="width:100%;">
+                <a class="description" style="width: 100%;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom:.5em;"><!--  -->
+                        <tr>
+                            <td rowspan="2" style="width:60px; vertical-align:top; padding-right:8px;">
+                                {% if order.taxist.avatar %}
+                                <img class="ui tiny circular image" src="/static/{{order.taxist.avatar}}">
+                                {% else %}
+                                <img class="ui tiny circular image" src="/static/taxi/img/noavatar.jpg">
+                                {% endif %}
+                            </td>
+                            <td colspan="3" width="*" style="font-size: large; font-weight:bold;">
+                                {{order.taxist.name}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">
+                                <span style="font-size:small; color:gray;">Рейтинг</span>
+                                <div class="rating">
+                                  <i class="star yellow icon"></i><b>{{order.taxist.driver_rating|default:0}}</b>
+                                </div>
+                            </td>
+                            <td style="text-align:left;">
+                                <span style="font-size:small; color:gray;">Подвёз</span>
+                                <br><b>{{order.taxist.driver_trips_cnt|default:0}}</b>
+                            </td>
+                            <td style="text-align:left;">
+                                <span style="font-size:small; color:gray;">Отзывов</span>
+                                <br><b>{{order.taxist.driver_rating_cnt|default:0}}</b>
+                            </td>
+                        </tr>
+                    </table>
+                </a><!--description-->
+                <a class="description" style="width: 100%;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td width="*" style="text-align:left; vertical-align:top;">
+                                <b>{{order.car.model}}</b>
+
+                                <br><a class="ui basic label" style="margin-left:0; margin-right:.5em; margin-bottom:1em;">{{order.car.gos_num}}</a>
+                                <span style="font-size:small; color:gray;">{{order.car.color}}</span>
+
+                                <br>{% trans 'Стоимость' %} <b>{{order.price}} ₽</b>
+                            </td>
+                            <td width="100px">
+                                <img src="/static/{{order.car.photo}}" style="width:100% !important; border-radius:4px; max-height:90px; max-width:100px; object-fit:cover;">
+                            </td>
+                        </tr>
+                    </table>
+                </a><!--description-->
+                <a class="description" style="width:100%; text-align:center;">
+                    <div id="order_{{order.id}}_map" style="width:100%; height:200px; display:block; margin-bottom:1em;"></div>
+                    <!--начало поездки - пассажир нажал Выбрать на предложении водителя (offer_item.html)-->
+                    <div id="order_status_1" style="display:block">
+                        <button class="ui button"
+                                style="width:100% !important; color:black; background-color:#97C9D9; width: 328px; height: 48px; margin-bottom: 1em;"
+                                onclick="taxi_send_message_to_user({{order.taxist.user}}, '{% trans 'Вижу автомобиль' %}', {{order.id}})">{# taxi_send_message_to_user() in bustime_main.js #}
+                            {% trans 'Вижу автомобиль' %}
+                        </button>
+
+                        <button class="ui button"
+                                style="width:100% !important; color:black; background-color:#FFDF32; width: 328px; height: 48px; margin-bottom: 1em;"
+                                onclick="order_trip_start({{order.id}})">{# order_trip_start() см. ниже #}
+                            {% trans 'Поездка начата' %}
+                        </button>
+
+                        <button class="ui button"
+                                style="width:100% !important; color:black; border:2px solid #EF3905; background-color:white; width: 328px; height: 48px;"
+                                onclick="order_trip_cancel('passenger', {{order.id}})">{# order_trip_cancel() см. ниже #}
+                            {% trans 'Отменить' %}
+                        </button>
+                    </div>
+
+                    <!--поездка началась пассажир нажал Поездка начата (см. выше)-->
+                    <div id="order_status_2" style="display:none">
+                        <button class="ui button"
+                                style="width:100% !important; color:black; background-color:#FFDF32; width: 328px; height: 48px; margin-bottom: 1em;"
+                                onclick="order_trip_stop('passenger', {{order.id}})">{# order_trip_stop() см. ниже #}
+                            {% trans 'Завершить поездку' %}
+                        </button>
+                    </div>
+
+                    <!--поездка закончена: пассажир нажал Завершить поездку (см. выше) или водитель нажал Отказать (order_item.html)-->
+                    <div id="order_status_3_{{order.id}}" style="display:none; background-color:#F2F2F2; padding-top: 4px;">
+                        <h5>{% trans 'Оцените поездку' %}:&nbsp;<span id="order_rating_number">0</span></h5>
+                        <div class="ui rating" style="padding:4px 0; margin-bottom:1em; width: 100%;">
+                          <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(0, {{order.id}})"></i>
+                          <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(1, {{order.id}})"></i>
+                          <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(2, {{order.id}})"></i>
+                          <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(3, {{order.id}})"></i>
+                          <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(4, {{order.id}})"></i>
+                        </div>
+
+                        <label>{% trans 'Оставить отзыв' %}</label>
+                        <div class="ui fluid input">
+                            <input id="order_note_{{order.id}}" type="text">
+                        </div>
+                        <input id="order_trip_status_{{order.id}}" type="hidden" value="{{order.trip_status}}">
+
+                        <button id="btn_order_close_{{order.id}}" class="ui button"
+                                style="width:100% !important; color:black; background-color:#FFDF32; width: 328px; height: 48px; margin: 1em 0;"
+                                onclick="taxi_order_close('passenger', {{order.id}})">{# taxi_order_close() ниже #}
+                            {% trans 'Оценить поездку' %}
+                        </button>
+                    </div><!--order_status_3-->
+                </a><!--description-->
+            </div><!--content-->
+        </div><!--item taxi-->
+    </div><!--column-->
+</div><!--ui stackable grid-->
+
+<script>
+// вызывается после обновления страницы
+// восстановление состояния контролов
+document.addEventListener('readystatechange', function(){
+    if( document.readyState == 'complete' ){
+        // восстановление карты пассажира
+        setTimeout(()=>{
+            pass_map_init({{order.id}}, {{order.car.id}}); // bustime-main.js
+        }, 1000);   // задержка для подгрузки bustime-main.js
+    }
+});
+
+
+/* пассажир нажал кнопку Поездка начата */
+function order_trip_start(order_id){
+    console.log('order_trip_start', order_id);
+
+    let post = {
+        'order_id': order_id,
+        'who': 'passenger',
+    };
+    $.ajax({
+        method: "POST",
+        headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+        url: "/carpool/api/trip/start/",
+        data: post,
+    })
+    .done(function(data) {
+        console.log('order_trip_start done', data);
+        if( !data.error ){
+            // data.result - order
+            $(`#order_${data.result.id} #order_status_1`).hide();
+            $(`#order_${data.result.id} #order_status_2`).show();
+            $(`#order_${data.result.id} #order_header`).html('Поездка');
+        }   // if( !data.error )
+        else {
+            $("#modal_dialog p").html(data.error);
+            $('#modal_dialog').modal();
+        }   // else if( !data.error )
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log("order_trip_start error:", errorThrown);
+    });
+}   // order_trip_start
+
+
+/* отказ от заказа
+who = 0 - отказался пассажир
+who = 1 - отказался таксист
+переход на оценку поездки
+*/
+function order_trip_cancel(who, order_id){
+    console.log('order_trip_cancel', who, order_id);
+    // пассажир - вернуться к состоянию Голосовать
+
+    let trip_status;
+    $("#order_{{order_id}} #order_header").html('Поездка');
+    switch(who){
+        case 'passenger': // отказался пассажир
+            // состояние заказа
+            if( !confirm('Вы действительно хотите отменить поездку?') ){
+                return false;
+            }
+            trip_status = $(`#order_trip_status_${order_id}`).val();
+            if( trip_status < 5 ){   // models.py TRIP_STATUS (5, _('Отказ водителя'))
+                $(`#order_trip_status_${order_id}`).val(6);    // Отказ пассажира
+            }
+            taxi_order_close(who, order_id);
+            break;
+        case 'driver': // отказался таксист
+            // показать пассажиру элементы и сообщение завершения заказа
+            $(`#order_${order_id} #order_header`).html('Поездка отменена водителем');
+            $(`#order_${order_id}_distance`).hide();
+            $(`#order_${order_id}_time`).hide();
+            $(`#order_${order_id}_map`).hide();
+            $(`#order_${order_id} #order_status_1`).hide();
+            $(`#order_status_3_${order_id}`).show();
+            // состояние заказа
+            trip_status = $(`#order_trip_status_${order_id}`).val();
+            if( trip_status < 5 ){   // models.py TRIP_STATUS (5, _('Отказ водителя'))
+                $(`#order_trip_status_${order_id}`).val(5);
+            }
+            taxiPlay("order_new"); // in bustime_main.js
+    }   // switch(who)
+}   // order_trip_cancel
+
+
+// Пассажир нажал Завершить поездку, переход на оценку поездки
+function order_trip_stop(who, order_id){
+    console.log('order_trip_stop', who, order_id);
+    $(`#order_${order_id} #order_status_1`).hide(); // кнопки Вижу автомобиль...
+    $(`#order_${order_id} #order_status_2`).hide(); // кнопка Завершить поездку
+    $(`#order_${order_id}_map`).hide(); // карта
+    $(`#order_status_3_${order_id}`).show();
+}   // order_trip_stop
+
+
+// Пассажир нажал Оценить поездку, закрыть договор
+function taxi_order_close(who, order_id){
+    console.log('taxi_order_close', who, order_id);
+    let post = {
+        'order_id': order_id,
+        'who': who,
+        'rating': $(`#order_${order_id} #order_rating_number`).html(),
+        'note': $(`#order_note_${order_id}`).val(),
+        'trip_status': $(`#order_trip_status_${order_id}`).val(),
+    };
+    $.ajax({
+        method: "POST",
+        headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+        url: "/carpool/api/order/close/",
+        data: post,
+    })
+    .done(function(data) {
+        if( !data.error ){
+            console.log('taxi_order_close done');
+            // вернуть пассажира на состояние не голосования
+            if( data.result.taxiuser ){
+                // сохраняем состояние пассажира
+                taxiuser = data.result.taxiuser;
+                Cookies.set('taxi_user', JSON.stringify(data.result.taxiuser), { path: '/', sameSite: 'lax', expires: Infinity });
+                start_location_service();   // выключит GPS по флагу taxiuser.gps_on = true
+            }
+            if( data.result.html ){
+                // возвращаем элементы маршрута пассажира
+                $("#search_result").html(data.result.html); // div id="search_result" in bitime/templates/index.html
+            }
+        }   // if( !data.error )
+        else {
+            $("#modal_dialog p").html(data.error);
+            $('#modal_dialog').modal();
+        }   // else if( !data.error )
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log("taxi_order_close error:", errorThrown);
+    });
+}   // taxi_order_close
+
+
+// получено сообщение из чата
+// message={ from: 108660, to: 12, msg: "Вижу автомобиль", order_id: 293 }
+function taxi_receive_message(message){
+    console.log('taxi_receive_message', message);
+    if( message.to == taxiuser.user ){  // это мне сообщение?
+        switch( message.msg ){
+            case "?": {
+                break;
+            }
+        }   // switch( msg )
+    }   // if( message.to == taxiuser.user )
+}   // taxi_receive_message
+</script>
+{% comment %}
+<!--
+order=
+{
+    "id": 82,
+    "data": "2022-04-25 08:34:17.138856",
+    "city": 4,
+    "trip_data": "2022-04-25 08:34:17.138884",
+    "urgent": false,
+    "wf": "Каштановая Аллея (Карла Маркса)",
+    "wf_point": "SRID=4326;POINT (20.4657376 54.7245427)",
+    "wh": "Ивана Земнухова",
+    "wh_point": "SRID=4326;POINT (20.5505211 54.671261)",
+    "passengers": 1,
+    "childs": 0,
+    "bags": 0,
+    "taxi_type": 0,
+    "car_class": 1,
+    "note": "",
+    "price": 100,
+    "distance": 10,
+    "duration": "14 мин.",
+    "trip_line": {
+        "type": "LineString",
+        "coordinates": [
+            [
+                20.465742,
+                54.724536
+            ],
+            ...
+        ]
+    },
+    "passenger": {
+        "id": 2,
+        "user": 108660,
+        "gender": 0,
+        "agreement": "2022-04-15 19:17:28.523962",
+        "name": null,
+        "phone": null,
+        "driver": false,
+        "driver_rating_cnt": 0,
+        "driver_rating": 0,
+        "passenger_rating_cnt": 0,
+        "passenger_rating": 0,
+        "last_join": "2022-04-15 14:17:29.675424",
+        "gps_on": true,
+        "avatar": null,
+        "car_count": 0
+    },
+    "passenger_rating": 0,
+    "passenger_note": null,
+    "taxist": {
+        "id": 1,
+        "user": 12,
+        "gender": 0,
+        "agreement": "2022-04-15 19:14:54.663563",
+        "name": "locman",
+        "phone": "111",
+        "driver": true,
+        "driver_rating_cnt": 0,
+        "driver_rating": 0,
+        "passenger_rating_cnt": 0,
+        "passenger_rating": 0,
+        "last_join": "2022-04-15 14:15:27.221232",
+        "gps_on": true,
+        "avatar": null,
+        "car_count": 1,
+        "car": {
+            "id": 1,
+            "taxist": 1,
+            "gos_num": "111",
+            "model": {
+                "id": 52,
+                "name": "Alfa Romeo 145"
+            },
+            "color": {
+                "id": 1,
+                "name": "Бежево-жёлтый",
+                "rgb": null
+            },
+            "passengers": 4,
+            "baby_seat": 0,
+            "taxi_type": 0,
+            "car_state": 1,
+            "car_class": 1,
+            "current": true,
+            "photo": "taxi/photo/cc29b8e154c64402a2ca7f4e5d9776e8.jpg"
+        }
+    },
+    "taxist_rating": 0,
+    "taxist_note": null,
+    "car": {
+        "id": 1,
+        "taxist": 1,
+        "gos_num": "111",
+        "model": {
+            "id": 52,
+            "name": "Alfa Romeo 145"
+        },
+        "color": {
+            "id": 1,
+            "name": "Бежево-жёлтый",
+            "rgb": null
+        },
+        "passengers": 4,
+        "baby_seat": 0,
+        "taxi_type": 0,
+        "car_state": 1,
+        "car_class": 1,
+        "current": true,
+        "photo": "taxi/photo/cc29b8e154c64402a2ca7f4e5d9776e8.jpg"
+    },
+    "trip_price": 100,
+    "trip_start": "2022-04-25 09:13:54.174319",
+    "trip_end": null,
+    "trip_status": 1,
+    "passenger_deleted": null,
+    "taxist_deleted": null
+}
+
+taxiuser = {
+    "id": 2,
+    "user": 108660,
+    "gender": 0,
+    "agreement": "2022-04-15 19:17:28.523962",
+    "name": null,
+    "phone": null,
+    "driver": false,
+    "driver_rating_cnt": 0,
+    "driver_rating": 0,
+    "passenger_rating_cnt": 0,
+    "passenger_rating": 0,
+    "last_join": "2022-04-15 14:17:29.675424",
+    "gps_on": true,
+    "avatar": null,
+    "car_count": 0,
+    "order_id": 82
+}
+-->
+{% endcomment %}

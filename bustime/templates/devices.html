@@ -1,0 +1,205 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block extra_head %}
+<script>
+function js_page_extra() {
+ console.log('Режим диспетчера 1.0')  ;
+ socket = io(); // nice
+ var onevent = socket.onevent;
+ socket.onevent = function (packet) {
+     var args = packet.data || [];
+     onevent.call (this, packet);    // original call
+     packet.data = ["*"].concat(args);
+     onevent.call(this, packet);      // additional call to catch-all
+ };
+
+
+ socket.on('connect', function() {
+     socket.emit('join', "ru.bustime.admin__"+ {{city.id}});
+     console.log("Сокет подключен");
+ });
+
+ socket.on("*",function(event,data) {
+  if (data['us_cmd'] == 'alert') {
+     var name = data['params']['name'];
+     var gosnum = data['params']['gosnum'];
+     var ms_id = data['params']['ms_id'];
+     console.log("Тревога от "+name+'! Гос.номер: '+gosnum+', id: '+ms_id);
+   }
+  if (data['us_cmd'] == 'message_signal') {
+     var ms_id = data['params']['ms_id'];
+     var message_id = data['params']['message_id'];
+     var delivered = data['params']['delivered'];
+     var dialog = data['params']['dialog'];
+     console.log("Message signal от "+ms_id);
+     console.log(data['params']);
+     if (delivered) {
+       $(".msg_"+ms_id).addClass("olive");
+     }
+     if (dialog == "OK") {
+       $(".msg_"+ms_id).removeClass("olive").addClass("green");
+     }
+     if (dialog == "Запрос звонка") {
+       $(".call_"+ms_id).addClass("blue");
+     }
+   }
+ });
+}
+  function message(ms_id) {
+    var message = prompt("Введите сообщение", "");
+    $.ajax({url: "",
+      type: "get",
+      data: {ms_id: ms_id, message: message},
+    });
+    alert("Сообщение отправлено");
+  }
+
+  function reload(ms_id) {
+    $.ajax({url: "",
+      type: "get",
+      data: {reload: ms_id},
+    });
+    alert("Команда на перезагрузку отправлена");
+  }
+
+  function kiosk_off(ms_id) {
+    $.ajax({url: "",
+      type: "get",
+      data: {kiosk_off: ms_id},
+    });
+    alert("Команда на выключение киоск режима отправлена");
+  }
+
+  function remove(ms_id) {
+    $.ajax({url: "",
+      type: "get",
+      data: {remove: ms_id},
+    });
+    $("#"+ms_id).remove();
+  }
+</script>
+{% endblock %}
+
+{% block nav_reseller %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/admin/">Администратор</a>
+  <i class="right angle icon divider"></i>
+  <div class="active section">Устройства</div>
+</div>
+<div class="ui divider"></div>
+
+
+<div class="ui grid">
+    <div class="column">
+
+<form action="./" method="post">{% csrf_token %}
+
+<div class="ui two column grid">
+<div class="column">
+<h2 class="ui header">Устройства
+<div class="sub header">зарегистрировано: {{ devices | length }}, крайняя версия: <a href="https://bustime.loc/static/other/Bustime_Rostov_v{{APK_LAST_DRIVER}}.apk">build {{APK_LAST_DRIVER}}</a></div>
+</h2></div>
+</div>
+
+
+<table class="ui table" >
+<thead>
+    <tr>
+        <th>id</th>
+        <th>настройки</th>
+        <th>тип</th>
+        <th>маршрут</th>
+        <th></th>
+        <th>команды</th>
+    </tr></thead>
+{% for d in paginator.object_list %}<tr {% if d.gevent.online %} class="positive"{%endif%} id="{{d.id}}">
+  <td>
+    {{d.id}} (build {{d.version}})
+    <br/>запуск:<br/>{{d.ltime_localized}}
+    <p style="color:rgba(1,1,1,.5)">рег.:{{d.ctime.date}}</p>
+  </td>
+  <td style="font-size:125%;color:rgba(0,0,0,.7)">
+    <input type="hidden" name="{{d.id}}__device" value="">
+    <i class="fa fa-upload fa-fw"></i>
+    <input type="checkbox" name="{{d.id}}__send" {% if d.gps_send%}checked="checked"{%endif%} data-tooltip="Включить отправку данных"><br/>
+
+    <i class="fa fa-wheelchair-alt fa-fw"></i>
+    <input type="checkbox" name="{{d.id}}__ramp" {% if d.gps_send_ramp %}checked="checked"{%endif%} data-tooltip="Оборудован аппарелью"><br/>
+
+    <i class="fa fa-shopping-cart fa-fw"></i>
+    <input type="checkbox" name="{{d.id}}__rampp" {% if d.gps_send_rampp %}checked="checked"{%endif%} data-tooltip="Низкопольный транспорт">
+</td>
+  <td>
+
+    {% if d.gps_send_bus %}
+  <img src="https://cdn.bustime.loc/static/img/theme/modern/{{d.gps_send_bus.ttype_slug}}.png" style="width:38px;height:38px;vertical-align:middle">
+  {% else %}
+  <!-- <i class="fa fa-bell"></i> -->
+  <i class="fa fa-plus-circle fa-3x" style="color: #cb2882"></i>
+  {% endif %}
+
+</td>
+  <td>
+
+    <select name="{{d.id}}__bus" style="min-width:80px;min-height:32px">
+            <option value="" {% if not d.gps_send_bus %}selected{% endif %}>не установлен</option>
+            {% for b in buses %}
+              <option value="{{b.id}}"{% if d.gps_send_bus.id == b.id %} selected{% endif %}>{{b}}</option>
+            {% endfor %}
+      </select><br/>
+      <i class="fa fa-globe"></i> {{d.gevent.x}}, {{d.gevent.y}}<br/>
+      <i class="fa fa-clock-o"></i> {{d.gevent.timestamp}}<br/>
+      <i class="fa fa-dashboard"></i> {{d.gevent.speed}} км/ч<br/>
+      <i class="fa fa-map-o"></i> {{d.gevent.odometer}} км
+  </td>
+
+  <td>
+    <div class="ui small left icon input">
+      <input type="text" name="{{d.id}}__name" placeholder="имя" maxlength="24" value="{{d.name}}" title="имя"><i class="fa-user-o icon"></i>
+    </div><br/>
+
+    <div class="ui small left icon input">
+      <input type="text" name="{{d.id}}__phone" placeholder="телефон" maxlength="16" value="{{d.phone}}" title="телефон"><i class="fa-mobile icon"></i>
+    </div><br/>
+
+    <div class="ui small left icon input">
+      <input type="text" name="{{d.id}}__gosnum" placeholder="гос.номер" maxlength="11" value="{{d.gosnum}}" title="гос.номер"><i class="fa-info icon"></i>
+    </div>
+    <!-- <input type="text" name="{{d.id}}__name" value="{{d.name}}" maxlength="24" /><br/><br/> -->
+    <!-- <input type="text" name="{{d.id}}__phone" value="{{d.phone}}" maxlength="16" /><br/><br/> -->
+    <!-- <input type="text" name="{{d.id}}__gosnum" value="{{d.gosnum}}" maxlength="11" /><br/><br/> -->
+  </td>
+
+  <td>
+      <a class="ui icon button msg_{{d.id}}" onclick="message({{d.id}})" data-tooltip="Отправить сообщение"><i class="fa-envelope-o icon"></i></a>
+      <a class="ui icon button" onclick="reload({{d.id}})" data-tooltip="Перезагрузить"><i class="fa-refresh icon"></i></a>
+      <a href="tel:{{d.phone}}" class="ui icon button call_{{d.id}}" data-tooltip="Позвонить"><i class="phone icon"></i></a><br/><br/>
+      <a class="ui icon button" onclick="kiosk_off({{d.id}})" data-tooltip="Разблокировать киоск"><i class="fa-asterisk icon"></i></a>
+      <a class="ui red icon button" onclick="remove({{d.id}})" data-tooltip="Удалить"><i class="fa fa-times"></i></a>
+  </td>
+</tr>{% endfor %}
+</table><br/>
+
+<div class="ui pagination menu">
+  {% for p in pagi.page_range %}
+  <a class="{% if paginator.number == p %}active {% endif %}item" href="?page={{p}}">
+    {{p}}
+  </a>
+  {% endfor %}
+</div>
+
+<br/>
+            <div class="ui grid"><div class="center aligned column">
+              <button class="ui right labeled icon red button" type="submit">
+                сохранить<i class="fa-check icon"></i>
+              </div>
+            </div>
+            </div>
+
+
+</div>
+
+{% endblock %}

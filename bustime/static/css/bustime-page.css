@@ -2,8 +2,10 @@
 /* http://colorschemedesigner.com/csd-3.5/#1z32qtfw0w0w0  */
 /*http://www.google.com/design/spec/style/color.html#color-color-palette*/
 
-.yheader {
+.ui.grid.yheader {
     border-bottom: 1px solid #ecc745;
+    background-color: #ffe216 !important;
+    margin-bottom: 0.5rem;
 }
 .color-0 {
     color: #ffe216;
@@ -31,7 +33,7 @@
     color: #F077A0;
 }
 .color-1-2-bg {
-    background-color: #F077A0;
+    background-color: #74c0ec;
 }
 
 .color-2 {
@@ -50,10 +52,16 @@
     color: #6ABBCE;
 }
 .color-2-2-bg {
-    background-color: #6ABBCE;
+    background-color: #5ec57c;
+}
+.color-2-2-bg {
+    background-color: #5ec57c;
 }
 .color-white-bg {
   background-color: #fff;
+}
+.color-3-2-bg {
+    background-color: #c5c5c5;
 }
 
 .brand-brown {
@@ -71,48 +79,104 @@
 }
 .t0_coloramount2 {
     background: #FFE216;
-    /*background: -webkit-linear-gradient(#ffe216, #ffd94c);*/
-    background: -moz-linear-gradient(#ffe216, #ffd94c);
-    background: -o-linear-gradient(#ffe216, #ffd94c);
-    background: linear-gradient(#ffe216, #ffd94c);
 }
 
 .t1_coloramount0 {
-    background: #e7f3e7;
+    background: #ebf1f5;
 }
 .t1_coloramount1 {
-    background: #c8f2c8;
+    background: #e2f1fa;
 }
 .t1_coloramount2 {
-    background: #a1ffa1;
-    background: -webkit-linear-gradient(#a1ffa1, #85ff85);
-    background: -moz-linear-gradient(#a1ffa1, #85ff85);
-    background: -o-linear-gradient(#a1ffa1, #85ff85);
-    background: linear-gradient(#a1ffa1, #85ff85);
+    background: #d3e7ff;
 }
 
 .t2_coloramount0 {
-    background: #ebf1f5;
+    background: #FFDDB9;
 }
 .t2_coloramount1 {
-    background: #e2f1fa;
+    background: #FFC88E;
 }
 .t2_coloramount2 {
-    background: #d3e7ff;
-    background: -webkit-linear-gradient(#d3e7ff, #c7e0ff);
-    background: -moz-linear-gradient(#d3e7ff, #c7e0ff);
-    background: -o-linear-gradient(#d3e7ff, #c7e0ff);
-    background: linear-gradient(#d3e7ff, #c7e0ff);
+    background: #FFB76B;
+}
+
+.t3_coloramount0 {
+    background: #e7f3e7;
+}
+.t3_coloramount1 {
+    background: #c8f2c8;
+}
+.t3_coloramount2 {
+    background: #a1ffa1;
+}
+
+.t4_coloramount0 {
+    background: #d2d2d2;
+}
+.t4_coloramount1 {
+    background: #ffffb5;
+}
+.t4_coloramount2 {
+    background: #FFE216;
+}
+
+.t5_coloramount0 {
+    background: #d2d2d2;
+}
+.t5_coloramount1 {
+    background: #b1c9e0;
+}
+.t5_coloramount2 {
+    background: #70abe1;
+}
+
+.t6_coloramount0 {
+    background: #d2d2d2;
+}
+.t6_coloramount1 {
+    background: #ffffb5;
+}
+.t6_coloramount2 {
+    background: #FFE216;
+}
+
+.t7_coloramount0 {
+    background: #d2d2d2;
+}
+.t7_coloramount1 {
+    background: #ffffb5;
+}
+.t7_coloramount2 {
+    background: #FFE216;
+}
+
+.t8_coloramount0 {
+    background: #d2d2d2;
+}
+.t8_coloramount1 {
+    background: #ffffb5;
+}
+.t8_coloramount2 {
+    background: #FFE216;
+}
+
+.adsense {
+    max-width:100% !important;
+    padding:0 !important;
+    margin:0 !important;
+    overflow: hidden !important;
 }
 
 .logo_header {
     font-size: 22px;
     text-decoration: none;
     font-weight: bold;
-    color: #E11359;
+    color: #e64301;
+    text-align: center;
 }
 .logo_header:hover {
-    color: #a20000;
+    color: #ff4800;
 }
 
 .bustime-logo {
@@ -121,31 +185,48 @@
     height: 96px;
     display: block;
     margin-bottom: 7px;
+    text-align: center;
 }
 .bustime-logo-pro {
-    background-image: url(/static/img/bustime-logo-pro.png);
-    width: 96px;
-    height: 96px;
+    background-image: url(/static/img/bustime-logo-driver.png);
+    /*width: 96px;
+    height: 96px;*/
+    height: 94px;
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow: visible!important;
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 3px;
 }
 
+.footerbg {
+    background-image: url(/static/img/grass_original.jpg);
+    height: 40px;
+    display: block;
+    margin-top:40px;
+}
 
-.fixed.launch.button {
+.right.fixed.launch.button {
   position: fixed;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   left: 0px;
-  top: 58px;
+  top: 26px;
   height: auto;
+  margin-top: -1.5rem;
   white-space: nowrap;
   overflow: hidden;
-  z-index: 5;
+  opacity: 0.75;
+  z-index: 1001;
 }
 
+.mobile_app_links {
+    text-align: center;
+    height:62px;
+}
 
 .main_container {
-    margin-top: 1em;
+    /*margin-top: 0.5em;*/
 }
 
 .rating_gosnum{
@@ -187,8 +268,382 @@
     color: #E9EDDE;
 }
 
-/* for retina  */
+.hidden {
+    display: none;
+}
+.hiddeni {
+    display: none!important;
+}
 
+/* sprites by spritegen.website-performance.org */
+.sprite {
+    background-image: url(/static/img/icons_sprite_64-6opt.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-size: 1440px 32px;
+}
+
+.sprite-search {
+    width: 32px;
+    height: 32px;
+    background-position: 0 0;
+}
+
+.sprite-search.active {
+    width: 32px;
+    height: 32px;
+    background-position: -32px 0;
+}
+
+.sprite-search_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -64px 0;
+}
+
+.sprite-search_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -80px 0;
+}
+
+.sprite-2bus {
+    width: 32px;
+    height: 32px;
+    background-position: -96px 0;
+}
+
+.sprite-2bus.active {
+    width: 32px;
+    height: 32px;
+    background-position: -128px 0;
+}
+
+.sprite-2bus_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -160px 0;
+}
+
+.sprite-2bus_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -176px 0;
+}
+
+.sprite-airplane {
+    width: 32px;
+    height: 32px;
+    background-position: -192px 0;
+}
+
+.sprite-airplane.active {
+    width: 32px;
+    height: 32px;
+    background-position: -224px 0;
+}
+
+.sprite-airplane_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -256px 0;
+}
+
+.sprite-airplane_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -176px 0;
+}
+
+.sprite-baloon {
+    width: 32px;
+    height: 32px;
+    background-position: -272px 0;
+}
+
+.sprite-baloon.active {
+    width: 32px;
+    height: 32px;
+    background-position: -320px 0;
+}
+
+.sprite-baloon_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -352px 0;
+}
+
+.sprite-baloon_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -368px 0;
+}
+
+.sprite-bicycle {
+    width: 32px;
+    height: 32px;
+    background-position: -384px 0;
+}
+
+.sprite-bicycle.active {
+    width: 32px;
+    height: 32px;
+    background-position: -416px 0;
+}
+
+.sprite-bicycle_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -448px 0;
+}
+
+.sprite-bicycle_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -464px 0;
+}
+
+.sprite-bus {
+    width: 32px;
+    height: 32px;
+    background-position: -480px 0;
+}
+
+.sprite-bus-taxi {
+    width: 32px;
+    height: 32px;
+    background-position: -512px 0;
+}
+
+.sprite-bus-taxi.active {
+    width: 32px;
+    height: 32px;
+    background-position: -544px 0;
+}
+
+.sprite-bus-taxi_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -576px 0;
+}
+
+.sprite-bus-taxi_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -592px 0;
+}
+
+.sprite-bus.active {
+    width: 32px;
+    height: 32px;
+    background-position: -608px 0;
+}
+
+.sprite-bus_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -640px 0;
+}
+
+.sprite-bus_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -656px 0;
+}
+
+.sprite-ferry {
+    width: 32px;
+    height: 32px;
+    background-position: -672px 0;
+}
+
+.sprite-ferry.active {
+    width: 32px;
+    height: 32px;
+    background-position: -704px 0;
+}
+
+.sprite-ferry_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -736px 0;
+}
+
+.sprite-ferry_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -752px 0;
+}
+
+.sprite-schoolbus {
+    width: 32px;
+    height: 32px;
+    background-position: -768px 0;
+}
+
+.sprite-schoolbus.active {
+    width: 32px;
+    height: 32px;
+    background-position: -800px 0;
+}
+
+.sprite-schoolbus_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -832px 0;
+}
+
+.sprite-schoolbus_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -848px 0;
+}
+
+.sprite-taxi {
+    width: 32px;
+    height: 32px;
+    background-position: -864px 0;
+}
+
+.sprite-taxi.active {
+    width: 32px;
+    height: 32px;
+    background-position: -896px 0;
+}
+
+.sprite-taxi_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -928px 0;
+}
+
+.sprite-taxi_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -944px 0;
+}
+
+.sprite-train {
+    width: 32px;
+    height: 32px;
+    background-position: -960px 0;
+}
+
+.sprite-train.active {
+    width: 32px;
+    height: 32px;
+    background-position: -992px 0;
+}
+
+.sprite-train_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -1024px 0;
+}
+
+.sprite-train_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -1040px 0;
+}
+
+.sprite-tramway {
+    width: 32px;
+    height: 32px;
+    background-position: -1056px 0;
+}
+
+.sprite-tramway.active {
+    width: 32px;
+    height: 32px;
+    background-position: -1088px 0;
+}
+
+.sprite-tramway_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -1120px 0;
+}
+
+.sprite-tramway_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -1136px 0;
+}
+
+.sprite-trolleybus {
+    width: 32px;
+    height: 32px;
+    background-position: -1152px 0;
+}
+
+.sprite-trolleybus.active {
+    width: 32px;
+    height: 32px;
+    background-position: -1184px 0;
+}
+
+.sprite-trolleybus_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -1216px 0;
+}
+
+.sprite-trolleybus_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -1232px 0;
+}
+
+.sprite-truck {
+    width: 32px;
+    height: 32px;
+    background-position: -1248px 0;
+}
+
+.sprite-truck.active {
+    width: 32px;
+    height: 32px;
+    background-position: -1280px 0;
+}
+
+.sprite-truck_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -1312px 0;
+}
+
+.sprite-truck_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: -1328px 0;
+}
+
+.sprite-metro {
+    width: 32px;
+    height: 32px;
+    background-position: -1344px 0;
+}
+
+.sprite-metro.active {
+    width: 32px;
+    height: 32px;
+    background-position: -1376px 0;
+}
+
+.sprite-metro_mini {
+    width: 16px;
+    height: 16px;
+    background-position: -1408px 0;
+}
+
+.sprite-metro_mini.active {
+    width: 16px;
+    height: 16px;
+    background-position: --1424px 0;
+}
+
+/* for retina  */
 @media
 screen and (-webkit-min-device-pixel-ratio: 1.5),
 screen and (-moz-min-device-pixel-ratio: 1.5),
@@ -198,7 +653,152 @@ screen and (min-device-pixel-ratio: 1.5) {
         background-size: 96px 96px;
     }
     .bustime-logo-pro {
-        background-image: url(/static/img/bustime-logo-pro@2x.png);
-        background-size: 96px 96px;
+        background-image: url(/static/img/bustime-logo-driver@2x.png);
+        background-size: 250px 80px;
     }
+    .footerbg {
+      background-image: url(/static/img/grass_original@2x.jpg);
+      background-size: 99px 40px;
+    }
+   /* .sprite {
+      background-image: url(/static/img/icons_sprite_64-3opt.png);
+      background-size: 1248px 32px;
+    }*/
+}
+
+@media (max-width: 767px) {
+
+}
+.online {
+  color:#ec0000;
+  font-weight: bold;
+}
+.offline {
+  color: #bfb2b2;
+}
+.sleeping {
+  color: #149626;
+}
+.zombie {
+  color: #bd5717;
+}
+.cookie_policy {
+  color: #333;
+  background-color:rgba(255, 245, 245, 0.9);
+  position: fixed;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  text-align: center;
+  bottom: 60px;
+  left: 60px;
+  right: 60px;
+  margin:0;
+  padding:15px;
+  z-index: 999;
+}
+
+.busnumber.double {
+ width: 8.6em;
+}
+.busnumber.triple {
+ width: 12.9em;
+}
+.busnumber_s.double {
+ width: 8.6em;
+}
+.busnumber_s.triple {
+ width: 12.9em;
+}
+
+/* 2024 UI update */
+.yellow_menu {
+    background: #ffe216 !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+}
+.yellow_menu_item {
+    color: #000 !important;
+}
+.yellow_menu_item:hover {
+    color: #aaaaff !important;
+    background: #ffe216 !important;
+}
+.ui.inverted.menu .active.item.yellow_menu_item {
+    background: #ffe216 !important;
+    color: #000 !important;
+    font-weight: bold !important;
+}
+.yellow_menu_logo {
+    font-family: Sansita One;
+    font-size: 40px;
+    font-weight: 1000;
+    line-height: 59px;
+    margin: 15px 0 6rem 15px;
+}
+.yellow_menu_bot {
+    padding-top: 0 !important;
+}
+.inf_about_data {
+    background-color: #EDEDED;
+    padding: 10px;
+    right:0;
+    width: 100%;
+    font-size: 14px;
+    height: 40px;
+}
+.live_indicators {
+    position: fixed !important;
+    bottom: 0 !important;
+    opacity: 0.92;
+}
+.ui.grid.live_indicators {
+    z-index: 999;
+    width: 100%;
+}
+#status_city_text {
+    margin-left: 3px;
+}
+
+.ui.circular.label.live_indicators {
+    left: 20px;
+    z-index: 9;
+    margin: 7px;
+    font-size: 14px;
+    background: #fff;
+}
+
+@media screen and (max-width: 600px) {
+    .ui.search .results {
+        left: 0 !important;
+        width: 100% !important;
+    }
+    .ui.circular.label.live_indicators {
+        left: 0;
+    }
+    .ui.search .results .result {
+        display: block !important;
+        width: auto !important;
+    }
+}
+
+.mapboxgl-ctrl-bottom-right {
+    display: none !important;
+}
+
+.mapboxgl-ctrl-attrib {
+    display: none !important;
+}
+.ui.horizontal.card {
+    font-size: 12px !important;
+    height: 75px !important;
+}
+.ui.horizontal.card .image {
+    height: 75px !important;
+    width: 75px !important;
+}
+.ui.search .result {
+    padding: 5px !important;
+    display: inline-block !important;
+    width: 50% !important;
 }

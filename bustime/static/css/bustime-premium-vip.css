@@ -1,0 +1,16 @@
+.ui.busnumber.busnumber {
+    border-bottom: 2px solid #aaa;
+    border-right: 2px solid #aaa;
+    margin: 3px 3px;
+}
+.ui.busnumber.coloramount2[btype='0'] {
+    background: #ffff45;
+}
+.brand-yellow {
+    color: #ffff45;
+}
+.color-0-bg {
+    background: #ffff45;
+}
+
+

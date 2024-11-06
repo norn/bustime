@@ -1,0 +1,71 @@
+<html lang="{{LANGUAGE_CODE}}">
+<head>
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/semantic-full.css" type="text/css" />
+<link rel="preload" as="script" href="https://cdn.bustime.loc/static/js/semantic.js" type="text/css" />
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+  var gmt_selected = {{gmt_selected}};
+  function change_mode(x) {
+    $(".gmt_"+gmt_selected).css("display", "none");
+    $(".menu_"+gmt_selected).removeClass("active");
+
+    $(".gmt_"+x).css("display", "");
+    $(".menu_"+x).addClass("active");
+
+    gmt_selected = x;
+  }
+</script>
+
+
+</head>
+<body>
+links: <a href="./">list of all cities</a>
+<br/>
+<div class="ui top attached tabular centered fluid menu">
+  {% for m,cnt,mr in mr_young %}
+      <a class="item {%if forloop.first %} active{%endif%}  menu_{{m}}" onclick="change_mode({{m}})">
+      <div class="ui floating label">{{cnt}}</div><br/>GMT {{m}}</a>
+  {% endfor %}
+
+  <div class="right menu">
+    <div class="item">
+      <div class="ui transparent icon input">
+        <input type="text" placeholder="Search city...">
+        <i class="search link icon"></i>
+      </div>
+    </div>
+  </div>
+</div>
+  {% for m,cnt,mr in mr_young %}
+<div class="ui bottom attached segment gmt_{{m}}" style="{%if not forloop.first %}display:none;{%endif%}">
+      <table class="ui sortable celled table">
+        <thead><tr><th>num</th>
+            <th>TimeZone</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Events</th>
+            <th>Routes</th>
+            <th>Stops</th>
+            <th>OSM</th>
+            <th>info</th>
+          </tr></thead>
+      {% for pa in mr %}
+          <tr>
+            <td data-label="num">{{forloop.counter}}</td>
+            <td data-label="TimeZone">{{pa.timezone}}</td>
+            <td data-label="Name"><a href="./{{pa.osm_id}}/">{{pa.name}}</a></td>
+            <td data-label="Time">{{pa.now}}</td>
+            <td data-label="Events"> {{pa.amount}}</td>
+            <td data-label="Routes"> {{pa.buses_count}}</td>
+            <td data-label="Stops"> {{pa.stops_count}}</td>
+            <td data-label="OSM"> <a href='https://www.openstreetmap.org/relation/{{pa.osm_id}}/'>{{pa.osm_id}}</a></td>
+            <td data-label="info">{{pa.admin_level}} {{pa.type}}</td>
+          </tr>
+      {% endfor %}
+        </tbody>
+      </table>
+</div>
+  {% endfor %}
+
+
+</body></html>

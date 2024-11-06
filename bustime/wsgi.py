@@ -13,6 +13,7 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
+from __future__ import absolute_import
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bustime.settings")

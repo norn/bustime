@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% load cache %}
+
+{% block extra_head %}
+<meta http-equiv="refresh" content="30">
+{% endblock %}
+
+{% block content %}
+<script>{% include "_js_init.html" %}</script>
+<br/><br/>
+<div class="ui icon large message">
+  <i class="fa-upload icon"></i>
+
+  <div class="content">
+    <div class="header">
+      Вы используете бесплатную водительсткую подписку, но не отправляете данные своего транспорта.
+    </div>
+    
+    <p>Включите в <a href="/settings/">настройках</a> "Отправлять свои координаты", укажите номер маршрута и разрешите системе использовать ваши координаты.</p>
+
+    <p>Затем зайдите на эту страницу и подождите. Как только данные начнут поступать в систему у вас заработает весь функционал.</p>
+
+  </div>
+</div>
+
+<br/><br/>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}Купить подписку{% endblock %}
+{% block meta_descr %}Здесь вы можете приобрести профессиональную подписку для сайта Время Автобуса. Поддержите проект и наслаждайтесь дополнительным функционалом и отключенной рекламой.{% endblock %}
+
+{% block nav_pro %}active{%endblock%}
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/noadblock/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/noadblock/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/noadblock/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">Блокировка рекламы</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">Блокировка рекламы
+  <div class="sub header"></div></h1>
+
+<div class="ui huge message">
+Уважаемый пользователь,<br/> система обнаружила что на вашей стороне используется блокировка рекламы (например Adblock).<br/><br/>Я, автор сайта, вкладываю много сил в этот проект, а доход с рекламы помогает развивать его. <br/><br/>Пожалуйста отключите блокировку рекламы или <a href="/pro/">купите подписку всего за 100 рублей в год</a>. <br/> При покупке <a href="/pro/">подписки</a> вы сможете 365 дней пользоваться сайтом без рекламы!
+
+</div>
+{% endblock %}

@@ -1,15 +1,18 @@
-{% extends "base.html" %}{% load cache %}
+{% extends "base.html" %}{% load cache %}{% load i18n %}
 
 {% block content %}
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">Наклейки</div>
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/admin/">{% trans "Администратор" %}</a>
+   <i class="right angle icon divider"></i>
+
+  <div class="active section">{% trans "Наклейки" %}</div>
 </div>
 <div class="ui divider"></div>
 
 <h1 class="ui header">
-Редактор наклеек<div class="sub header">сделай транспорт красивее</div>
+{% trans "Редактор наклеек" %}<div class="sub header">{% trans "сделай транспорт красивее" %}</div>
 </h1>
 
 <div class="ui grid">
@@ -20,23 +23,25 @@
 <thead>
 	<tr>
 		<th>id</th>
-		<th>создана</th>
-		<th>активность</th>
-		<th>номер</th>
-		<th>картинка</th>
+		<th>{% trans "создана" %}</th>
+		<th>{% trans "активность" %}</th>
+    <th>{% trans "владелец" %}</th>
+		<th>{% trans "номер" %}</th>
+		<th>{% trans "картинка" %}</th>
 	</tr></thead>
 {% for si in icons %}
 <tr>
     <td>{{si.id}}</td>
     <td>{{si.ctime.date}}</td>
     <td><input class="ui checkbox" type="checkbox" name="{{si.id}}_active" {% if si.active %}checked{% endif %}></td>
+    <td>{% if si.us %}<a href="/settings/{{si.us_id}}/">{{si.us_id}}{% endif %}</td>
     <td><div class="ui input"><input type="text" name="{{si.id}}_gosnum" value="{{si.gosnum}}" /></div></td>
     <td><img src="{{si.img}}" title="{{si.img}}"/><br/></td>
 </tr>
 {% endfor %}
 </table>
 <br/>
-<button class="ui red icon labeled button" type='submit'><i class="fa fa-floppy-o icon"></i> Сохранить </button>
+<button class="ui red icon labeled button" type='submit'><i class="fa-floppy-o icon"></i> Сохранить </button>
 <br/><br/>
 
 </div></div>

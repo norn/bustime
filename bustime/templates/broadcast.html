@@ -1,0 +1,185 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block extra_head %}
+<script src="https://cdn.bustime.loc/static/js/recorder.min.js" type="text/javascript"></script>
+<script>
+var audio_context;
+var city_id = {{city.id}};
+function js_page_extra() {
+ console.log('Режим МЧС оповещения');
+ socket = io(); // nice
+ var onevent = socket.onevent;
+ socket.onevent = function (packet) {
+     var args = packet.data || [];
+     onevent.call (this, packet);    // original call
+     packet.data = ["*"].concat(args);
+     onevent.call(this, packet);      // additional call to catch-all
+ };
+
+
+ socket.on('connect', function() {
+     socket.emit('join', "ru.bustime.radio__" + city_id);
+     console.log("Сокет подключен");
+     $('.push_to_talk').removeClass('hidden').mouseup(push_to_talk_click_up_down).mousedown(push_to_talk_click_up_down);
+ });
+
+ socket.on("*",function(event,data) {
+  if (data['us_cmd'] == 'alert') {
+     var name = data['params']['name'];
+     var gosnum = data['params']['gosnum'];
+     var ms_id = data['params']['ms_id'];
+     console.log("Тревога от "+name+'! Гос.номер: '+gosnum+', id: '+ms_id);
+   }
+ });
+}
+
+  function reload(ms_id) {
+    $.ajax({url: "",
+      type: "get",
+      data: {reload: ms_id},
+    });
+    alert("Команда на перезагрузку отправлена");
+  }
+
+function push_to_talk_click_up_down(ev) {
+    var dir;
+    if (!audio_context) {
+         try {
+           window.AudioContext = window.AudioContext || window.webkitAudioContext;
+           audio_context = new AudioContext;
+         } catch (e) {
+           alert('Не совместимый браузер!');
+         }
+      }
+
+    if (ev.type=="mousedown" || ev.type=="touchstart") {
+        // sound_radio_out.play();
+        dir=1;
+        recorder = new Recorder({encoderPath:'https://cdn.bustime.loc/static/js/encoderWorker.min.js', encoderBitRate:16000}); //, encoderSampleRate:24000
+        recorder.ondataavailable = function( typedArray ){
+            var voiceBlob = new Blob( [typedArray], { type: 'audio/ogg' } );
+            // console.log(dataBlob);
+            var dataF = new FormData();
+            dataF.append('voiceBlob', voiceBlob);
+            dataF.append('city_id', city_id);
+            dataF.append('ms_id', $(".driver_id").val());
+            // voiceBlob
+            $.ajax({
+                type: 'POST',
+                url: '/radio/say/',
+                data: dataF,
+                processData: false,
+                contentType: false
+            }).done(function(data) {
+                console.log(data);
+                $(".result").removeClass('hidden').html(data);
+            });
+        }
+        recorder.start();
+    } else {
+        dir=0;
+        recorder.stop();
+        // sound_radio_out.play();
+    }
+    console.log("push to talk: "+dir);
+}
+
+function send_from_mp3() {
+  var mp3file = $("#mp3file")[0].files[0];
+  if (!mp3file) {
+    alert('файл не указан');
+    return
+  }
+  var dataF = new FormData();
+  dataF.append('mp3file', mp3file);
+  dataF.append('city_id', city_id);
+  dataF.append('ms_id', $(".driver_id").val());
+  $.ajax({
+      type: 'POST',
+      url: '/radio/say/',
+      data: dataF,
+      processData: false,
+      contentType: false
+  }).done(function(data) {
+      console.log(data);
+      $(".result").removeClass('hidden').html(data);
+  });
+}
+
+
+
+</script>
+{% endblock %}
+
+{% block nav_reseller %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/admin/">Администратор</a>
+  <i class="right angle icon divider"></i>
+  <div class="active section">МЧС оповещения</div>
+</div>
+<!-- <div class="ui divider"></div> -->
+<br/><br/><br/>
+
+
+<div class="ui header">1. Выбор получателя
+  <div class="sub header">
+    оставьте поле пустым чтобы отправить всем в {{city.name}}
+  </div>
+</div>
+<div class="ui big message">
+  <div class="ui input">
+    <input type="text" class="driver_id" placeholder="id терминала">
+  </div><br/>
+
+<!-- <div class="ui compact menu">
+  <div class="ui simple dropdown item">
+    все терминалы {{city.name}}
+    <i class="dropdown icon"></i>
+    <div class="menu">
+      <div class="item">все терминалы {{city.name}}</div>
+      {% for d in devices %}
+      <div class="item {{d.id}}">{{d.id}};{% if d.gps_send_bus %}{{d.gps_send_bus}}{%else%}без маршрута{%endif%};{{d.gosnum}}</div>
+      {% endfor %}
+    </div>
+  </div></div> -->
+
+</div>
+
+<div class="ui header">2. Оповещение
+  <div class="sub header">
+  Данное оповещение будет проиграно на выбранном или всех терминалах водителей.
+  </div>
+</div>
+<div class="ui two column stackable grid">
+
+<div class="column">
+  <div class="ui big message">
+    Нажмите мышкой и удерживайте кнопку записи.
+  </div>
+  <button class="ui big labeled icon button push_to_talk hidden"><i class="fa-microphone icon"></i> Записать</button>
+</div>
+
+<div class="column">
+  <div class="ui big message">Загрузите запись в формате MP3.
+  </div>
+    <div class="ui two column grid">
+      <div class="column">
+      <input id="mp3file" name="mp3file" type="file" />
+      </div>
+      <div class="column">
+      <button class="ui big labeled icon button" onclick="send_from_mp3()"><i class="fa-upload icon"></i> Загрузить</button>
+      </div>
+    </div>
+</div>
+
+</div>
+
+
+<div class="ui header">3. Результат</div>
+<div class="ui big success message result hidden"></div>
+
+<br/><br/><br/>
+{% endblock %}

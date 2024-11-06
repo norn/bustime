@@ -1,0 +1,136 @@
+{% extends "base.html" %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Такси" %}{% endblock %}
+
+{% block meta_descr %}
+{% trans "bustime-такси: редактирование машины" %}.
+{% endblock meta_descr %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="/static/{{request.resolver_match.app_name}}/css/taxi.css">
+<style>
+.setting_name {
+    font-size: 12px;
+    color: #4C4C4C;
+    line-height: 12px;
+    margin: 20px 0 10px 0;
+}
+.add_car {
+    color: #000 !important;
+    padding: 16px !important;
+    margin: 18px 0 0 !important;
+    width: 400px;
+    display: block !important;
+}
+@media screen and (max-width: 600px) {
+    .add_car, .add_car_but, .input, .car_card {
+        width: 100%;
+    }
+}
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+
+<h2 class="ui header" style="margin-top: 30px;">
+    {% if car %}{% trans "Редактирование автомобиля" %}{% else %}{% trans "Добавить автомобиль" %}{% endif %}
+    <div class="sub header"></div>
+</h2>
+
+{% if messages %}
+<div id="messages" class="ui container">
+{% for message in messages %}<div class="ui {{ message.tags }} message">{{ message|safe }}</div>{% endfor %}
+</div>
+<br>
+{% endif %}
+
+<p>
+    <form class="ui form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <input type="hidden" name="car_id" value="{% if car %}{{car.id}}{% else %}0{% endif %}">
+        <div class="ui form">
+            <div class="setting_name">{% trans "Модель" %}:</div>
+            <div class="ui input"><input type="text" id="model" name="model"  placeholder="Марка автомобиля" value="{% if car %}{{car.model}}{% endif %}"></div>
+
+            <div class="ui two column grid">
+                <div class="column">
+                    <div class="setting_name">{% trans "Гос номер" %}:</div>
+                    <div class="ui input" style="width: 100%">
+                        <input type="text" id="gos_num" name="gos_num" placeholder="{% trans "x 000 xx 00" %}" value="{% if car %}{{car.gos_num}}{% endif %}">
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="setting_name">{% trans "Цвет" %}:</div>
+                    <div class="ui input" style="width: 100%">
+                        <input type="text" id="color" name="color" placeholder="{% trans "Цвет" %}" value="{% if car %}{{car.color}}{% endif %}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting_name">{% trans "Кол-во пассажиров" %}:</div>
+            <div class="ui input"><input type="text" name="passengers" value="{% if car %}{{car.passengers|default:4}}{% else %}4{% endif %}"></div>
+
+                <!--
+                <div class="five fields">
+                    <div class="field">
+                        <label>{% trans "Детских кресел" %}</label>
+                        <input type="text" name="baby_seat" value="{% if car %}{{car.baby_seat|default:0}}{% else %}0{% endif %}">
+                    </div>
+                    <div class="field">
+                        <label>{% trans "Тип такси" %}</label>
+                        <select class="ui dropdown" name="taxi_type">
+                        {% for c in taxi_type %}
+                        <option value="{{c.0}}" {% if car and c.0 == car.taxi_type %}selected="selected"{% endif %}>{{c.1}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>{% trans "Класс такси" %}</label>
+                        <select class="ui dropdown" name="car_class">
+                        {% for c in car_class %}
+                        <option value="{{c.0}}" {% if car and c.0 == car.car_class %}selected="selected"{% endif %}>{{c.1}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>{% trans "Состояние машины" %}</label>
+                        <select class="ui dropdown" name="car_state">
+                        {% for c in car_state %}
+                        <option value="{{c.0}}" {% if car and c.0 == car.car_state %}selected="selected"{% endif %}>{{c.1}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                -->
+            <div class="setting_name">{% trans "Фотография автомобиля" %}:</div>
+            <div class="field">
+                <img src="{% if car.photo %}/static/{{car.photo}}{% endif %}" alt="{{car.gos_num}}" style="max-width:100%">
+            </div>
+
+            <input type="file" name="photo" accept="image/jpeg,image/png">
+
+            {% if car %}
+            <input type="submit" class="ui yellow button add_car" name="save" value="{% trans 'Сохранить' %}">
+            <input type="submit" class="ui  button add_car" style="background: #DEDEDF;" name="delete" value="{% trans 'Удалить' %}">
+            {% else %}
+            <input type="submit" class="ui yellow button add_car" name="save" value="{% trans 'Добавить автомобиль' %}">
+            <a href="/settings_profile/" class="ui button add_car" style="background: #DEDEDF;">{% trans 'Отменить' %}</a>
+            {% endif %}
+
+        </div>
+    </form>
+</p>
+{% endblock content %}
+
+{% block body_end %}
+<!--<script src="/static/js/howler.min.js"></script>-->
+<script src="/static/{{request.resolver_match.app_name}}/js/taxi.js"
+        id="taxi.js"
+        data-city_id="{{request.session.city.id|default:0}}"
+        data-user_id="{{request.user.id|default:0}}"
+        data-taxiuser_id="{{request.session.taxiuser.id|default:taxiuser.id|default:0}}"></script>
+<script>
+function js_page_extra() {
+    websconnect();
+}   // js_page_extra
+</script>
+{% endblock body_end %}

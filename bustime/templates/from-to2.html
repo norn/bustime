@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% load i18n %}{% load set_template_var %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/leaflet.css" />
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/semantic-main.css" type="text/css" />
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-page.css" type="text/css" />
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-main.css" type="text/css" />
+<meta name="google-site-verification" content="cDggEN1b91NP-fWschpXS05-FtAdZu5UJEepABqkgrc" />
+<script>{% include "_js_init.html" %}</script>
+<script src="https://cdn.bustime.loc/static/js/city-{{us.city.id}}-{{us.city.rev}}.js"></script>
+<style>
+.trip-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #DEDEDF;
+    -webkit-transition: .2s ease-in-out;
+    -moz-transition: .2s ease-in-out;
+    -o-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+    background-color: #FAFAFA;
+}
+.trip-table:hover {
+    background-color: #FFFFFF;
+    border-color:#59A4DC;
+}
+.trip-table:hover .trip-title {
+    color: #FF3300;
+}
+.trip-table td {
+    padding: 10px 25px;
+
+}
+.trip-title {
+    color: #703233;
+    font-weight: bold;
+    font-size: large;
+    -webkit-transition: .2s ease-in-out;
+    -moz-transition: .2s ease-in-out;
+    -o-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+}
+.gray {
+    color: rgba(0,0,0,.5);;
+}
+
+.trip-peresadka {
+    font-weight: bold;
+    text-align: right;
+}
+.bus-name {
+    color: #665912 !important;
+    background-color: #ffe216 !important;
+    vertical-align: middle !important;
+    margin-top: -10px !important;
+    font-size: 110% !important;
+    padding: 6px 4px 4px 4px !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    text-align: center !important;
+
+}
+.trip-link {
+    text-decoration: none !important;
+    color: #000000 !important;
+}
+/* круг */
+.d1 {
+    width: 18px;
+    height: 18px;
+    background: #0274FB;
+    border-radius: 50%;
+    margin: auto;
+}
+/* пункт А */
+.a1 {
+    color: #FFFFFF !important;
+    background-color: #0274FB !important;
+    vertical-align: middle !important;
+    margin-top: -10px !important;
+    font-size: 110% !important;
+    padding: 4px !important;
+}
+/* верт. линия автобуса */
+.v1 {
+    height: 160px;
+    width: 5px;
+    background: #0274FB;
+}
+/* верт. линия пешком */
+.v2 {
+    height: 100px;
+    width: 3px;
+    background: #A1A1A1;
+}
+.segment-table {
+    border-collapse: collapse;
+}
+.segment-table tr td:first-child {
+    text-align: center;
+    width: 20px;
+}
+.segment-table tr td:last-child {
+    padding-left: 30px;
+}
+.segment-table .bus {
+    vertical-align: top;
+    padding-top: 10px;
+}
+.segment-table .pesh {
+    vertical-align: middle;
+}
+.segment-table .pesh img {
+    vertical-align: bottom;
+}
+.segment-title {
+    font-weight: bold;
+    font-size: large;
+}
+</style>
+{%endblock%}
+
+{% block content %}
+<div class="ui grid gvote_comment" {% if gvote.show_comment %}style="display:block"{%else%}style="display:none"{% endif %}>
+    <div class="center aligned column">
+        <div class="ui form">
+            <div class="field">
+                <textarea rows="3" cols="40" placeholder="Почему вам не нравится сайт?"></textarea>
+            </div>
+        </div>
+        <a class="ui button" onclick="ajax_gvote_comment()">отправить разработчикам</a>
+        <!-- <input class="take_photo" type="file" accept="image/*" capture="camera" /> -->
+    </div>
+</div>
+
+<!-- меню выбора города -->
+{% include 'index-menu.html' %}
+<!-- поиск маршрута -->
+{% include 'from-to.html' %}
+
+{% if route_title %}
+
+    {% if trip is None %} {# вывод списка вариантов #}
+
+        <div class="ui stackable grid" style="margin-bottom: 1em; margin-top: 1rem;">
+            <!--заголовок-->
+            <div class="row" style="padding: 0 1rem; margin-bottom: 4px;">
+                <div class="sixteen wide column center aligned color-0-bg" style="padding: 20px 0;">
+                    <h2>{{route_title|safe}}</h2>
+                </div>
+            </div>
+            <!--варианты-->
+            {% for trip in trips %}
+                <div class="eight wide column">
+                    <a href="/{{us.city.slug}}/busstops_trip?stop_from={{stop_from|urlencode}}&stop_to={{stop_to|urlencode}}&trip={{forloop.counter0}}" class="trip-link">
+                        <table class="trip-table">
+                            <tr>
+                                <td width="50%" class="trip-title" style="padding-top:25px;">{{trip.title|safe}}</td>
+                                <td width="*" class="gray trip-peresadka" style="padding-top:25px;">{{trip.peresadka|safe}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {% for segment in trip.segments %}
+                                        {% if not forloop.first %}
+                                            <img src='https://cdn.bustime.loc/static/img/space.png' style='margin: 7px;'>
+                                        {% endif %}
+                                        <img src="{{segment.icon}}">
+                                        {% if segment.bus_name %}
+                                            <strong class='ui label num_bus_route bus-name'>{{segment.bus_name|safe}}</strong>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                {% if trip.segments.0.stops %}
+                                    {% if trip.segments.0.type == 'foot' %}
+                                        От ост. "{{trip.segments.0.stops.1|safe}}"
+                                    {% else %}
+                                        От ост. "{{trip.segments.0.stops.0|safe}}"
+                                    {% endif %}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: 0 10px 25px 25px;">
+                                    {% if trip.segments.0.time_bst %}
+                                        Следующий в <b>{{trip.segments.0.time_bst|safe}}</b>
+                                    {% elif trip.segments.1.time_bst %}
+                                        Следующий в <b>{{trip.segments.1.time_bst|safe}}</b>
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% elif trip %} {# вывод детализации выбранного варианта #}
+
+        <div class="ui stackable grid">
+            <!--заголовок-->
+            <div class="row" style="padding: 0 1rem; margin-top: 1rem">
+                <div class="sixteen wide column center aligned color-0-bg" style="padding: 20px 0;">
+                    <table style="width: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <!--кнопка Назад-->
+                            <td width="50px" rowspan="2" style="vertical-align: middle;">
+                                <button class="ui icon button" onclick="window.history.back();" title='{%trans "Назад" %}'>
+                                    <i class="fa fa-angle-double-left fa-lg" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                            <!--До остановки ...-->
+                            <td width="*" colspan="3"><h2>{% trans "До ост." %} {{trip.end|safe}}</h2></td>
+                        </tr>
+                        <tr>
+                            <!--название сегмента (общее время)-->
+                            <td class="segment-title">{{trip.title|safe}}</td>
+                            <td><!--пусто--></td>
+                            <!--кол-во пересадок-->
+                            <td>{{trip.peresadka|safe}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!--иконки-->
+            <div class="row" style="padding: 0 1rem;">
+                <div class="sixteen wide column center aligned" style="padding: 20px 0; background-color: #FAFAFA; border-bottom: 1px solid #EAEAEA">
+                    {% for segment in trip.segments %}
+                        {% if not forloop.first %}
+                            <!--разделитель иконок-->
+                            <img src='https://cdn.bustime.loc/static/img/space.png' style='margin: 7px;'>
+                        {% endif %}
+                        <img src="{{segment.icon}}"><!--тип транспорта-->
+                        {% if segment.bus_name %} <!--название маршрута-->
+                            <strong class='ui label num_bus_route bus-name'>{{segment.bus_name|safe}}</strong>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <!--детализация-->
+            <div class="two column centered row">
+                <div class="column">
+                    <table cellspacing="0" cellpadding="0" class="segment-table">
+                        {% for segment in trip.segments %}
+
+                            {% if segment.type == "bus" %} <!--транспорт-->
+                                <!--название остановки от которой едем-->
+                                <tr>
+                                    <td><p class="d1"></td>
+                                    <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops.0|safe}}&raquo;</td>
+                                </tr>
+                                <!--описание поездки-->
+                                <tr>
+                                    <td><hr noshade class="v1"></td>
+                                    <td class="bus">
+                                        <!--иконка типа транспорта-->
+                                        <div>
+                                            <img src="{{segment.icon}}">
+                                            {% if segment.bus_name %}
+                                                <strong class='ui label num_bus_route bus-name'>{{segment.bus_name|safe}}</strong>
+                                            {% endif %}
+                                        </div>
+                                        <!--направление маршрута-->
+                                        <div class="gray">
+                                            Направление &laquo;{{segment.direction_s|safe}}&raquo;
+                                        </div>
+                                        <br>
+                                        <!--Время прихода следующего автобуса-->
+                                        {% if segment.time_bst %}
+                                        <div>
+                                            Следующий в <b>{{segment.time_bst|safe}}</b>
+                                        </div>
+                                        {% endif %}
+                                        <!--Кол-во остановок-->
+                                        <div>
+                                            {{segment.stops|length}} остановок / {{segment.time_s}}
+                                        </div>
+                                        <br>
+                                        <!--На какой остановке выходить-->
+                                        <div class="gray">
+                                            Выходить на ост. &laquo;{{segment.stops|last|safe}}&raquo;
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% if forloop.last %}
+                                    <!--если это последний сегмент, выводим название последней остановки-->
+                                    <tr>
+                                        <td><p class="d1"></td>
+                                        <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops|last|safe}}&raquo;</td>
+                                    </tr>
+                                {% endif %}
+
+                            {% elif segment.type == "foot" %} <!--пешеход-->
+
+                                {% if forloop.first %}
+                                    <!--если это первый сегмент, выводим точку A-->
+                                    <tr>
+                                        <td>
+                                            <strong class='ui label num_bus_route a1'>A</strong>
+                                        </td>
+                                        <td class="segment-title">{% trans "Мой GPS" %}</td>
+                                    </tr>
+                                {% else %}
+                                    <!--если это промежуточный сегмент, выводим назвние остановки от которой топаем-->
+                                    <tr>
+                                        <td><p class="d1"></td>
+                                        <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops.0|safe}}&raquo;</td>
+                                    </tr>
+                                {% endif %}
+
+                                <!--расстояние, время-->
+                                <tr>
+                                    <td><hr noshade class="v2"></td>
+                                    <td class="pesh">
+                                        <img src="{{segment.icon}}">&nbsp;&nbsp;&nbsp;{{ segment.distance|floatformat:0 }} м. / {{segment.time_s}}
+                                    </td>
+                                </tr>
+
+                                {% if forloop.last %}
+                                    <!--если это последний сегмент, выводим точку B-->
+                                    <tr>
+                                        <td>
+                                            <strong class='ui label num_bus_route a1'>B</strong>
+                                        </td>
+                                        <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops|last|safe}}&raquo;</td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %} <!--elif segment.type == "foot"-->
+
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}<!--else if trip is None-->
+
+{% endif %}<!--if route_title-->
+
+
+
+<!--
+<br><br><b>Выбранный маршрут</b><br><code>trip={{trip}}</code>
+<br><br><b>Все маршруты</b><br><code>{{trips}}</code>
+<br><br>
+-->
+
+
+{%endblock%}
+
+{% block body_end %}
+<script data-main="https://cdn.bustime.loc/static/js/require-main" src="https://cdn.bustime.loc/static/js/require-2.1.20.js"></script>
+<script>
+function js_page_extra(){
+    // инициализация контролов выбора остановок (from-to.html)
+    if (typeof(fromToInit) == 'function') {
+        fromToInit();
+    }
+    $('.ui.dropdown').dropdown();
+
+    websconnect();  // для работы функций определеня положения по GPS браузера (bustime-main.js)
+}
+</script>
+{% endblock %}

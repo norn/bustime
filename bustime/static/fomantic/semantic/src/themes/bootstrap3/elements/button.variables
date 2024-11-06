@@ -1,0 +1,62 @@
+/* -------------------
+   Button Variables
+-------------------- */
+
+/* Button Variables */
+@pageFont:
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    sans-serif;
+@textTransform: none;
+@fontWeight: @normal;
+@textColor: rgba(51, 51, 51, 1);
+
+@borderRadius: @4px;
+
+@lineHeight: 1.42857;
+@verticalPadding: 0.8571em;
+@horizontalPadding: 0.8571em;
+
+@backgroundColor: @white;
+@backgroundImage: none;
+
+@borderBoxShadowColor: rgba(0, 0, 0, 0.14);
+
+@green: #5cb85c;
+@red: #d9534f;
+@blue: #337ab7;
+@green: #60b044;
+@orange: #f0ad4e;
+
+@primaryColor: @blue;
+@secondaryColor: @green;
+
+@labeledIconBackgroundColor: transparent;
+
+@basicBorderSize: 0;
+@basicColoredBorderSize: 0;
+@invertedBorderSize: 0;
+
+@basicActiveBackground: transparent;
+@basicHoverBackground: transparent;
+@basicDownBoxShadow:
+    0 0 0 1px #adadad inset,
+    0 3px 5px rgba(0, 0, 0, 0.125) inset;
+
+@groupButtonOffset: 0 0 0 -1px;
+@verticalGroupOffset: 0 0 -1px 0;
+
+/* States */
+
+@hoverBackgroundColor: #e6e6e6;
+@hoverBoxShadow: 0 0 0 1px #adadad inset;
+
+@downBackgroundColor: #e6e6e6;
+@downBoxShadow:
+    0 0 0 1px #adadad inset,
+    0 3px 5px rgba(0, 0, 0, 0.125) inset;
+
+@activeBackgroundColor: #e6e6e6;
+
+@disabledOpacity: 0.65;

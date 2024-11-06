@@ -1,0 +1,45 @@
+.ui.button {
+    background: linear-gradient(to bottom, #f7f8fa, #e7e9ec) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+.ui.primary.button {
+    color: #111;
+    border: 1px solid;
+    border-color: #c59f43 #aa8326 #957321;
+}
+.ui.primary.button:hover {
+    border-color: #c59f43 #aa8326 #957321;
+    color: #111;
+}
+
+.ui.secondary.button {
+    border: 1px solid;
+    border-color: #3d444c #2f353b #2c3137;
+}
+.ui.secondary.button:hover {
+    border-color: #32373e #24282d #212429;
+}
+
+.ui.labeled.icon.buttons .button > .icon,
+.ui.labeled.icon.button > .icon {
+    padding-bottom: 0.48em;
+    padding-top: 0.48em;
+    position: absolute;
+    text-align: center;
+    width: 2em;
+    height: 2em;
+    top: 0.35em;
+    left: 0.4em;
+    border-radius: 3px;
+}
+.ui.right.labeled.icon.buttons .button > .icon,
+.ui.right.labeled.icon.button > .icon {
+    left: auto;
+    right: 0.4em;
+    border-radius: 3px;
+}
+
+.ui.basic.labeled.icon.buttons .button > .icon,
+.ui.basic.labeled.icon.button > .icon {
+    padding-top: 0.4em !important;
+}

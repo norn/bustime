@@ -1,0 +1,40 @@
+﻿{# машина такси в списке машин (bustime/templates/index.html) #}
+{% load i18n %}
+<div id="taxi_{{taxi.id}}" class="column ui unstackable items">
+    <div class="item taxi">
+        <a class="ui small image" style="width:110px !important">
+            <img src="/static/{{taxi.car.photo}}" style="max-height:100px; max-width:110px; object-fit:cover;">
+        </a>
+        <div class="content" style="padding: 4px 4px 4px 8px;">
+            <a class="header" style="width: 100%;">
+                <table style="width: 100%; border-collapse:collapse;">
+                    <tr>
+                        <td width="90%">{{taxi.car.model}}</td>
+                        <td style="white-space: nowrap">
+                            <div class="rating">
+                              <i class="star yellow icon"></i>{{taxi.driver_rating}}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </a>
+            <div class="meta">
+                <span>{{taxi.car.color}}</span>
+            </div>
+            <div class="description">
+                <p>
+                    <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                        <tr>
+                            <td style="width: 70%;">
+                                <a class="ui basic label">{{taxi.car.gos_num}}</a>
+                            </td>
+                            <td id="taxi_{{taxi.id}}_distance" style="text-align: right; font-weight: bold;">
+                                &nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </p>
+            </div>
+        </div>
+    </div>
+</div><!--column-->

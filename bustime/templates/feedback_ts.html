@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% load thumbnail %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block title %}{{city.name}} - {% trans "Отзывы о ТС" %} {{vehicle.uniqueid}}{% endblock %}
+{% block titlee %}{{city.name}} - {% trans "Отзывы о ТС" %} {{vehicle.uniqueid}}{% endblock %}
+{% block meta_descr %}{% trans "Отзывы о ТС" %}{% endblock %}
+
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}feedback/{{vehicle.uniqueid}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}feedback/{{vehicle.uniqueid}}/">
+{% get_available_languages as LANGUAGES %}
+{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}feedback/{{vehicle.uniqueid}}/" />
+{% endfor %}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/feedback/">{% trans "Отзывы" %}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/feedback/{{vehicle.uniqueid}}">{{vehicle.uniqueid}}</a>
+</div>
+<div class="ui divider"></div>
+<div>
+    <h2 style="display: inline"> {% trans "Информация о ТС" %} </h2>
+    <a href="/{{city.slug}}/transport/{{city.now.year}}-{{city.now.month}}-{{city.now.day}}/{{vehicle.uniqueid}}/" class="ui green button" style="float:right" target="_blank">{% trans "журнал" %}</a>
+</div>
+<div class="information">
+    {%if  vehicle.gosnum %} {% trans "Гос.№" %}: {{vehicle.gosnum}}<br/><br/> {% endif %}
+    {%if  vehicle.bortnum %}  {% trans "Борт.№" %}: {{vehicle.bortnum}}<br/><br/> {% endif %}
+    {%if  vehicle.ramp %} {% trans "Низкопольность" %}: да<br/><br/> {% endif %}
+    {%if  vehicle.model %} {% trans "Модель ТС" %}: {{vehicle.model}}<br/><br/> {% endif %}
+    {%if  bus %} {% trans "Маршрут" %}: <a href="{{bus.get_absolute_url}}"> {{bus}} </a><br/><br/> {% endif %}
+    {%if  bus.provider %}{% trans "Перевозчик" %} :<a href="{{bus.provider.get_absolute_url}}"> {{bus.provider}}</a><br/><br/>{% endif %}
+
+    {% trans "Статус" %}:<a href="{{bus.get_online_url}}">
+      {% if not event %}
+         {% trans "оффлайн" %}
+      {% elif event.zombie %}
+         {% trans "зомби" %}
+      {% elif event.sleeping %}
+         {% trans "на перерыве" %}
+      {% else %}
+         {% trans "онлайн" %}
+      {% endif %}</a> {% if event %} ({% trans "обновление" %}: {{ event.last_changed }}){% endif %}<br/>
+
+</div>
+
+
+
+<h2>{% trans "Отзывы" %}</h2>
+<table class="ui celled table">
+     <thead>
+    <tr><th>{% trans "Дата" %}</th>
+    <th>{% trans "Комментарий" %}</th>
+    <th>{% trans "Оценка" %}</th>
+    <th>{% trans "Автор" %}</th>
+  </tr></thead>
+    <tbody>
+    {% for vo in votes %}
+        <tr>
+            <td data-label='{% trans "Дата" %}'>{{vo.ctime}}</td>
+            <td data-label='{% trans "Комментарий" %}'>{{vo.comment}}</td>
+            <td width="10%" data-label='{% trans "Оценка" %}'>
+                {% if vo.stars %}
+                    {% for s in vo.stars_as_list %}<i class="fa fa-star"></i>{% endfor %}
+                {% else %}
+                    {% if vo.positive%}
+                        <i class="fa-thumbs-o-up icon"></i>
+                    {%else%}
+                        <i class="fa-thumbs-o-down icon"></i>
+                    {% endif%}
+                {% endif %}</td>
+    <td data-label='{% trans "Автор" %}'>{% if vo.name %}{{vo.name}}{% elif vo.us.name %}{{vo.us.name}}{% endif %}</td>
+         </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<!--
+<h2>{% trans "Изменения статуса" %}</h2>
+
+
+<table class="ui celled table">
+  <thead><tr><th>{% trans "Дата" %}</th>
+    <th>{% trans "Изменение" %}</th>
+  </tr></thead>
+    <tbody>
+        {% for status in statuses %}
+        <tr>
+            <td data-label='{% trans "Дата" %}'>{{status.city_time.date}} {{status.city_time.time}}</td>
+            <td data-label='{% trans "Изменение" %}'>{{status.get_status_display}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>{% trans "Изменения гос.№" %}</h2><br>
+
+<table class="ui celled table">
+    <thead><tr><th>{% trans "Дата" %}</th>
+    <th>{% trans "Изменение" %}</th>
+  </tr></thead>
+ {% for n in news %}
+    <tbody>
+        <tr>
+            <td data-label='{% trans "Дата" %}'>{{n.ctime}}</td>
+            <td data-label='{% trans "Изменение" %}'>{{n.body}}</td>
+        </tr>
+    </tbody>
+{% endfor %}
+</table> -->
+
+<br/>
+
+{% endblock %}

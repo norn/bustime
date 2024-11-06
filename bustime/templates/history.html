@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% load thumbnail %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "История изменений" %}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url}}">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url}}history/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url}}history/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block nav_history %}active{%endblock%}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    {% trans "История изменений" %}
+</div>
+<div class="ui divider"></div>
+
+<h2>{{place.name}}: {% trans "история изменений" %}</h2>
+<table class="ui celled table">
+    <thead>
+        <tr>
+            <th>{% trans "Новость" %}</th>
+            {% if user and user.is_staff %}<th>{% trans "Ссылка" %}</th>{% endif %}
+            <th>{% trans "Автор" %}</th>
+            <th>{% trans "Дата" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% autoescape off %}
+        {% for n in news %}
+        <tr>
+            <td data-label='{% trans "Новость" %}'>{{n.body}}</td>
+            {% if user and user.is_staff %}
+            <td data-label='{% trans "Ссылка" %}'>
+                {% if n.news_link %}<a href="{{n.news_link}}" target="_blank">{% trans "Просмотр" %}</a>{% endif %}
+            </td>
+            {% endif %}
+            <td data-label='{% trans "Автор" %}'>
+                {% if user and user.is_staff %}<a href="/wiki/auth/user/{{n.author.id}}/change/" target="_blank">{% endif %}
+                {% if n.author %}{{n.author.first_name|default:n.author.id}}{%endif%}
+                {% if user and user.is_staff %}</a>{% endif %}
+            </td>
+            <td data-label='{% trans "Дата" %}'>{{n.ctime|date:"d.m.y H:i"}}</td>
+        </tr>
+        {% endfor %}
+        {% endautoescape %}
+    </tbody>
+</table>
+
+<!--кнопки страниц-->
+<!--
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right menu">
+            {% for p in news.paginator.page_range %}
+            <a class="{% if p == news.number %}active {%endif%}item" href="/{{place.slug}}/history/page-{{p}}/">{{p}}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+-->
+
+
+<!--для компьютеров-->
+{% if not device %}
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right menu">
+
+<!--кнопки 1ая и следующая страница-->
+            {% if news.has_previous %}
+            <a class="item" href="/{{place.slug}}/history/page-{{news.previous_page_number}}/"><i class="arrow left icon" style="color:#81899E;"></i></a>
+            {% endif %}
+
+            {% if news.next_page_number > 11 or not news.has_next and news.number > 11  %}
+            <a class="item" href="/{{place.slug}}/history/page-1/">1</a>
+            <div class="disabled item">...</div>
+            {% endif %}
+
+<!--основное постраничное меню-->
+            {% for p in news.paginator.page_range %}
+                {% if p == news.number %}
+                <a class="current active item" href="/{{place.slug}}/history/page-{{p}}/"><b>{{p}}</b></a>
+
+                {% elif news.number < 10 and p < 20 %}
+                <a class="item" href="/{{place.slug}}/history/page-{{p}}/"> {{p}} </a>
+
+                {% elif news.number|add:'10' > news.paginator.num_pages and p > news.paginator.num_pages|add:'-20' %}
+                <a class="item" href="/{{place.slug}}/history/page-{{p}}/"> {{p}}</a>
+
+                {% elif p > news.number|add:'-10' and p < news.number|add:'10' %}
+                <a class="item" href="/{{place.slug}}/history/page-{{p}}/"> {{p}} </a>
+                {% endif %}
+            {% endfor %}
+<!--кнопки следующая и последняя страница-->
+            {% if news.number|add:'9' < news.paginator.num_pages %}
+            <div class="disabled item">...</div>
+            <a class="item" href="/{{place.slug}}/history/page-{{news.paginator.num_pages}}/">{{news.paginator.num_pages}}</a>
+            {% endif %}
+
+            {% if news.has_next %}
+            <a class="item" href="/{{place.slug}}/history/page-{{news.next_page_number}}/"><i class="arrow right icon" style="color:#81899E;"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!--для мобильных-->
+{% if device %}
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right mini menu">
+<!--кнопки 1ая и следующая страница-->
+            {% if news.has_previous %}
+            <a class="item" href="/{{place.slug}}/history/page-{{news.previous_page_number}}/"><i class="arrow left icon" style="color:#81899E; width:3px;"></i></a>
+            {% endif %}
+
+            {% if news.next_page_number > 3 or not newa.has_next and news.number > 3 %}
+            <a class="item" href="/{{place.slug}}/history/page-1/">1</a>
+            <div class="disabled item">...</div>
+            {% endif %}
+
+<!--основное постраничное меню-->
+            {% for p in news.paginator.page_range %}
+                {% if p == news.number %}
+                <a class="current active item" href="/{{place.slug}}/history/page-{{p}}/"><b>{{p}}</b></a>
+
+                {% elif news.number < 2 and p < 5 %}
+                <a class="item" href="/{{place.slug}}/history/page-{{p}}/"> {{p}} </a>
+
+                {% elif news.number|add:'2' > news.paginator.num_pages and p > news.paginator.num_pages|add:'-3' %}
+                <a class="item" href="/{{place.slug}}/history/page-{{p}}/"> {{p}}</a>
+
+                {% elif p > news.number|add:'-2' and p < news.number|add:'2' %}
+                <a class="item" href="/{{place.slug}}/history/page-{{p}}/"> {{p}} </a>
+                {% endif %}
+            {% endfor %}
+<!--кнопки следующая и последняя страница-->
+            {% if news.number|add:'1' < news.paginator.num_pages %}
+            <div class="disabled item">...</div>
+            <a class="item" href="/{{place.slug}}/history/page-{{news.paginator.num_pages}}/">{{news.paginator.num_pages}}</a>
+            {% endif %}
+
+            {% if news.has_next %}
+            <a class="item" href="/{{place.slug}}/history/page-{{news.next_page_number}}/"><i class="arrow right icon" style="color:#81899E; width:3px;"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

@@ -1,190 +1,521 @@
-{% spaceless %}<!doctype html>
-<html lang="ru">
+{% load i18n %}{% load european_union_tag %}{% load russia_or_not_tag %}{% get_current_language as LANGUAGE_CODE %}{% load static %}{% spaceless %}<!doctype html>
+{% with js_ver="14" css_ver="3" %}
+<html lang="{{LANGUAGE_CODE}}">
 <head>
   <meta charset="UTF-8"/>
-  <title>{% block titlee %}{% if force_city %}Где сейчас автобусы в {{us.city.name_gde}}? Данные в режиме онлайн{%else%}Время Автобуса: онлайн отслеживание общественного транспорта{%endif%}{% endblock %}</title>
-  <meta name="description" content="{% block meta_descr %}{% if force_city %}Подробная информация об общественном транспорте {{us.city.name_o}}. Непрерывные обновления в реальном времени. {% if us.city.name == "Томск" %}Троллейбусы и трамваи {%else%}Автобусы{%endif%} на карте, маршруты, расписание.{%else%}Узнайте где сейчас едет нужный вам автобус, троллейбус или трамвай в режиме онлайн. Информация о маршрутах и другие полезные сервисы для пассажиров.{%endif%}{% endblock %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
+  <link rel="manifest" href="https://bustm.net/static/img/favicons/bustime.webmanifest">
+  <link rel="mask-icon" href="{% static 'img/favicons/safari-pinned-tab.svg' %}" color="#ffe216">
+  <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
+  <meta name="msapplication-TileColor" content="#ffe216">
+  <meta name="msapplication-config" content="{% static 'img/favicons/browserconfig.xml' %}">
+  <title>{% block titlee %}{% if place %}{{place.name}} - {% trans "маршруты онлайн" %}{%else%}{% if LANGUAGE_CODE == "ru" %}Время Автобуса{% else %}Bustime{% endif %}{%endif%}{% endblock %}</title>
+
+<meta name="description" content="{% block meta_descr %}{% if place %}{% trans "Отслеживает, где автобусы онлайн в" %} {{place.name}}{% else %}
+{% trans "Онлайн автобусы, троллейбусы и трамваи по данным GPS"%}{% endif %}.
+{% trans "Маршруты, расписание в реальном времени и поиск проезда на общественном транспорте" %}.{% endblock %}">
   {% if main_page %}
-  <meta property="og:url" content="http://www.bustime.ru/">
-  <meta property="og:description" content="{% if force_city %}Подробная информация об общественном транспорте {{us.city.name_o}}. Непрерывные обновления в реальном времени. {% if us.city.name == "Томск" %}Троллейбусы и трамваи {%else%}Автобусы{%endif%} на карте, маршруты, расписание.{%else%}Узнайте где сейчас едет нужный вам автобус, троллейбус или трамвай в режиме онлайн. Информация о маршрутах и другие полезные сервисы для пассажиров.{%endif%}">
+    <meta property="og:url" content="https://{{domain}}/">
+  <meta property="og:description" content="{% if place %}{{place.name}} - {% trans "Подробная информация об общественном транспорте" %}. {% trans "Непрерывные обновления в реальном времени" %}. {% trans "Автобусы на карте, маршруты, расписание" %}.{%else%}{% trans "Сервис отслеживает онлайн где сейчас едут автобусы, троллейбусы и трамваи по данным GPS" %}. {% trans "Маршруты городского транспорта, расписание и другая информация для пассажиров" %}.{%endif%}">
   {% endif %}
-  <meta property="og:title" content="{% block title %}Время Автобуса{% endblock %}">
-  <meta property="og:image" content="http://www.bustime.ru/static/img/bustime-2.0.png">
-  <meta property="vk:image" content="http://www.bustime.ru/static/img/bustime-2.0.png">
+  <meta name="keywords" content="{% trans "автобусы" %}, {% trans "маршруты online" %}, {% trans "городской транспорт" %} {{us.city.name}}, {% trans "где едет" %}, {% trans "движение" %}, {% trans "положение" %}, {% trans "информационное табло" %}, {% trans "в режиме реального времени" %}, {% trans "на карте" %}, {% trans "остановки" %}, {% trans "схема движения" %}, {% trans "транспорт онлайн" %}{% if LANGUAGE_CODE == "ru" %}, бастайм{% endif %}">
+  <meta property="og:title" content="{% block title %}{% trans "Время Автобуса" %}{% endblock %}">
+  <meta property="og:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta property="vk:image" content="https://{{domain}}/static/img/bustime-2.0.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="theme-color" content="#b30000">
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name='yandex-verification' content='7c3105fdd9a6e1bc' />
   <meta name="format-detection" content="telephone=no">
 
-  <link rel="image_src" href="http://www.bustime.ru/static/img/bustime-2.0.png"> <!-- for vk_share -->
-  <link rel="apple-touch-icon" href="/static/img/icon_60px.png" />
-  <link rel="apple-touch-icon" sizes="76x76" href="/static/img/icon_76px.png" />
-  <link rel="apple-touch-icon" sizes="120x120" href="/static/img/icon_120px.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="/static/img/icon_152px.png" />
-  <!-- <link rel="icon" sizes="192x192" href="/static/img/icon_192.png"> -->
-
-  {% block stylesheet %}
-  {% if us.font_big %}<link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=cyrillic,latin' rel='stylesheet' type='text/css'>{% endif %}
-
-  {% if test %}
-    <!-- <link rel="stylesheet" href="/static/css/semantic-full.min.css" type="text/css" /> -->
-    <link rel="stylesheet" href="/static/css/leaflet.css" />
-    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
-    {% if main_page %}
-    <link rel="stylesheet" href="/static/css/semantic-main.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/bustime-page.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/bustime-main.css" type="text/css" />
-    {% else %}
-    <link rel="stylesheet" href="/static/css/semantic-page.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/bustime-page.css" type="text/css" />
-    {% endif %}
+  <link rel="image_src" href="https://{{domain}}/static/img/bustime-2.0.png">
+  <link rel="apple-touch-icon" href="{% static 'img/icon_60px.png' %}" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/icon_76px.png' %}" />
+  <link rel="apple-touch-icon" sizes="120x120" href="{% static 'img/icon_120px.png' %}" />
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icon_152px.png' %}" />
+  <script src="{% static 'js/fast-json-patch.min.js' %}"></script>
+  <!-- <link rel="icon" sizes="192x192" href="{% static 'img/icon_192.png' %}"> -->
+  <link rel="preload" as="script" href="{% static 'js/system.min.js' %}">
+  <link rel="preload" href="{% static 'fonts/fontawesome-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+  {% if test %} {# Use cookie with name 'debug' and value 1 for this #}
+    {# see Gruntfile.js cssmin #}
+    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/jquery.modal.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'maplibre/maplibre-gl.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-maplibre.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-main.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-page.css' %}" type="text/css" />
   {% else %}
-    {% if main_page %}
-      <link rel="stylesheet" href="/static/css/base-main-477.css" type="text/css" />
-    {% else %}
-      <link rel="stylesheet" href="/static/css/base-page-474.css" type="text/css" />
-    {% endif %}
+    <link rel="stylesheet" href="{% static 'css' %}/base-union-{{css_ver}}.css" type="text/css" />
   {% endif %}
 
-  {% if us.theme %}<link rel="stylesheet" href="/static/css/bustime-theme-{{us.theme}}.css" type="text/css" />{% endif %}
-  {% if us.premium and main_page %}<link rel="stylesheet" href="/static/css/bustime-premium.css" type="text/css" />{% endif %}
-  {% if us.premium and main_page and us.vip %}<link rel="stylesheet" href="/static/css/bustime-premium-vip.css" type="text/css" />{% endif %}
-  {% endblock %}
+  {% if us.theme %}<link rel="stylesheet" href="{% static 'css/bustime-theme-{{us.theme}}.css' %}" type="text/css" />{% endif %}
+  {% if main_page and 'alex' in us.get_groups %}<link rel="stylesheet" href="{% static 'css/bustime-premium-vip.css' %}" type="text/css" />{% endif %}
 
-  {% if not test %}{% include "_ga.html"%}{%endif%}
+  {% if us.font_big %}<!-- mmm, sexy -->
+  <style>html,body {font-size:15px;}
+    @font-face {
+    font-family: 'PT Sans';
+    src: url("{% static 'fonts/PTS55F_W.eot' %}");
+    src:
+    url("{% static 'fonts/PTS55F_W.eot?#iefix' %}") format('embedded-opentype'),
+    url("{% static 'fonts/PTS55F_W.woff' %}") format('woff'),
+    url("{% static 'fonts/PTS55F_W.ttf' %}") format('truetype'),
+    url("{% static 'fonts/PTS55F_W.svg#PTSans-Regular' %}") format('svg');
+    font-weight: 400;
+    font-style: normal;
+  } @font-face {
+    font-family: 'PT Sans';
+    src: url("{% static 'fonts/PTS75F_W.eot' %}");
+    src:
+    url("{% static 'fonts/PTS75F_W.eot?#iefix' %}") format('embedded-opentype'),
+    url("{% static 'fonts/PTS75F_W.woff' %}") format('woff'),
+    url("{% static 'fonts/PTS75F_W.ttf' %}") format('truetype'),
+    url("{% static 'fonts/PTS75F_W.svg#PTSans-Bold' %}") format('svg');
+    font-weight: 700;
+    font-style: normal;
+  }</style>{% endif %}
 
+  <style>
+    .dark_theme {
+        filter: invert(1) hue-rotate(180deg) brightness(0.8) grayscale(70%);
+    }
+    .dark_theme body, .dark-theme body.pushable > .pusher {
+        background: #d3d3d3;
+    }
+    .dark_theme #main_bases_map {
+        filter: invert(1) hue-rotate(180deg) brightness(1.25) grayscale(0%) saturate(250%);
+    }
+    .dark_theme #maplibre {
+        filter: invert(1) hue-rotate(180deg) brightness(1.25) grayscale(0%) saturate(250%);
+    }
+  </style>
+  {% if us.speed_show and main_page %}<script src="{% static 'js/raphael-2.2.1.min.js' %}"></script>{% endif %}
   {% block extra_head %}{% endblock %}
+  <script>{% include "_js_init.html" %}</script>
+  <script>
+    if (us_dark_theme === "on" || (us_dark_theme === "auto" && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark_theme');
+    }
+
+{% if place %} {% if main_page or uevents_on_map_page %}
+  var path_dump = "{% static 'other/db/v8/' %}" + {{place.id}} + '-' + {{place.dump_version}} + '.json';    // + '?v={{dump_size|default:0}}';
+  var path_diff = "{% static 'other/db/v8/' %}" + {{place.id}} + '-' + {{place.dump_version}} + '-' + {{place.patch_version}} + '.json.patch';
+  {% if dump_size %}var dump_size = {{dump_size}};var diff_size = {{diff_size}};{% endif %}
+{% endif %} {% endif %}
+
+function loading_done() {
+      osd = document.querySelector('.osd_message');
+      osd_text = document.querySelector('.osd_message_text');
+      if (osd_text) {osd_text.textContent = ''}
+
+      setTimeout(function() {
+       if (osd) {osd.style.display = 'none'}
+      }, 250); // give user time to enjoy
+    if (typeof hashcheck === "function") {
+      hashcheck();
+    }
+}
+
+function diff_dump(db) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', path_diff);
+
+  xhr.onprogress = function(event) {
+      const prc = Math.round(event.loaded / diff_size * 100);
+      if (osd_text) { osd_text.textContent = 'DB patch: '+prc+'%'; }
+  };
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      diff_from_server = JSON.parse(xhr.responseText);
+      // применяем разницу к исходной бд
+      jsonpatch.applyPatch(db, diff_from_server);
+      loading_done();
+    } else {
+      console.error(`Error ${xhr.status}: ${xhr.statusText}`);
+      loading_done();
+    }
+  };
+
+  xhr.onerror = function() {
+    console.error('Patch request error');
+  };
+ xhr.send();
+}
+
+function dbget(model, id=null, field=null, meta=false) {
+    let db = DB;
+    if (db == null) return null;
+    if (id == null) return DB[model];
+    if (field != null) {
+        let index = db[model + '__meta'] != null && db[model + '__meta']['fields'] != null ?
+            db[model + '__meta']['fields'].indexOf(field) : -1
+        if (index < 0) return null;
+        if (db[model] != null && db[model][id] != null) {
+            return db[model][id][index];
+        }
+    } else if (meta && db[model + '__meta'] != null && db[model + '__meta']['fields'] != null) {
+        if (db[model] != null && db[model][id] != null) {
+            let o = {};
+            db[model][id].forEach(function(e, i) {
+                o[db[model + '__meta']['fields'][i]] = e;
+            });
+            return o;
+        }
+    } else if (!meta && db[model] != null && db[model][id] != null) {
+        return db[model][id]
+    }
+    return null;
+}
+
+function dbgetsafe(model, id=null, field=null, meta=false) {
+  return dbget(model, id, field, meta) || {}
+}
+</script>
 </head>
 
-{% block body %}
-<body>
-
-<div class="ui sidebar inverted vertical menu">
-  {% if main_page %}
-     <div class="item">
-      <a class="ui small orange icon button" target="_blank" href="https://play.google.com/store/apps/details?id=com.indie.bustime" title="Приложение для Android"><i class="fa fa-android icon"></i></a>
-      <a class="ui small orange icon button" target="_blank" href="https://itunes.apple.com/ru/app/bustime-vrema-avtobusa!/id879310530" title="Приложение для Apple"><i class="fa fa-apple icon"></i></a>
-      <!-- <a class="ui tiny orange icon button" target="_blank" href="https://vk.com/bustimeweb" title="группа в Вконтакте"><i class="fa fa-vk icon"></i></a> -->
-      <div class="ui small orange icon button" onclick="radio_play()" title="Электронная музыка из Швейцарии, Нидерландов и Болгарии"><i class="fa-music icon" skip_seconds="{{radio.skip_seconds}}"></i></div>
-      {% if avg_temp > 0 %}+{%endif%}{{avg_temp}}&deg;
-    </div>
-  {% endif %}
-
-    <a class="item {% block nav_main %}{%endblock%}" href="/">Время Автобуса<i class="fa fa-home icon"></i></a>
-    <!-- <a class="item {% block nav_settings %}{% endblock %}" href="/settings/">Настройки <i class="fa fa-cog icon"></i></a> -->
-    <a class="item {% block nav_rating %}{% endblock %}" href="{{us.city.get_absolute_url}}rating/">Рейтинг<i class="fa fa-line-chart icon"></i></a>
-    <a class="item {% block nav_schedule %}{%endblock%}" href="{{us.city.get_absolute_url}}schedule/">Расписание<i class="fa fa-calendar-o icon"></i></a>
-    <a class="item" href="{{us.city.get_absolute_url}}monitor/">Статистика<i class="fa fa-coffee icon"></i></a>
-    <a class="item {% block nav_classic %}{%endblock%}" href="http://www.bustime.ru{{us.city.get_absolute_url_classic}}">Классика<i class="fa fa-phone icon"></i></a>
-    {% if us.premium %}
-    <a class="item {% block nav_radar %}{%endblock%}" href="/radar/">Радар<i class="fa fa-map-o icon"></i></a>{% endif %}
-    <a class="item {% block nav_help %}{% endblock %}" href="/help/">Помощь <i class="fa fa-life-ring icon"></i></a>
-    {% if us.city.name == "Красноярск" %}
-    <a class="item {% block nav_pro %}{% endblock %}" href="/pro/">Премиум <i class="fa fa-diamond icon"></i></a>{%endif%}
+{% block body %}<body>
+  <div class="ui sidebar inverted vertical massive menu" style="width:19rem">
+    <a href="/{% if us.place %}{{us.place.slug}}/{% else %}spb/{% endif %}settings_profile/" id="link_profile" class="item {% block nav_settings_profile %}{% endblock %} profile_in_menu">
+        <img id="avatar_profile" src="{%  if us.driver_ava %} {% static 'img/ava/{{us.driver_ava}}.png' %} {% else %} {% static 'img/empty_ava.png' %}{% endif %}">
+        <div style="margin: 10px; display: inline-block;">{% if user.is_authenticated %} {% if us.user.first_name %}{{us.user.first_name}} {{us.user.last_name}} {% else %} {% trans "Имя не установлено" %} {% endif %} {% else %} {% trans "Войти в профиль" %} {% endif %}</div>
+    </a>
+    {% if not select %}
+    <a class="item {% block nav_main %}{%endblock%}" href="/{% if us.place %}{{us.place.slug}}{% else %}spb{% endif %}/">{% if us.place %}{{us.place.name}}{% else %}{% trans "Санкт-Петербург" %}{% endif %}<i class="fa-home icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_schedule %}{%endblock%}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}timetable/">{% trans "Расписание" %} <i class="fa-calendar-o icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_company %}{%endblock%}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}company/">{% trans "Перевозчики" %} <i class="fa-clone icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_stop %}{%endblock%}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}stop/">{% trans "Остановки" %}<i class="fa-bus icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_transport %}{% endblock %}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}transport/" title="{% trans "Транспортный журнал - обмен данными, события и трэки" %}">{% trans "Журнал" %} <i class="fa-list-alt icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_chat %}{% endblock %}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}chat/">{% trans "Чат" %} <i class="fa-comment icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_rating %}{% endblock %}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}top/">{% trans "Рейтинг" %}<i class="fa-line-chart icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_history %}{% endblock %}" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}history/">{% trans "История изменений" %}<i class="fa-newspaper-o icon" aria-hidden="true"></i></a>
+    {% endif %}
      <!-- <a class="item" href="/about/">Блог</a> -->
-    <a class="item {% block nav_contacts %}{% endblock %}" href="/contacts/">Контакты <i class="fa fa-envelope-o icon"></i></a>
-    <a class="item {% block nav_about %}{% endblock %}" href="/about/">О проекте <i class="fa fa-question icon"></i></a>
+    <a class="item {% block nav_about %}{% endblock %}" href="/about/">{% trans "О проекте" %} <i class="fa-question icon" aria-hidden="true"></i></a>
+    <div style="text-align: center;">
+    <img src="{% static 'img/bustime-logo-driver.png' %}" width="125" height="40" alt="Эмблема bustime" style="margin:12px 0;{%if not us.premium%}opacity: 0.2;{% else %}opacity: 0.62;{%endif%}"/></div>
 
-    <div class="item">
-      <div class="menu">
-        <a class="item {%if us.city.id == 10%}active{%endif%}" href="/kazan/">
-          Казань</a>
-        <a class="item {%if us.city.id == 3%}active{%endif%}" href="/krasnoyarsk/">
-          Красноярск</a>
-        <a class="item {%if us.city.id == 9%}active{%endif%}" href="/perm/">
-          Пермь</a>
-        <a class="item {%if us.city.id == 5%}active{%endif%}" href="/spb/">
-          Санкт-Петербург</a>
-        <a class="item {%if us.city.id == 7%}active{%endif%}" href="/tomsk/">
-          Томск</a>
-      </div>
+    {% if main_page %}
+    <audio id="groove" preload="none">
+     {% if us.radio == "lay" %}
+      <source src="http://ice1.somafm.com/groovesalad-64-aac" />{% endif %}
+     {% if us.radio == "rok" %}
+      <source src="http://nashe.streamr.ru/rock-64.mp3" />{% endif %}
+     {% if us.radio == "shans" %}
+     <source src="http://chanson.hostingradio.ru:8041/chanson64.mp3" /> {% endif %}
+      {% if us.radio == "elect" %}
+    <source src="http://r1.electron.fm:8000/256" />{% endif %}
+      {% if us.radio == "pop" %}
+    <source src="https://bustime.loc/radio1.aac" />{% endif %}
+    </audio>
+    {% endif %}
     </div>
 
 
+  <div class="pusher">
+    <div class="ui padded stackable {% if template_name == "demo_show.html" %}three column{% endif %} center aligned horizontally grid yheader" {% if weather == "fog" %} style="filter:blur(2px)"{%endif%}> <!-- mobile tablet computer only -->
 
+    {% if template_name == "demo_show.html" %}<div class="center aligned column color-0-bg">
+    <br/><br/>
+    <div style="font-size:2rem;font-weight:bold;color:#555">{% if avg_temp > 0 %}+{%endif%}{{avg_temp}}˚</div><br/><br/><div style="font-size:2rem;font-weight:bold;color:#555">{{domain}}</div>
+    </div>
+    {% endif %}
 
-  </div>
-  <div class="pusher"> <!-- sidebar pusher -->
-    <div class="ui center aligned padded grid yheader"> <!-- mobile tablet computer only -->
-      <div class="three wide column color-0-bg"></div>
-        <div class="ten wide column color-0-bg">
-                <center>
-                <a href="http://www.bustime.ru" class="bustime-logo{%if us.premium%}-pro{%endif%}" alt='Время Автобуса' title="Время Автобуса">
-                </a></center>
+        <div class="center aligned column color-0-bg" style="padding-top: 2.5rem!important">
 
-                <a class="logo_header" href="http://www.bustime.ru" title="Время Автобуса - показывает онлайн где сейчас едут автобусы, троллейбусы и трамваи">Время Автобуса</a>
-                <div style="height:7px"></div>
-                <center><div id="vk_like"></div></center>
+                {% block headbread %}
+                <a href="/" class="hidden bustime-logo{% if us.premium or 1 %}-pro{%endif%}"></a>
+                <a class="logo_header" href="/{% if us.place %}{{us.place.slug}}/{% endif %}"><img src="https://bustm.net/static/img/logo_green.png" style="height: 28px;"></a>
+                {% endblock headbread %}
+
+                {% if main_page and 0 %}
+                <div class="ui labeled button" onclick="ajax_gvote(0)">
+                  <div class="ui small icon button">
+                    <i class="{% if gvote.positive == False %}fa-thumbs-down{%else%}fa-thumbs-o-down{%endif%} icon"></i>
+                  </div>
+                  <div class="ui basic label gvote_down_cnt">
+                  {{gvotes.0}}
+                  </div>
+                </div>
+                <div class="ui labeled button" onclick="ajax_gvote(1)">
+                  <div class="ui small icon button">
+                    <i class="{% if gvote.positive == True %}fa-thumbs-up{%else%}fa-thumbs-o-up{%endif%} icon"></i>
+                  </div>
+                  <div class="ui basic label gvote_up_cnt">
+                    {{gvotes.1}}
+                  </div>
+                </div>
+                {%endif%}
+
           </div>
-          <div class="three wide column color-0-bg">
+
+          {% if template_name == "demo_show.html" %}<div class="column color-0-bg"></div>{% endif %}
+      </div>
+      <div id="loader" class="ui active slow blue double massive loader" style="display: none;"></div>
+
+      <div id="map_container">
+          <!--maplibre-->
+          <div id="maplibre" style="display:none; z-index:1;">
+              <div class="layers_selection">
+
+                  <div class="ui icon toggle button layers_button">
+                      <i class="fa-clone link icon"></i>
+                  </div>
+
+                  <div id="layers_checkbox" style="display: none;">
+                      <input type="checkbox" class="layers_checkbox" id="poi-level-1" value="poi-level-1"><label for="poi-lever-1">  POI </label><br>
+                  </div>
+              </div>
+
+              <div class="ui search address">
+                  <div id="ml_search" class="ui big icon input">
+                      <input id="ml_search_input" class="prompt" type="text" placeholder="{% trans "Search" %}...">
+                      <i id="ml_search_icon" class="search link icon"></i>
+                  </div>
+              </div>
+
+              <div class="ui search address from_to from search_address" style="margin-top: 55px;">
+                  <div class="ui icon input">
+                      <input type="text" class="prompt from" placeholder="{% trans "Откуда" %}">
+                      <i id="from_icon" class="fa-map-marker link icon"></i>
+                  </div>
+              </div>
+              <div class="ui search address from_to to search_address" style="margin-top: 90px;">
+                  <div class="ui icon input">
+                      <input type="text" class="prompt to" placeholder="{% trans "Куда" %}">
+                      <i id="to_icon" class="fa-map-marker link icon"></i>
+                  </div>
+              </div>
+
+              <div class="ui search search_stop stop_from" style="margin-top: 55px; display: none;">
+                  <div class="ui input">
+                      <input type="text" class="prompt" placeholder="{% trans "Откуда(остановка)" %}">
+                  </div>
+              </div>
+              <div class="ui search search_stop stop_to" style="margin-top: 90px; display: none;">
+                  <div class="ui input">
+                      <input type="text" class="prompt" placeholder="{% trans "Куда(остановка)" %}">
+                  </div>
+              </div>
+
+              <div class="selection_type_transport" style="margin-top: 135px; z-index: 2;">
+                  <div class="ui icon compact menu selection_transport" style="font-size: .8rem;">
+                      <a class="active item" id="car"><i class="fa fa-car" aria-hidden="true"></i></a>
+                      <a class="item" id="bus"><i class="fa fa-bus" aria-hidden="true"></i></a>
+                      <a class="item" id="foot"><i class="fa fa-male" aria-hidden="true"></i></a>
+                      <a class="item" id="bike"><i class="fa fa-bicycle" aria-hidden="true"></i></a>
+                  </div>
+              </div>
+
+              {% if user.is_staff and 0 %}<pre id="lonlatinfo"></pre>{% endif %}
+
           </div>
       </div>
 
-      <!-- TABLETS <div class="ui tablet computer only grid"><div class="column"> -->
-
-      <div class="main_container ui container">
+      <div id="main_container" {% if not main_page or status_page %}class="ui container"{% endif %} style="margin-top:1rem">
       {% block content %}{% endblock %}
-      </div>
 
+      {% if not us.city.sat %}
+      <div class="ui equal width column stackable grid" style="margin-top: 2rem">
 
-      <div class="ui container footer_container">
-        <div class="ui divider"></div>
-        <div class="ui horizontal small divided link list">
-        <div class="item">{% now "Y" %} Время Автобуса</div>
-        <a class="item" href="/contacts/">Контакты</a>
-        <a class="item" href="http://www.bustime.ru{{us.city.get_absolute_url_classic}}">Классика</a>
-        <a class="item" href="/help/">Помощь</a>
+        {% if us.expert %}
+        <div class="column">
+          <div class="ui fluid two item labeled icon secondary menu">
+              <a class="item" onclick="radio_gplay()"><i class="fa-music fa fa-fw" title="{% trans "Включить радио" %}"></i>{% trans "Радио" %}</a>
+              <a class="item show_matrix_button" title="{% trans "Скрыть или показать таблицу маршрутов" %}"><i class="fa-table fa fa-fw"></i><span id="show_matrix_button">{%if us.matrix_show %}{% trans "Скрыть" %}{%else%}{% trans "Показать" %}{%endif%}</span>{% trans " маршруты" %}</a>
+          </div>
         </div>
-
-      {% if main_page %}
-      <div class="ui vertical small link list">
-        {% if us.city.name == "Красноярск" %}
-        <a class="item" href="http://www.mu-kgt.ru/" target="_blank" rel="nofollow">МКУ Красноярскгортранс</a>
-        <a class="item" href="http://www.krasinform.ru/" target="_blank" rel="nofollow">ЗАО КрасИнформ</a>
-        {% elif us.city.name == "Санкт-Петербург" %}
-        <a class="item" href="http://transport.orgp.spb.ru/" target="_blank" rel="nofollow">Организатор перевозок</a>
-        {% elif us.city.name == "Пермь" %}
-        <a class="item" href="http://gortransperm.ru/" target="_blank" rel="nofollow">МБУ Городское
-управление транспорта</a>
-        {% elif us.city.name == "Казань" %}
-        <a class="item" href="http://data.kzn.ru/" target="_blank">Открытые данные Казани</a>
         {% endif %}
+
+        <div class="column">
+          <div class="ui fluid five item labeled icon secondary small menu" style="opacity: 0.8;">
+            <a class="item" href="/open-letter-for-transport-data/"><i class="fa-bullhorn icon" aria-hidden="true"></i>
+              {% trans "Открытые данные" %}</a>
+            <a class="item" href="/services/"><i class="fa-plus icon" aria-hidden="true"></i> {% trans "Подключение" %}</a>
+            <a class="item" href="/blog/"><i class="fa-rss icon" aria-hidden="true"></i>{% trans "Блог" %}</a>
+         
+           
+           {% if LANGUAGE_CODE == "ru" %}
+             <a class="item" rel="noreferrer" target="_blank" href="https://vk.com/bustimeweb" aria-label="Страница Bustime в Вконтакте"><i class="fa-vk icon"></i>Вконтакте</a>
+           {% else %}
+             <a class="item" rel="noreferrer" target="_blank" href="https://github.com/norn/bustime" aria-label="{% trans "Исходные коды Bustime на Github" %}"><i class="fa-github icon"></i> Github</a>
+           {% endif %}
+            <a class="item" href="/help/"><i class="fa-question-circle-o icon" aria-hidden="true"></i>{% trans "Помощь" %}</a>
+          </div>
+        </div>
+         <div class="column center aligned">
+        </div>
       </div>
-      {% endif %}<br/>
+
+          <br/><br/>
+           <div class="ui stackable three column left aligned grid">
+              <div class="column" style="padding:0.1em">
+            {% if main_page and city.gps_data_provider %}<div class="ui horizontal large link list">
+            <span class="item" style="margin-right:0.4em">{% trans "Данные" %}:</span>
+            <a class="item" style="margin-right:0.4em" rel="noopener" href="{{city.gps_data_provider_url}}" target="_blank">{{city.gps_data_provider}}</a>
+            {% if place.slug == "krasnoyarsk" or place.slug == "norilsk" or place.slug == "zheleznogorsk" %}
+            <a class="item" style="margin-right:0.4em" rel="noopener" href="http://www.krasinform.ru/" target="_blank">ЗАО КрасИнформ</a>
+            {% endif %}
+            {% if place.slug == "perm" %}
+            <a class="item" style="margin-right:0.4em" rel="noopener" href="http://gortransperm.ru/" target="_blank">МБУ Городское управление транспорта</a>
+            {% endif %}
+            {% if place.slug == "lisbon" %}
+            <a class="item" style="margin-right:0.4em" rel="noopener" href="https://www.carris.pt/" target="_blank">Carris</a>
+            {% endif %}
+            </div>
+            {% endif %}
+              </div>
+              <div class="column" style="padding:0.1em"><div class="ui horizontal large link list">
+               <span class="item" style="margin-right:0.4em">{% trans "Поддержка" %}:</span>
+               <a class="item" style="margin-right:0.4em" href="mailto:support@bustime.loc"> you@e.mail</a></div>
+              </div>
+
+              <div class="column" style="padding:0.1em"><div class="ui horizontal large link list">
+                <span class="item" style="margin-right:0.4em">
+                {% if LANGUAGE_CODE == "ru" %}Сделано в Сибири{% else %}&copy; {% now "Y" %} Bustime Unipessoal LDA {% endif %}
+                </span>
+                {% if LANGUAGE_CODE == "ru" %}
+                <a class="item" style="margin-right:0.4em" target="_blank" href="https://github.com/norn/bustime" aria-label="{% trans "Исходные коды Bustime на Github" %}"><i class="fa-github icon"></i> Github</a>
+                {% endif %}
+              </div>
+              </div>
+          </div>
+
+          <br/><br/>
+          <center>
+          <select name="select_language" class="ui selection long two column dropdown sel_lang_ftr">{% for code, lang in languages %}
+              <option value="{{code}}"{% if LANGUAGE_CODE == code %} selected {% endif %}>{{lang}}</option>{{ linebreaks }}{% endfor %}
+           </select>
+          </center>
+          <br/><br/><br/><br/>
 
 
-      <!-- <div class="ui mobile only grid"> -->
-      {% if not classic %}
-      <div class="ui blue launch right attached fixed large button" onclick="$('.ui.sidebar').sidebar('toggle');">
-        {% if us.premium %}<i class="fa fa-diamond icon"></i>{% else %}<i class="fa fa-bars icon"></i>{% endif %}
-        <span class="text">Меню</span>
-      </div>
+      {% if test %}<center><img src="{% static 'img/footer_stop_bw_light.png' %}" /></center>{% endif %}
+
+    {% if main_page %}
+    {% if us.attrs.live_indicator or not 'live_indicator' in us.attrs %}
+    <div class="ui grid live_indicators">
+        <div class="ui circular label live_indicators">
+            <div class="ui mini red empty circular label" id="status_city_circular"></div><span id="status_city_text">{% trans "Offline" %}</span>
+        </div>
+        <div class="center aligned column" style="padding:0;">
+            <div class="inf_about_data live_indicators"></div>
+            <div class="ui attached progress live_indicators"><div class="bar live_indicators" style="left: 0;"></div></div>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+
+
+      {% if main_page and us.expert %}
+      <!-- hack to prevent hiding of quick access -->
+      <br/><br/>
       {% endif %}
 
-    </div> <!-- sidebar pusher -->
+
+    </div></div> <!-- ui container -->
+
+    <!-- <div class="ui mobile only grid"> -->
+    <div class="ui blue icon launch right attached fixed big button" onclick="$('.ui.sidebar').sidebar('toggle')">
+        <i class="fa-bars icon"></i>
+    </div>
+    {% if main_page and not status_page %}
+    <!--base.html: кнопка карты maplibre, обработчик в static/js/bustime-maplibre.js-->
+    <div class="ui blue icon left attached fixed big button toggle maplibre_button">
+        <i class="fa-map-o icon"></i>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+  {% block js_extra %}{% endblock %}
 
   {% block js %}
-  {% if test %}
     {% if main_page %}
-    <script data-main="/static/js/require-main" src="/static/js/require-2.1.20.js"></script>
-    {% else %}
-    <script data-main="/static/js/require-page" src="/static/js/require-2.1.20.js"></script>
+    <script>
+    // заменяет ссылки на пустые
+    var busnumbers  = document.getElementsByClassName("busnumber");
+    for (var q = 0; q < busnumbers.length; q++) {
+        busnumbers[q].setAttribute('href', "#");
+    }
+    </script>
     {% endif %}
-  {%else%}
-    {% if main_page %}
-      <script data-main="/static/js/main-built-{% if not us.sound %}nosound-{%endif%}604" src="/static/js/require-2.1.20.js"></script>
-    {% else %}
-      <script data-main="/static/js/page-built-563" src="/static/js/require-2.1.20.js"></script>
-    {% endif %}
-  {%endif%}
+    <script src="{% static 'js/system.min.js' %}"></script>
+    {% if test %} {# Use cookie with name 'debug' and value 1 for this #}
+      <script type="systemjs-importmap" src="{% static 'importmap-test.json' %}"></script>
+      <script type="systemjs-importmap">
+        {
+          "imports": {
+              "bundle_built": "/static/js/bustime-main-entry.js"
+          }
+        }
+      </script>
+    {%else%}
+      <script type="systemjs-importmap" src="{% static 'importmap.json' %}?v7"></script>
+      <script type="systemjs-importmap">
+        {
+          "imports": {
+              "bundle_built": "{% static 'js' %}/bundle-built-{{ js_ver }}.js"
+          }
+        }
+      </script>
+    {%endif%}
+    <script type="systemjs-module" src="import:bundle_built"></script>
   {% endblock %}
 
 {% block body_end %}{% endblock %}
+</div><!--pusher-->
 
-{% if not test %}{% include "yandex_metrica.html" %}{%endif%}
+{% if place %} {% if main_page or uevents_on_map_page %}
+<script>
+const xhr = new XMLHttpRequest();
+xhr.open('GET', path_dump);
+var osd = document.querySelector('.osd_message');
+var osd_text = document.querySelector('.osd_message_text');
+var starttime = performance.now();
+
+xhr.onprogress = function(event) {
+    const prc = Math.round(event.loaded / dump_size * 100);
+    let executiontime = performance.now() - starttime;
+    if (osd) {
+        //osd.style.opacity = 1;
+        if (executiontime>750) { // don't blink on cached fully loaded data
+          osd.style.display = 'inline';
+        }
+        if (osd_text) { osd_text.textContent = 'DB loaded: '+prc+"%"; }
+    }
+};
+
+xhr.onload = function() {
+  if (xhr.status === 200) {
+    if (osd_text) {osd_text.textContent = ''}
+    DB = JSON.parse(xhr.responseText);
+
+    if (path_diff) {
+      diff_dump(DB); // после загрузки вызываем ф-ю применения дифа
+    } else {
+      loading_done();
+    }
+  } else {
+    console.error(`Error ${xhr.status}: ${xhr.statusText}`);
+  }
+};
+
+xhr.onerror = function() {
+  console.error('DB request error');
+};
+
+xhr.send();
+</script>
+{% endif %} {% endif %}
 </body>
 {% endblock %}
-</html>{% endspaceless %}
+</html>{% endwith %}{% endspaceless %}

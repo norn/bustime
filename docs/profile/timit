@@ -1,6 +1,0 @@
-t = timeit.Timer("foo()", "from __main__ import foo")
-
-
-# or hack
-# import __builtin__
-# __builtin__.__dict__.update(locals())

@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% load i18n %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+<h3 class="ui header">
+    {% trans "Инструкция по удалению аккаунта в Bustime " %} (<a href="https://itunes.apple.com/app/bustime-vrema-avtobusa!/id879310530">App Store</a>, <a href="https://play.google.com/store/apps/details?id=com.indie.bustime"> Google Play</a>)
+</h3>
+
+<p>{% trans "Чтобы удалить аккаунт в приложении Bustime нужно:" %}</p>
+
+<ul>
+    <li>{% trans "Написать письмо на почту " %} <a href="mailto:support@bustime.loc">support@bustime.loc</a>{% trans " с заголовком 'УДАЛЕНИЕ АККАУНТА' и в тексте письма добавить ваш ID. " %}
+    {% trans "Чтобы узнать свой ID, нужно открыть в приложении экран 'Диагностика'." %}</li>
+</ul>
+
+<p>{% trans "После этого в течение 90 дней ваш профиль будет удалён, включая: " %}</p>
+<ul>
+    <li>{% trans "номер телефона" %}</li>
+    <li>{% trans "имя пользователя" %}</li>
+</ul>
+
+{% endblock %}

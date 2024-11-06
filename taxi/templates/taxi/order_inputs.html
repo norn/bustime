@@ -1,0 +1,111 @@
+{# контролы заказа (кол-во пасс, стоимость, кнопка Голосовать) + список машин Хотят подвезти #}
+{% load i18n %}
+                <!--order_inputs.html, интерфейс пассажира - создание заказа-->
+                <script>
+                function plusValue(input){
+                    if( taxiuser.gps_on ) return;   /* Юзер в режиме "голосует", данные заказа менять нельзя */
+                    let v = parseInt($(`#${input}`).val() || '0');
+                    let d = (input == "passengers" ? 1 : 50);
+                    $(`#${input}`).val(v+d);
+                }
+
+                function minusValue(input){
+                    if( taxiuser.gps_on ) return;
+                    let v = parseInt($(`#${input}`).val() || '0');
+                    let d = (input == "passengers" ? 1 : 50);
+                    if(v > d){
+                        $(`#${input}`).val(v-d);
+                    }
+                }
+                </script>
+                <div id="taxi_order_params" class="ui two column centered stackable grid">
+                    <div class="four column centered row">
+                        <div class="center aligned column">
+                            <label>{% trans 'Пассажиров' %}</label><br>
+                            <div class="ui input right labeled {% if not taxiuser.user or taxiuser.gps_on %}disabled{% endif %}">
+                              <label for="passengers" class="ui label" onclick="minusValue('passengers')">
+                                  <i class="minus icon" style="margin: 0;"></i>
+                              </label>
+                              <input type="text" id="passengers" name="passengers" value="1"
+                                    style="width:14em;  text-align:center;">
+                              <div class="ui label" onclick="plusValue('passengers')">
+                                  <i class="plus icon" style="margin: 0;"></i>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="center aligned column">
+                            <label>{% trans 'Стоимость' %}</label><br>
+                            <div class="ui input right labeled {% if not taxiuser.user or taxiuser.gps_on %}disabled{% endif %}">
+                              <label for="price" class="ui label" onclick="minusValue('price')">
+                                  <i class="minus icon" style="margin: 0;"></i>
+                              </label>
+                              <input type="text" id="price" name="price" value="100"
+                                    style="width:14em;  text-align:center;">
+                              <div class="ui label" onclick="plusValue('price')">
+                                  <i class="plus icon" style="margin: 0;"></i>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="centered row">
+                        <div class="column">
+                            <label>{% trans 'Пожелания' %}</label><br>
+                            <div class="ui input {% if not taxiuser.user or taxiuser.gps_on %}disabled{% endif %}"
+                                    style="width:100%">
+                                <input type="text" id="note" name="note"
+                                    value="{{order.note|default:''}}" maxlength="150" style="width:100%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- order_inputs.html, кнопка Голосовать -->
+                    <div class="centered row">
+                        <div class="column">
+                            {% if user.is_authenticated %}
+                                <div id="taxi_controls" style="display: {% if taxiuser.id %}block{% else %}none{% endif %}">
+                                    <button id="taxiuser_passenger_start_stop" class="ui fluid button {% if not trips %}disabled{% endif %}"
+                                            style="color:{% if taxiuser.gps_on %}white{% else %}black{% endif %}; height:48px; background-color:{% if taxiuser.gps_on %}#EF3905{% else %}#FFDF32{% endif %};"
+                                            onclick="set_order();">{# order_create()/order_delete() in bustime_main.js #}
+                                        {% if taxiuser.gps_on %}
+                                            {% trans 'Прекратить голосовать' %}
+                                        {% else %}
+                                            {% trans 'Голосовать' %}
+                                        {% endif %}
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="ui secondary segment center aligned">
+                                    <a href="/register/">{% trans 'Зарегистрируйтесь' %}</a> {% trans 'чтобы голосовать' %}
+                                </div>
+                            {% endif %}
+                            <h3 id="header_offers" class="taxi_header"
+                                    style="float:left; display:{% if taxiuser.gps_on %}block{% else %}none{% endif %};">
+                                {% trans 'Хотят подвезти' %}
+                            </h3>
+                        </div><!--column-->
+                    </div><!--row-->
+
+                    <div id="div_wait_iffers" class="centered row"
+                            style="display:{% if taxiuser.gps_on and not offers %}block{% else %}none{% endif %};">
+                        <div class="center aligned column">
+                            <div class="ui secondary segment">
+                                {% trans 'Ожидаем предложений от водителей...' %}
+                            </div>
+                        </div>
+                    </div><!--row-->
+                </div><!--taxi_order_params grid-->
+
+                <div id="taxi_agreement" style="display: {% if taxiuser.id %}none{% else %}block{% endif %}">
+                    {% include "taxi/agreement1.html" with showname=1 %}
+                </div><!--taxi_agreement-->
+
+                <div id="offers" class="ui stackable two column centered grid">
+                    <!--order_inputs.html, Список машин Хотят подвезти - те машины, кто сделали предложение на заказ -->
+                    {% if offers %}
+                        {% for key, value in offers.items %}
+                        {% include 'taxi/offer_item.html' with taxi=value.taxi %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <!-- /order_inputs.html -->

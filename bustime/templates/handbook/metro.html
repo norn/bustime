@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Метро" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/metro.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Метро — это система городского общественного транспорта, состоящая из подземных, наземных и надземных железнодорожных линий. Оно предназначено для быстрой и регулярной перевозки большого числа пассажиров по фиксированным маршрутам с частыми остановками. Метро эффективно разгружает наземный транспорт и уменьшает пробки в городах." %}</p>
+</div>
+<br/><br/>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "base_empty.html" %}
+{% load cache %}
+{% load i18n %}
+{% load l10n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{{stop.name}} - {% trans "Остановочное табло" %}{% endblock %}
+{% block meta_descr %}{% trans "Остановочное табло" %}: {{stop.name}}, {{stop.city.name}}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}stop/id/{{stop.id}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}stop/id/{{stop.id}}/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}stop/id/{{stop.id}}/" />
+{% endfor %}
+
+<script>
+var stop_id = {{stop.id}};
+var stop_name = "{{stop.name}}";
+var stop_x = {{stop.point.x|unlocalize}};
+var stop_y = {{stop.point.y|unlocalize}};
+var us_id = {{us.id}};
+var city_timediffk = {{city.timediffk}};
+var vk_show_share = 0;
+var US_CITY_POINT_Y = {{city.point.y|unlocalize}};
+var US_CITY_POINT_X = {{city.point.x|unlocalize}};
+//var set_map_center = US_CITY_POINT_X+","+US_CITY_POINT_Y;
+var bus_list = [{% for b in stop.bdata %}{% if not forloop.first %}, {% endif %}{{b.bid}}{%endfor%}];
+</script>
+  <script src="https://cdn.bustime.loc/static/js/stop_info.js?v=4" type="text/javascript"></script>
+  <meta http-equiv="refresh" content="3600">
+  <style>
+  body {
+    background: #fff;
+    /*zoom: 1.3;
+    -moz-transform: scale(1.3);
+    -moz-transform-origin: 0 0;*/
+  }
+  #lmap {
+    height: 85vh;;
+  }
+  .secto {
+    overflow: hidden;
+    min-height: 600px;
+    /*max-width:100%;*/
+  }
+  .bigf {
+    font-size:3rem;
+    font-weight:bold;
+    color:#555;
+  }
+  .ui.table.tbigf {
+    font-size: 1.3em;
+  }
+  h1.ui.header {
+    font-size: 2rem;
+  }
+  .sect {
+    background-image: url({% if stop.tram_only %}https://cdn.bustime.loc/static/img/stop_n_tramway_600.png{% else%}https://cdn.bustime.loc/static/img/stop_n_bus_600.png{% endif %});
+    background-repeat: no-repeat;
+    display: block;
+    min-height: 550px;
+    background-position: left top;
+
+  }
+  .MapIconDiv {
+   height:43px;
+   font-size:16px;
+   border: 0px solid #fff;
+   border-radius: 2px;
+   white-space: nowrap;
+   line-height: 16px;
+   opacity: 0.9;
+   width: 50px!important;
+   filter: alpha(opacity=9);
+   text-align: center;
+  }
+
+  .MapIconDiv > .sprite-icons {
+    margin-top:-27px;
+    margin-left:-29px;
+  }
+  .ui.grid.grid {
+    margin: 0;
+  }
+  .table_column {
+    z-index: 1;
+  }
+  </style>
+{% endblock %}
+
+{%block content%}
+<!--ааа {{client}}-->
+<div class="ui padded stackable three column center aligned horizontally grid yheader">
+<div class="column color-0-bg bigf middle aligned">
+  {% if avg_temp > 0 %}+{%endif%}{{avg_temp}}˚C
+  {% if weather == "rain" %}<i class="fa fa-tint" title="{% trans "дождь" %}"></i>
+      {% elif weather == "snow" %}<i class="fa fa-snowflake-o" title="{% trans "снег" %}"></i>
+      {% elif weather == "ice" %}<i class="fa fa-snowflake-o" title="{% trans "град" %}"></i>
+      {% elif weather == "smoke" %}<i class="fa fa-recycle" title="{% trans "черное небо" %}"></i>
+      {% elif weather == "clear" %}<i class="fa fa-sun-o" title="{% trans "ясно" %}"></i>
+      {% elif weather == "clouds" %}<i class="fa fa-mixcloud" title="{% trans "облачно" %}"></i>
+      {% elif weather == "dark_clouds" %}<i class="fa fa-cloud" title="{% trans "пасмурно" %}"></i>
+      {% elif weather == "fog" %}<i class="fa fa-tree" title="{% trans "туман" %}"></i>
+      {% endif %}
+</div>
+<div class="column color-0-bg bigf middle aligned">
+  <h1 class="ui center aligned big header">{{stop.name}}
+  <div class="sub header">{{stop.city.name}}, {{now.date}}</div></h1>
+</div>
+<div class="column color-0-bg bigf stop_updated {{stop.id}} middle aligned">{{now.time}}</div>
+</div>
+
+<div class="ui responsive stackable grid">
+<!-- <div class="one wide center aligned column"> -->
+<!--<img src="https://placehold.it/200x550" style="max-width:100%"><br/>
+размещение рекламы:<br/> т.: 8-929-165-1337-->
+<!-- </div> -->
+<div class="five wide column table_column">
+<table class="ui unstackable striped table" id="dsel"><thead> <!-- Убрал tbigf из-за косяков в верстке -->
+<tr><th>{{domain}}</th><th><i class="fa fa-arrow-right"></i> {{stop.moveto}}</th><th>След.</th></tr></thead>
+<tbody class="stop_result {{stop.id}}">
+
+{% for b in stop.bdata %}
+<tr>
+    <td><b>{{b.t}}</b></td>
+    <td><div class="ui blue huge label">{{b.n}}{% if b.l.r %} +<i class="fa-wheelchair-alt fa"></i>{%endif%}</div></td>
+    <td><b>{% if b.t2 %}{{b.t2}}{% else %}&nbsp;{% endif %}</b></td>
+</tr>
+{% endfor %}
+
+</tbody></table>
+{% if 0 %} <video width="100%" height="" autoplay loop>
+  <source src="https://cdn.bustime.loc/static/other/videoads1.mp4" type="video/mp4" />
+</video>{%endif%}
+<!-- <iframe frameborder="0" width="100%" height="320"  src="https://app.biteable.com/watch/embed/bustimeru-ads-1172079?&autoplay=1"></iframe> -->
+
+</div>
+
+<div class="six wide column">
+  <div class="map"><div id="lmap"></div></div>
+</div>
+
+<div class="five wide column sect">
+
+</div>
+
+
+</div>
+
+
+
+
+
+{% endblock %}

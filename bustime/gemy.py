@@ -1,4 +1,6 @@
 #!/usr/bin/python
+from __future__ import absolute_import
+from __future__ import print_function
 import datetime
 
 class kml_render:
@@ -14,7 +16,7 @@ class kml_render:
                 <IconStyle>
                         <scale>0.6</scale>
                         <Icon>
-                                <href>http://www.bustime.ru/static/img/uico_busstop.png</href>
+                                <href>http://bustime.loc/static/img/uico_busstop.png</href>
                         </Icon>
                         <hotSpot x="0" y="0" xunits="pixels" yunits="pixels"/>
                 </IconStyle>
@@ -26,7 +28,7 @@ class kml_render:
         <Style id="bus-style">
                 <IconStyle>
                         <scale>1</scale>
-                        <Icon><href>http://www.bustime.ru/static/img/bus_front.png</href></Icon>
+                        <Icon><href>http://bustime.loc/static/img/bus_front.png</href></Icon>
                         <hotSpot x="0" y="0" xunits="pixels" yunits="pixels"/>
                 </IconStyle>
         </Style>
@@ -64,4 +66,4 @@ if __name__ == "__main__":
     kml = kml_render()
     kml.add_pnt(kml.ggpoint("bus-style", "nameXX", "descr", 92.9216, 56.0326))
     for i in kml.write_xml():
-        print i
+        print(i)

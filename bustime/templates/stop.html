@@ -1,0 +1,170 @@
+{% extends "base.html" %}{% load l10n %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Остановка" %} {{ustop.name}} - {{place.name}}{% endblock %}
+{% block meta_descr %}{% trans "Остановка общественного транспорта " %}{{ustop.name}} {% trans "в городе " %}{{place.name}}{% trans ". Маршруты онлайн, проходящие через остановку " %}{% for b in buses %}{{b.ttype_name}} {{b.name}} {% endfor %}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/{{place.slug}}/stop/{{stop.slug}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/{{place.slug}}/stop/{{stop.slug}}/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/{{place.slug}}/stop/{{stop.slug}}/" />
+{% endfor %}
+
+  <!--<script src="https://cdn.bustime.loc/static/js/stop.js?v=2" type="text/javascript"></script>-->
+  <script src="/static/js/stop.js?v=2" type="text/javascript"></script>
+  <style>#lmap {height: 300px;}</style>
+
+  <script type="text/javascript">
+  var trans_text_moveto = "{% trans "в сторону" %}";
+  var stop_selected = {id: {{stop.id}}, name:"{{stop.name}}", slug:"{{stop.slug}}", moveto:"{% if stop.moveto %}{{stop.moveto}}{%endif%}", x:{{stop.point.x|unlocalize}}, y:{{stop.point.y|unlocalize}}, tram_only:{% if stop.tram_only %}1{%else%}0{%endif%} };
+  var astops = { {% for stop in stops %}
+   {{stop.id}}: {id: {{stop.id}}, name:"{{ustop.name}}", moveto:"{% if stop.moveto %}{{stop.moveto}}{%endif%}", x:{{stop.point.x|unlocalize}}, y:{{stop.point.y|unlocalize}}, tram_only:{% if stop.tram_only %}1{%else%}0{%endif%} },
+  {% endfor %} };
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BusStop",
+    "name": "{{ustop.name}}",
+    "smokingAllowed": false,
+    "publicAccess": true,
+    "isAccessibleForFree": true,
+    "address": "{{stop.place.name}}",
+    "geo": {
+        "@type": "GeoCoordinates",
+        "longitude": {{stops.0.point.x|unlocalize}},
+        "latitude": {{stops.0.point.y|unlocalize}}
+     }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+    {
+        "@type": "ListItem",
+        "position": 1,
+        "item":
+        {
+            "@id": "https://bustime.loc/{{place.slug}}/",
+            "name": "{{place.name}}"
+        }
+    },
+    {
+        "@type": "ListItem",
+        "position": 2,
+        "item":
+        {
+            "@id": "https://bustime.loc/{{place.slug}}/stop/",
+            "name": "{% trans "Остановки" %}"
+        }
+    },
+    {
+        "@type": "ListItem",
+        "position": 3,
+        "item":
+        {
+            "@id": "https://bustime.loc/{{place.slug}}/stop/{{stop.slug}}/",
+            "name": "{{ustop.name}}"
+        }
+    }]
+  }
+  </script>
+
+{% endblock %}
+
+{% block nav_stop %}active{%endblock%}
+{%block content%}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/stop/">{% trans "Остановки" %}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{{ustop.name}}</div>
+</div>
+<div class="ui divider"></div>
+
+
+<div class="ui center aligned grid" data-nosnippet>
+  <div class="four wide column">
+     <img style= "width: auto;height:46px" src="https://cdn.bustime.loc/static/img/city/{{icon.fname}}" alt="{{icon.name}}" />
+     <!-- choose icon here -->
+  </div>
+  <div class="eight wide column"><h1 class="ui center aligned header">{{ustop.name}}<div class="sub header">{{place.name}}, {{now}}</div></h1>
+  </div>
+  <div class="four wide column">
+  </div>
+</div>
+
+
+<div class="ui grid" data-nosnippet><div class="column">
+<div id="lmap"></div></div></div>
+
+<div class="ui stackable grid">
+<div class="column" style="line-height:3rem">
+<h3>{% trans "Маршруты" %}:</h3>
+        {% for b in buses %}
+        <a class="ui basic button" href="{{b.get_absolute_url}}" target="_blank">{{b.ttype_name}} {{b.name}}</a>
+        {% endfor %}
+</div></div>
+<div class="ui stackable grid">
+{% for stop in stops %}
+<div class="eight wide column">
+
+<!-- {% if stop.tram_only %}
+<img src="https://cdn.bustime.loc/static/img/stop_n_tramway.jpg" alt="{% trans "остановка трамвая" %}" style="max-width:50%" />
+{% else%}
+<img src="https://cdn.bustime.loc/static/img/stop_n_bus.jpg" alt="{% trans "остановка автобуса" %}" style="max-width:50%" />
+{% endif %} -->
+
+
+<h3 class="ui header" data-nosnippet>
+{% if stop.tram_only %}<i class="fa fa-subway" style="margin-right:4px"></i>{%endif%}
+<i class="fa fa-arrow-right"></i> {{stop.moveto|default:""}}</h3>
+<div class="ui two column grid">
+<div class="column">
+<a class="ui labeled small icon button" href="/{{place.slug}}/stop/id/{{stop.id}}/" target="_blank"><i class="fa-desktop icon"></i> {% trans "табло" %}</a>
+</div>
+<div class="right aligned column">
+{% if us.premium %}
+<a class="ui labeled small icon button" href="/{{place.slug}}/stop/id/{{stop.id}}/edit/"><i class="fa-pencil-square-o icon"></i> {% trans "редактировать" %}</a>
+{% endif %}
+</div>
+
+</div>
+
+<table class="ui unstackable striped tbigf table" id="dsel"><thead>
+<tr><th>{% trans "время" %}</th><th>{% trans "маршруты" %}</th></tr></thead>
+<tbody>
+
+{% for b in stop.bdata %}
+{% ifchanged b.t %}
+{% if not forloop.first %}</td></tr>{%endif%}<tr><td><b>{{b.t}}</b></td><td>
+{% endifchanged %}
+<a class="ui basic blue button" href="{{b.bus_url}}" target="_blank">{{b.n}}{% if b.l.r %} +<i class="fa-wheelchair-alt fa"></i>{%endif%}</a>
+{% endfor %}
+
+
+</tbody></table>
+
+</div>
+{% endfor %}
+</div>
+
+{% if ads_show and 0 %}
+    <div class="ui center aligned stackable grid">
+    <div class="eight wide column adsense">
+    {% include "ads/stop_yandex_ru_1.html" %}
+    </div>
+    <div class="eight wide column adsense">
+    {% include "ads/stop_yandex_ru_2.html" %}
+    </div>
+    </div><br/><br/>
+{% endif %}
+
+
+
+
+{% endblock %}

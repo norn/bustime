@@ -1,0 +1,100 @@
+{% extends "base.html" %}{% load i18n %}
+{% block titlee %}Вакансии{% endblock %}
+{% block meta_descr %}Подробное описание проекта Время Автобуса. История, философия, ключевые возможности.{% endblock %}
+
+{% block nav_about %}active{%endblock%}
+{% block extra_head %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">Вакансии</div>
+</div>
+<div class="ui divider"></div>
+
+<img src="https://cdn.bustime.loc/static/img/bustime_bus_stop_3.png">
+<h1 class="ui header" >Работа в Bustime.ru
+<div class="sub header">окунись в идеальное место для работы за приятное вознаграждение</div></h1>
+<!-- <br/><br/> -->
+
+
+
+<!-- <div class="ui massive list">
+  <div class="item">
+    <i class="fa-building icon"></i>
+    <div class="content">
+      Офис в Калининграде
+    </div>
+  </div>
+  <div class="item">
+    <i class="home icon"></i>
+    <div class="content">
+      Удаленная работа
+    </div>
+  </div>
+</div> -->
+
+<div class="ui divider"></div>
+
+<h2 class="ui header">Python/Django full stack разработчик (Linux)
+<div class="sub header">Зарплата от 40 000 до 70 000 рублей</div></h2>
+
+<h3>Обязанности</h3>
+<div class="ui bulleted list">
+  <div class="item">Разработка нескольких проектов в рамках компании</div>
+  <div class="item">Сервисы в реальном времени на основе Websocket</div>
+  <div class="item">Скрипты, поддержка серверов, администрирование</div>
+  <div class="item">Улучшение производительности, профайлинг</div>
+</div>
+
+<h3>Требования</h3>
+<div class="ui bulleted list">
+  <div class="item">Python, Django</div>
+  <div class="item">Linux</div>
+  <div class="item">PostgreSQL, Redis</div>
+  <div class="item">JS, jQuery, CSS</div>
+  <div class="item">Semantic UI</div>
+  <div class="item">Способность работать автономно</div>
+</div>
+
+<h3>Условия</h3>
+<div class="ui bulleted list">
+  <div class="item">Удаленная работа</div>
+</div>
+
+
+
+<div class="ui blue labels">
+  <a class="ui label">
+    Python
+  </a>
+  <a class="ui label">
+    Django
+  </a>
+  <a class="ui label">
+    JavaScript
+  </a>
+  <a class="ui label">
+    PostgreSQL
+  </a>
+  <a class="ui label">
+    Redis
+  </a>
+  <a class="ui label">
+    HTML5/CSS
+  </a>
+  <a class="ui label">
+    Linux
+  </a>
+</div>
+
+<br/><br/>
+
+Резюме отправляйте на <a href="mailto:andrey.perliev@gmail.com">andrey.perliev@gmail.com</a>
+
+<br/><br/>
+
+{% endblock %}

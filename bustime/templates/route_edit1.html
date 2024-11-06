@@ -1,0 +1,237 @@
+{% extends "base.html" %}{% load l10n %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block titlee %}Описание {{bus.ttype_name}} {{bus.name}}, {{bus.city.name}}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{%block extra_head%}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{bus.get_absolute_url}}">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{bus.get_absolute_url}}">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{bus.get_absolute_url}}" />
+{% endfor %}
+
+<script src="https://cdn.bustime.loc/static/js/router1.js" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 550px;
+}
+.stop-hint-label {
+}
+#id_car_ids, #route_track {height:150px; width:100%;}
+#busy-indicator {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    left: 50%;
+    top: 50%;
+    display: none;
+}
+
+</style>
+{% endblock %}
+
+{% block nav_route %}active{%endblock%}
+{%block content%}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/">Главная</a><div class="ui divider"> / </div>
+  <a class="section" href="http://bustime.loc/{{city.slug}}/">
+  {{city.name}}</a><div class="ui divider"> / </div>
+  <div class="active section">{{bus.ttype_name}} {{bus.name}}</div>
+</div>
+<div class="ui divider"></div>
+
+<!--индикатор-->
+<img src="https://cdn.bustime.loc/static/img/rred64.gif" id="busy-indicator" />
+
+<b>Расчет маршрута из трека</b>
+<form action="./" method="post" id="calcForm">
+{% csrf_token %}
+<table class="ui table">
+    <col width="25%">
+    <col width="33%">
+    <col width="15%">
+    <col width="*">
+    <tr> <!-- 1 -->
+        <td class="ui right aligned">{{form.bus_name.label}}</td>
+        <td colspan="3" class="ui left aligned"><div class="ui fluid input">{{form.bus_name}}</div></td>
+    </tr>
+    <tr> <!-- 2 -->
+        <td rowspan="6" class="ui left aligned" style="vertical-align: top;">
+            <div>
+            {{form.dbs.label}}&nbsp;{{form.dbs}}&nbsp;&nbsp;{{form.dates.label}}&nbsp;{{form.dates}}
+            </div>
+            <br>
+            {{form.car_ids.label}}<br>{{form.car_ids}}
+        </td>
+        <td class="ui right aligned">{{form.clock_start.label}}</td>
+        <td class="ui left aligned">{{form.clock_start}}</td>
+        <td rowspan="6" class="ui left aligned" style="vertical-align: top;">
+            <input type="button" class="ui gray button" value="Трек" onclick="route_ajax_request_track(this.form)" />
+            <div>
+                Time&nbsp;Speed&nbsp;Az&nbsp;Lat&nbsp;Lon
+            </div>
+            <select name="route_track" id="route_track" size="20" onchange="route_draw_car(this)"></select>
+            <div>
+                <label><input id="route_track_pan_map" name="route_track_pan_map" type="checkbox" value="0"> Двигать карту</label>
+            </div>
+        </td>
+    </tr>
+    <tr> <!-- 3 -->
+        <td class="ui right aligned">{{form.clock_end.label}}</td>
+        <td class="ui left aligned">{{form.clock_end}}</td>
+    </tr>
+    <tr> <!-- 4 -->
+        <td class="ui right aligned">{{form.speed_max.label}}</td>
+        <td class="ui left aligned">{{form.speed_max}}</td>
+    </tr>
+    <tr> <!-- 5 -->
+        <td class="ui right aligned">{{form.precis.label}}</td>
+        <td class="ui left aligned">{{form.precis}}</td>
+    </tr>
+    <tr> <!-- 6 -->
+        <td class="ui right aligned">{{form.stop_radius.label}}</td>
+        <td class="ui left aligned">{{form.stop_radius}}</td>
+    </tr>
+    <tr> <!-- 7 -->
+        <td class="ui right aligned">{{form.min_recs_in_bound.label}}</td>
+        <td class="ui left aligned">{{form.min_recs_in_bound}}</td>
+    </tr>
+    <tr> <!-- 8 -->
+        <td colspan="4" class="ui right aligned">
+            <table style="width: 100%; border-collapse: collapse; margin:0;">
+                <col width="70%">
+                <col width="*">
+                <tr>
+                    <td style="padding:0; margin:0; text-align: left">
+                        <pre id="errors" style="width: 100%; padding:0; color:#CC3333; overflow: auto">
+                            {{ form.non_field_errors }}
+                            {% if form.subject.errors %}
+                                <ol>
+                                {% for error in form.subject.errors %}
+                                    <li><strong>{{ error|escape }}</strong></li>
+                                {% endfor %}
+                                </ol>
+                            {% endif %}
+                        </pre>
+                    </td>
+                    <td style="vertical-align: top; padding:0; margin:0;">
+                        <input type="button" class="ui blue button" value="Рассчитать" onclick="route_ajax_request(this.form)" />
+                        &nbsp;
+                        <input type="submit" class="ui blue button" value="Сохранить"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</form>
+
+<!--карта-->
+<div class="ui center aligned grid">
+   <div class="column"><div id="lmap"></div></div>
+</div>
+
+<!--
+Выбрана: <b class="bs_selected"></b><br/>
+
+<div class="ui two column stackable grid routes">
+<div class="column" id="route0">
+<h2 class="ui header">{{bus.napr_a}}</h2>
+
+{% verbatim %}
+<select class="ui fluid search dropdown busstop_selector_0">
+ <option v-for="busstop in busstops" value="{{busstop.id}}">
+ {{busstop.name}}->{{ busstop.moveto}} id={{busstop.id}}</option>
+</select>
+<button class="ui green button add_button"><i class="fa-plus icon"></i> Добавить</button>
+
+<div class="ui big divided relaxed list">
+<div class="item" v-for="r in route[0]" track-by="$index">
+<div class="compact ui small icon buttons" id="bs_{{busstops[r].id}}">
+  <button class="ui button down_button"><i class="fa-arrow-down icon"></i></button>
+  <button class="ui icon button anchor_button" ><i class="fa-anchor icon"></i></button>
+  <button class="ui button up_button"><i class="fa-arrow-up icon"></i></button>
+</div>
+  <button class="ui mini icon red button delete_button" style="margin-left:10px"><i class="fa-times icon"></i></button>
+<br/>
+{{ $index }}. <b>{{busstops[r].name}}</b> -> {{busstops[r].moveto}}
+</div>
+</div>
+
+<div class="ui message">[
+<template v-for="item in route[0]">{{ item }}, </template>
+  ]</div>
+{% endverbatim %}
+</div>
+
+<div class="column" id="route1">
+<h2 class="ui header">{{bus.napr_b}}</h2>
+
+{% verbatim %}
+<select class="ui fluid search selection dropdown busstop_selector_1">
+ <option v-for="busstop in busstops" value="{{busstop.id}}">
+ {{busstop.name}}->{{ busstop.moveto}} id={{busstop.id}}</option>
+</select>
+<button class="ui green button add_button"><i class="fa-plus icon"></i> Добавить</button>
+
+<div class="ui big divided relaxed list">
+<div class="item" v-for="r in route[1]" track-by="$index">
+<div class="compact ui small icon buttons" id="bs_{{busstops[r].id}}">
+  <button class="ui button down_button"><i class="fa-arrow-down icon"></i></button>
+  <button class="ui icon button anchor_button" ><i class="fa-anchor icon"></i></button>
+  <button class="ui button up_button"><i class="fa-arrow-up icon"></i></button>
+</div>
+  <button class="ui mini icon red button delete_button" style="margin-left:10px"><i class="fa-times icon"></i></button>
+<br/>
+{{ $index }}. <b>{{busstops[r].name}}</b> -> {{busstops[r].moveto}}
+</div>
+</div>
+
+<div class="ui message">[
+<template v-for="item in route[1]">{{ item }}, </template>
+  ]</div>
+</div>
+{% endverbatim %}
+</div>
+
+<br/><br/>
+<br/><br/>
+<br/><br/>
+<div class="ui center aligned two column grid">
+   <div class="column">
+    <a class="ui red button delete_button" href="../delete/"><i class="fa-remove icon"></i> Удалить маршрут</a>
+
+   </div>
+   <div class="column">
+    <button class="ui orange button save_button"><i class="fa-floppy-o icon"></i> Сохранить</button></center>
+   </div>
+</div>
+
+<br/><br/>
+<br/><br/>
+<br/><br/>
+ -->
+
+<script>
+{% include "_js_init.html" %}
+var route = {0:[], 1:[]};
+var bus_id = {{bus.id}};
+route[0] = [
+  {%for r in route0%}
+  {{r.busstop.id}},{%endfor%}
+];
+route0_paste = "123";
+route[1] = [
+  {%for r in route1%}
+  {{r.busstop.id}},{%endfor%}
+];
+
+var busstops = {
+{% for b in busstops %}
+ {{b.id}}: {id: {{b.id}}, name:"{{b.name}}", moveto:"{% if b.moveto %}{{b.moveto}}{%endif%}", x:{{b.point.x|unlocalize}}, y:{{b.point.y|unlocalize}} },
+{% endfor %} };
+</script>
+{% endblock %}{# {%block content%} #}

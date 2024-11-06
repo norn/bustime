@@ -1,0 +1,49 @@
+
+{% extends "base.html" %}
+{% block titlee %}Купить билет{% endblock %}
+{% block meta_descr %}Здесь вы можете приобрести билет на междугородний автобус онлайн.{% endblock %}
+
+{% block nav_buy %}active{%endblock%}
+
+ {% block js %}{% endblock %}
+ {% block extra_head %}
+ <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.0.min.js"></script>
+<script type="text/javascript" src="//widget.unitiki.com/widget.js"></script>
+<script type="text/javascript" src="https://cdn.bustime.loc/static/js/semantic-main.min.js"></script>
+
+ {% endblock %}
+
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">Купить билет</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui basic segment">
+  <p>Предлагаем приобрести билеты на автобусы дальнего следования по России и СНГ через наших партнеров.</p>
+  <p>Вы можете купить билет на автобус в любой удобный момент по оптимальной цене с оплатой онлайн. </p>
+
+</div>
+
+<div class="widget-unitiki"></div>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+<script type="text/javascript">
+    jQuery(function(){
+        jQuery('.widget-unitiki').unitikiWidgetRideSearch({
+            reference: 'bustime.ru',
+            orientation: 'auto',
+            logo: false,
+            showWidgetLoader: false
+        });
+    });
+</script>
+
+{% endblock %}

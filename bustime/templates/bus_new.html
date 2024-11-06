@@ -1,0 +1,43 @@
+{% extends "base.html" %}{% load cache %}{% load l10n %}{% load i18n %}
+
+{% block nav_main %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class=  "right angle icon divider"></i>
+  <div class="active section">Новый маршрут</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui grid">
+    <div class="column">
+
+<form action="./" method="post">{% csrf_token %}
+{{ form.non_field_errors }}
+
+<table class="ui table">
+  <tbody>
+    <tr><td>название</td><td><div class="ui fluid input">{{form.name}}</div>{{ form.name.errors }}</td></tr>
+    <tr><td>тип транспорта</td><td><div class="ui fluid input">{{form.type}}</div>{{ form.type.errors }}</td></tr>
+
+      <tr><td colspan="2" class="ui center aligned">
+        <input type="submit" class="ui blue button" value="Создать новый маршрут"/>
+      </td></tr>
+  </tbody>
+</table>
+
+
+</form>
+</div>
+</div>
+<br/><br/>
+
+<script>
+{% include "_js_init.html" %}
+
+</script>
+
+
+{% endblock %}

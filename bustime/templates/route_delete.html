@@ -1,0 +1,49 @@
+{% extends "base.html" %}{% load l10n %}{% load i18n %}
+{% block titlee %}Описание {{bus.ttype_name}} {{bus.name}}, {{place.name}}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{% block nav_route %}active{%endblock%}
+{%block content%}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/">Главная</a><div class="ui divider"> / </div>
+
+  <a class="section" href="http://bustime.loc/{{place.slug}}/">
+  {{place.name}}</a><div class="ui divider"> / </div>
+  <a class="section"  href="{{bus.get_absolute_url}}">{{bus.ttype_name}} {{bus.name}}</a>
+  <div class="ui divider"> / </div>
+  <div class="active section">Удаление</div>
+</div>
+<div class="ui divider"></div>
+
+
+
+<h1 class="ui header center aligned">{{bus.ttype_name}} {{bus.name}}
+<div class="sub header">{{bus.place.name}}</div>
+</h1>
+
+<br/><br/>
+
+<div class="ui center aligned grid">
+  <div class="ui warning message">
+    Вы дейстивительно хотите удалить этот маршрут?
+  </div>
+</div>
+<br/><br/>
+
+<div class="ui center aligned two column grid">
+   <div class="column">
+    <a class="ui button" href="../edit/"><i class="fa-undo icon"></i> отменить</a>
+
+   </div>
+   <div class="column">
+    <a class="ui red button" href="./yes/"><i class="fa-remove icon"></i> Подтвердить удаление {{bus}}</a></center>
+   </div>
+</div>
+
+<br/><br/>
+<br/><br/>
+<br/><br/>
+
+{% endblock %}

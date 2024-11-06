@@ -1,0 +1,628 @@
+{# список голосующих пассажиров #}
+{% extends "base.html" %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans 'Попутчик' %}{% endblock titlee %}
+
+{% block meta_descr %}
+{% trans "bustime-попутчик: Голосующие" %}.
+{% endblock meta_descr %}
+
+{% block nav_help %}active{% endblock nav_help %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="/static/{{request.resolver_match.app_name}}/css/taxi.css">
+{% endblock extra_head %}
+
+{% block content %}
+    <!-- orders.html -->
+    <div class="ui breadcrumb">
+        <a class="section" href="/{{request.session.city.slug}}/">{{request.session.city.name}}</a>
+        <i class="right angle icon divider"></i>
+        <a class="section" href="/{{request.session.city.slug}}/#carpool">{% trans "Попутчик" %}</a>
+        <i class="right angle icon divider"></i>
+        <div class="active section">{% trans "Голосующие" %}</div>
+    </div>
+
+    <div class="ui stackable two column centered grid">
+        <div class="column">
+
+            <div style="text-align:center; margin:1rem;">
+                <!-- taxi, кнопка водителя -->
+                {% if taxiuser.car_count > 0 %}
+                    <button id="taxiuser_driver_start_stop" class="ui fluid button"
+                            style="color:{% if taxiuser.gps_on %}white{% else %}black{% endif %}; background-color:{% if taxiuser.gps_on %}#EF3905{% else %}#FFDF32{% endif %}; height: 48px;"
+                            onclick="set_taxi_user('driver');">
+                        {% if taxiuser.driver and taxiuser.gps_on %}
+                            {% trans 'Прекратить подвозить' %}
+                        {% else %}
+                            {% trans 'Начать подвозить' %}
+                        {% endif %}
+                    </button>
+                {% endif %}
+            </div>
+
+            <div>
+                {% trans 'Пассажиров поблизости' %} (~{{near_distance}} км.): <span id="passengers_near">{{near_pass_count|default:0}}</span>
+            </div><!--TODO: посчитать пассажиров поблизости-->
+
+            <!--голосующие-->
+            <h3 class="taxi_header" style="margin-top: 1rem;">{% trans 'Голосуют' %}</h3>
+
+            <div id="modal_dialog" class="modal" style="z-index: 10">{# https://jquerymodal.com/ #}
+              <p></p>
+            </div>
+
+            <div id="order_grid" class="ui centered stackable grid">
+                {% for key, value in torders.items %}
+                {% include 'taxi/order_item.html' with order=value %}
+                {% endfor %}
+            </div><!--grid-->
+
+        </div><!--column-->
+    </div><!--grid-->
+    <!-- /orders.html -->
+{% endblock content %}
+
+{% block body_end %}
+<!-- orders.html -->
+<script>
+var near_distance = {{near_distance}} * 1000;   // метры расстояния до пассажира (пассажиров поблизости)
+var taxi_driver_timeout = '05:00';  // время ожидания ответа клиента на предложение подвезти
+var taxi_driver_timeouts = {};  // таймеры после нажатия кнопки Отказать или истечения времени ожидания клиента
+var taxi_driver_offer_ids = []; // массив ID заказов, на которые сделаны предложения
+
+document.addEventListener('readystatechange', function(){
+    // восстанавливаем таймеры/карты после перезагрузки страницы
+    if( document.readyState == 'complete' ){
+        if (typeof(start_location_service) == 'function')
+            start_location_service();
+
+        let offers = JSON.parse("{{offers_json|escapejs}}");
+        for (var key in offers) {
+            let order = offers[key];
+
+            if( taxi_driver_offer_ids.indexOf(parseInt(order.id)) < 0 ){
+                taxi_driver_offer_ids.push(parseInt(order.id));    // заполняем массив ID заказов
+            }
+
+            if( order.trip_status == 0 ){
+                // ожидает реакции пассажира, запустить таймер
+                let c = Cookies.get(`order_tout_${order.id}`) || taxi_driver_timeout;
+                startTimerWait(order.id, c);
+            }
+            else if( order.trip_status == 1 ){
+                // начат, показать карту
+                order_map_init(order);
+            }
+        }
+    }   // if( document.readyState == 'complete' )
+}); // document.addEventListener
+
+
+// инициализация карты заказа
+function order_map_init(order){
+    console.log('order_map_init', order);
+    $(`#offer_map_${order.id}`).show();
+
+    // готовим объект хранения карты (для каждого заказа свой)
+    //let position = JSON.parse(Cookies.get('gps_send_last'));
+    let position = window.gps_send_last;
+    let map = {
+        passenger_id: order.passenger.user,
+        passenger_marker: null,
+        car_id: order.taxist.car.id,
+        car_marker: null,
+        vlayer: L.featureGroup(),
+        olayer: new L.TileLayer(OSMURL, { minZoom: 1,maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
+    }
+    map['map'] = L.map(`offer_map_${order.id}`, {
+            layers: [map.olayer, map.vlayer],
+            center: [position.lat, position.lon], // координаты таксиста
+            zoom: 13
+        });
+
+    // карту - в список карт
+    taxi_maps[order.id] = map;
+
+    // выводим на карту:
+    // машину
+    taxi_map_set_marker(taxi_maps[order.id], 'car_marker', position.lat, position.lon, 'icon_d_24.png');    // in bustime_main.js
+
+    /* пассажира
+    wf_point = "SRID=4326;POINT (20.5505211 54.671261)"
+    wf_point.match(/[0-9.]+/gi) = [ "4326", "20.5505211", "54.671261" ]
+    */
+    let arr = order.wf_point.match(/[0-9.]+/gi);
+    if( arr.length == 3 ){
+        taxi_map_set_marker(taxi_maps[order.id], 'passenger_marker', arr[2], arr[1], 'icon_p_24.png', 'blinking');
+    }
+
+    taxi_fresh_map(order.id, position.lat, position.lon);   // in bustime_main.js
+}   // pass_map_init
+
+
+/* обновление всех карт заказов
+карты хранятся в taxi_maps, индекс по order_id
+order_id - ID заказа, может быть null для водителя (у него может быть много заказов)
+car_points - [lat, lon] машины, может быть null
+passenger_points - [lat, lon] пассажира, может быть null
+*/
+function order_map_update(order_id, car_points, passenger_points){
+    //console.log(`order_map_update order_id=${order_id}, car_points=${car_points}, passenger_points=${passenger_points}`);
+
+    if( order_id in taxi_maps) {
+        if( passenger_points && passenger_points.length > 1 ){
+
+            // обновляется позиция пассажира на карте по индексу order_id
+            taxi_map_set_marker(taxi_maps[order_id], 'passenger_marker', passenger_points[0], passenger_points[1], 'icon_p_24.png', 'blinking');
+            taxi_fresh_map(order_id, passenger_points[0], passenger_points[1]);
+
+        }
+        else if( car_points && car_points.length > 1 ){
+
+            // обновляется позиция машины на всех заказах
+            taxi_driver_offer_ids.forEach((order__id) => {
+                if( order__id in taxi_maps ){
+                    taxi_map_set_marker(taxi_maps[order__id], 'car_marker', car_points[0], car_points[1], 'icon_d_24.png');
+                    taxi_fresh_map(order__id, car_points[0], car_points[1]);
+                }   // if( order__id in taxi_maps )
+            });
+
+        }
+    }   // if( order_id in taxi_maps)
+}   // order_map_update
+
+
+// уничтожение карты в заказе
+function order_map_remove(order_id){
+    $(`#offer_map_${order_id}`).hide();  // скрыть карту
+    if( order_id in taxi_maps) {
+        // предупреждаем утечку памяти
+        taxi_maps[order_id].car_marker = null;
+        taxi_maps[order_id].passenger_marker = null;
+        taxi_maps[order_id].vlayer = null;
+        taxi_maps[order_id].olayer = null;
+        taxi_maps[order_id].map = null;
+        delete taxi_maps[order_id];
+    }   // if( order_id in taxi_maps)
+}   // order_map_remove
+
+
+// удаляем ID зказа из списка
+function remove_order_id(order_id){
+    console.log('remove_order_id', order_id);
+    let i = taxi_driver_offer_ids.indexOf(order_id);
+    if (i > -1) {
+      taxi_driver_offer_ids.splice(i, 1);
+    }
+}   // remove_order_id
+
+
+// интерфейс водителя, реакция на кнопку Предложить/отказать (order_item.html)
+function set_offer(order_id, klient_timeout){
+    klient_timeout = klient_timeout || 0;
+    console.log('set_offer', order_id, klient_timeout, taxi_driver_offer_ids.indexOf(order_id), taxi_driver_offer_ids);
+
+    if( !klient_timeout && taxi_driver_offer_ids.indexOf(order_id) > -1 ){
+        // предложение пассажиру уже сделано, водитель нажал Отказать
+        if( !confirm('Вы действительно хотите отменить пассажира?') ){
+            return false;
+        }
+    }
+
+    $.ajax({
+        method: "POST",
+        headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+        url: "/carpool/api/offer/",
+        data: {
+            order_id: order_id,
+        },
+    })
+    .done(function(data) {
+        if(data.error){
+            if(data.error == 'Нет заказа'){
+                let child = $("#order_grid").children(`#order_${order_id}`);
+                if(child){
+                    $(child).remove();
+                }
+            }
+            else {
+                console.log('error', data.error)
+            }
+        }
+        else {
+            console.log('set_offer done', data);
+            // data.result - {'offer': offer, 'status': "offer_del" | "offer_add"}
+            // offer - {order:{...}, taxi:{...}, timestamp}
+            // taxi - taxiuser
+            // элементы управления на order_item.html
+            if (data.result.offer.order.id in taxi_driver_timeouts){
+                clearTimeout( taxi_driver_timeouts[data.result.offer.order.id] );
+                delete taxi_driver_timeouts[data.result.offer.order.id];
+            }
+
+            if( data.result.status == "offer_add" ){
+                $(`#btn_offer_${data.result.offer.order.id}`).text('Отказать');
+                $(`#btn_offer_${data.result.offer.order.id}`).css("border", "2px solid red");
+                $(`#btn_offer_${data.result.offer.order.id}`).css("backgroundColor", "white");
+                // либо надпись "предложение сделано", либо карта с пассажиром
+                $(`#offer_enabled_${data.result.offer.order.id}`).css("display", "block");
+
+                if( taxi_driver_offer_ids.indexOf( parseInt(data.result.offer.order.id) ) < 0 ){
+                    taxi_driver_offer_ids.push( parseInt(data.result.offer.order.id) );
+                }
+                startTimerWait(data.result.offer.order.id, taxi_driver_timeout);
+            }
+            else {  // offer_del
+                $(`#btn_offer_${data.result.offer.order.id}`).text('Предложить');
+                $(`#btn_offer_${data.result.offer.order.id}`).css("border", "none");
+                $(`#btn_offer_${data.result.offer.order.id}`).css("backgroundColor", "#FFDF32");
+
+                if( !klient_timeout ){
+                    $(`#offer_enabled_${order_id}`).html('<b>Вы отказались от заказа</b>');
+                }
+                //$(`#offer_enabled_${data.result.offer.order.id}`).css("display", "none");
+
+                // либо надпись "предложение сделано", либо карта с пассажиром
+                $(`#offer_map_${data.result.offer.order.id}`).hide();
+                // Кнопка Пассажир сел
+                $(`#btn_passenger_sel_${data.result.offer.order.id}`).hide();
+                // удалить заказ из списка, раз отказался от него, через 5 сек
+
+                remove_order_id(data.result.offer.order.id);
+                startTimerClose(data.result.offer.order.id);
+            }
+        }   // else if(data.error)
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log("request_bus_trip error:", errorThrown);
+    });
+}   // offer
+
+
+// получено сообщение из чата
+// message={ from: 108660, to: 12, msg: "Вижу автомобиль", order_id: 293 }
+function taxi_receive_message(message){
+    console.log('taxi_receive_message', message);
+    if( message.to == taxiuser.user ){  // это мне сообщение?
+        if( message.order_id ){
+            order_message(message.order_id, "Пассажир увидел вас", "#000", "#9CF0C8");  // сообщение водителю
+            taxiPlay("hutzpa"); // in bustime_main.js
+        }
+    }   // if( message.to == taxiuser.user )
+}   // taxi_receive_message
+
+
+function startTimerClose(order_id){
+    //console.log('startTimerClose', order_id);
+
+    Cookies.remove(`order_tout_${order_id}`, { path: '/taxi'});
+    $(`#btn_offer_${order_id}`).prop('disabled', true);  // Отказать/Предложить
+
+    if( taxi_driver_timeouts != 'undefined' ) {
+        taxi_driver_timeouts[order_id] = setTimeout(function() {
+
+            // удалять надо в <div id="order_grid"> на странице orders.html
+            let grid = $("#order_grid");
+            if( grid ){
+                let column = $(`#order_${order_id}`);
+                if( column ){   // страницу ещё не обновляли, плашка есть
+                    // красиво убрать, растворив
+                    $(`#order_grid #order_${order_id}`).fadeOut(500, function() {
+                        $(this).remove();
+                        clearTimeout( taxi_driver_timeouts[order_id] );
+                        delete taxi_driver_timeouts[order_id];
+                    });
+                }
+            }   // if( grid )
+
+            // удаляем ID зказа из списка
+            remove_order_id(order_id);
+        }, 500);    // setTimeout
+    }
+}   // startTimerClose
+
+
+// обратный отсчет времени приезда машины
+// mm_ss - время в формате ММ:SS
+function startTimerWait(order_id, mm_ss){
+    //console.log('startTimerWait', order_id, mm_ss);
+    if( taxi_driver_timeouts != 'undefined' ) {
+        $(`#offer_enabled_${order_id}`).html(`Предложение сделано. Ожидание ответа <span id="offer_time_${order_id}">${mm_ss}</span>`);
+
+        setTimeout(function wt() {
+            console.log('orders.html, wt()', order_id, $(`#offer_time_${order_id}`));
+
+            if( Object.keys($(`#offer_time_${order_id}`)).length > 0 ){ // плашка может быть удалена из bustime_main.js
+                let passengerAcceptTimeout = $(`#offer_time_${order_id}`).html() || mm_ss;
+
+                // to seconds
+                let arr = passengerAcceptTimeout.split(':');
+                passengerAcceptTimeout = parseInt(arr[0]) * 60 + parseInt(arr[1]);
+
+                if(passengerAcceptTimeout > 0){
+                    --passengerAcceptTimeout;
+
+                    let m = Math.floor(passengerAcceptTimeout/60);
+                    if( (''+m).length == 1 ) m = '0' + m;
+
+                    let s = passengerAcceptTimeout % 60;
+                    if( (''+s).length == 1 ) s = '0' + s;
+
+                    $(`#offer_time_${order_id}`).html(`${m}:${s}`);
+
+                    taxi_driver_timeouts[order_id] = setTimeout(wt, 1000);
+
+                    // что бы после обновления страницы возобновить отсчет времени, сохраним
+                    if( passengerAcceptTimeout > 0 ){
+                        // https://github.com/js-cookie/js-cookie
+                        Cookies.set(`order_tout_${order_id}`, $(`#offer_time_${order_id}`).html(), { path: '/taxi', sameSite: 'lax'});
+                    }
+                    else {
+                        Cookies.remove(`order_tout_${order_id}`, { path: '/taxi'});
+                    }
+                }
+                else {
+                    Cookies.remove(`order_tout_${order_id}`, { path: '/taxi'});
+                    $(`#offer_enabled_${order_id}`).html('<b>Клиент не ответил на предложение</b>');
+                    clearTimeout( taxi_driver_timeouts[order_id] );
+                    delete taxi_driver_timeouts[order_id];
+                    taxiPlay("5min");
+                    set_offer(order_id, 1 /* klient_timeout */);    // удаляем оффер
+                }
+            }   // if( Object.keys
+            else {
+                clearTimeout( taxi_driver_timeouts[order_id] );
+                delete taxi_driver_timeouts[order_id];
+                Cookies.remove(`order_tout_${order_id}`, { path: '/taxi'});
+            }
+        }, 500);
+    }
+}   // startTimer
+
+
+/* водитель нажал кнопку Пассажир сел */
+function order_trip_start(order_id){
+    console.log('order_trip_start', order_id);
+
+    let post = {
+        'order_id': order_id,
+        'who': 'driver',
+    };
+    $.ajax({
+        method: "POST",
+        headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+        url: "/carpool/api/trip/start/",
+        data: post,
+    })
+    .done(function(data) {
+        console.log('order_trip_start done', data);
+        if( !data.error ){
+            // data.result - order
+            $(`#offer_enabled_${data.result.id}`).hide(); // Пассажир увидел вас
+            order_message(data.result.id);  // очистим сообщение водителю
+            order_map_remove(data.result.id);  // карта
+            $(`#order_buttons_${data.result.id}`).hide(); // кнопки Пассажир сел и Отказать/Предложить
+            $(`#order_order_trip_stop_${data.result.id}`).show(); // кнопка Завершить
+        }   // if( !data.error )
+        else {
+            $("#modal_dialog p").html(data.error);
+            $('#modal_dialog').modal();
+        }   // else if( !data.error )
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log("order_trip_start error:", errorThrown);
+    });
+}   // order_trip_start
+
+
+// пассажир отменил поездку, вызывается из bustime_main.js эвентом order_close
+// элементы управления находятся в order_item.html
+function order_trip_cancel(who, order_id){
+    console.log('order_trip_cancel', who, order_id);
+    if( who == 'passenger' ){
+        $(`#offer_enabled_${order_id}`).hide(); // надпись Предложение сделано. Ожидание ответа
+        $(`#order_order_trip_stop_${order_id}`).hide(); // кнопка Завершить
+        order_map_remove(order_id); // уничтожить карту
+        remove_order_id(order_id);
+        $(`#order_buttons_${order_id}`).hide();  // кнопки Пассажир сел и Отказать/Предложить
+        $(`#btn_passenger_sel_${order_id}`).hide();  // кнопка Пассажир сел
+        order_message(order_id, "Пассажир отменил поездку", "white", "#EF3905");
+        $(`#order_status_3_${order_id}`).show(); // Оценка поезки
+        $(`#order_trip_status_${order_id}`).val(6);    // Отказ пассажира
+        taxiPlay("order_del");
+    }
+}   // order_trip_cancel
+
+
+/* водитель нажал кнопку Завершить, переход на оценку поездки */
+function order_trip_stop(who, order_id){
+    console.log('order_trip_stop', who, order_id);
+    // выключить элементы управления поездкой
+    $(`#order_order_trip_stop_${order_id}`).hide(); // кнопка Завершить
+    order_message(order_id, "Поездка завершена", "#000", "#9CF0C8");  // сообщение водителю
+    $(`#order_buttons_${order_id}`).hide();  // кнопки Пассажир сел и Отказать/Предложить
+    $(`#btn_passenger_sel_${order_id}`).hide();  // кнопка Пассажир сел
+    // включить элементы оценки поезки
+    $(`#order_status_3_${order_id}`).show(); // Оценка поезки
+    $(`#order_trip_status_${order_id}`).val(4);    // Поездка окончена
+}   // order_trip_stop
+
+
+// сообщение водителю в заказе
+function order_message(order_id, txt, color, bgcolor){
+    console.log('order_message', order_id, txt, color, bgcolor);
+    let el = $(`#order_message_${order_id}`);
+    if( el ){
+        color = color || "#000";
+        if( txt && txt.length > 0  && txt != "&nbsp;" ) {
+            bgcolor = bgcolor || "#9CF0C8";
+            el.show();
+        }
+        else {
+            txt = "&nbsp;"
+            bgcolor = bgcolor || "transparent";
+        }
+        el.children("p").html(txt);
+        el.css('background-color', bgcolor);
+        el.css('color', color);
+    }
+}   // order_message_driver
+
+
+// водитель, оценка поездки и закрытие заказа
+function taxi_order_close(who, order_id){
+    console.log('taxi_order_close', who, order_id);
+    let post = {
+        'order_id': order_id,
+        'who': who,
+        'rating': $(`#order_${order_id} #order_rating_number`).html(),
+        'note': $(`#order_note_${order_id}`).val(),
+        'trip_status': $(`#order_trip_status_${order_id}`).val(),
+    };
+    $.ajax({
+        method: "POST",
+        headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+        url: "/carpool/api/order/close/",
+        data: post,
+    })
+    .done(function(data) {
+        if( !data.error ){
+            console.log('taxi_order_close done', data.result);
+            // удалить заказ из списка заказов
+            // удалять надо в <div id="order_grid"> на странице orders.html
+            let grid = $("#order_grid");
+            if( grid ){
+                let column = $(`#order_${data.result.id}`);
+                if( column ){   // страницу ещё не обновляли, плашка есть
+                    $(`#btn_offer_${order_id}`).prop('disabled', true);  // Отказать/Предложить
+                    // красиво убрать, растворив
+                    $(`#order_grid #order_${data.result.id}`).fadeOut(500, function() { $(this).remove(); })
+                }
+            }   // if( grid )
+        }   // if( !data.error )
+        else {
+            $("#modal_dialog p").html(data.error);
+            $('#modal_dialog').modal();
+        }   // else if( !data.error )
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log("taxi_order_close error:", errorThrown);
+    });
+}   // taxi_order_close
+</script>
+<!-- /orders.html -->
+{% endblock body_end %}
+
+{% comment %}
+order = {
+  "id": 191,
+  "data": "2022-04-28 14:02:28.819895",
+  "city": 4,
+  "trip_data": "2022-04-28 14:02:28.819916",
+  "urgent": false,
+  "wf": "Каштановая Аллея (Карла Маркса)",
+  "wf_point": "SRID=4326;POINT (20.4657376 54.7245427)",
+  "wh": "Ивана Земнухова",
+  "wh_point": "SRID=4326;POINT (20.5505211 54.671261)",
+  "passengers": 1,
+  "childs": 0,
+  "bags": 0,
+  "taxi_type": 0,
+  "car_class": 1,
+  "note": "",
+  "price": 100,
+  "distance": 10,
+  "duration": "14 мин.",
+  "trip_line": {
+    "type": "LineString",
+    "coordinates": [[20.465742, 54.724536],...]
+  },
+  "passenger": {
+    "id": 2,
+    "user": 108660,
+    "gender": 0,
+    "agreement": "2022-04-15 19:17:28.523962",
+    "name": null,
+    "phone": null,
+    "driver": false,
+    "driver_rating_cnt": 0,
+    "driver_rating": 0,
+    "passenger_rating_cnt": 0,
+    "passenger_rating": 0,
+    "last_join": "2022-04-15 14:17:29.675424",
+    "gps_on": true,
+    "avatar": null,
+    "car_count": 0
+  },
+  "passenger_rating": 0,
+  "passenger_note": null,
+  "taxist": {
+    "id": 1,
+    "user": 12,
+    "gender": 0,
+    "agreement": "2022-04-15 19:14:54.663563",
+    "name": "locman",
+    "phone": "111",
+    "driver": true,
+    "driver_rating_cnt": 0,
+    "driver_rating": 0,
+    "passenger_rating_cnt": 0,
+    "passenger_rating": 0,
+    "last_join": "2022-04-15 14:15:27.221232",
+    "gps_on": true,
+    "avatar": null,
+    "car_count": 1,
+    "car": {
+      "id": 1,
+      "taxist": 1,
+      "gos_num": "111",
+      "model": {
+        "id": 52,
+        "name": "Alfa Romeo 145"
+      },
+      "color": {
+        "id": 1,
+        "name": "Бежево-жёлтый",
+        "rgb": null
+      },
+      "passengers": 4,
+      "baby_seat": 0,
+      "taxi_type": 0,
+      "car_state": 1,
+      "car_class": 1,
+      "current": true,
+      "photo": "taxi/photo/cc29b8e154c64402a2ca7f4e5d9776e8.jpg"
+    }
+  },
+  "taxist_rating": 0,
+  "taxist_note": null,
+  "car": {
+    "id": 1,
+    "taxist": 1,
+    "gos_num": "111",
+    "model": {
+      "id": 52,
+      "name": "Alfa Romeo 145"
+    },
+    "color": {
+      "id": 1,
+      "name": "Бежево-жёлтый",
+      "rgb": null
+    },
+    "passengers": 4,
+    "baby_seat": 0,
+    "taxi_type": 0,
+    "car_state": 1,
+    "car_class": 1,
+    "current": true,
+    "photo": "taxi/photo/cc29b8e154c64402a2ca7f4e5d9776e8.jpg"
+  },
+  "trip_price": 100,
+  "trip_start": "2022-04-28 14:02:38.434797",
+  "trip_end": null,
+  "trip_status": 1,
+  "passenger_deleted": null,
+  "taxist_deleted": null
+}
+{% endcomment %}

@@ -1,0 +1,217 @@
+{% load cache %}{% load i18n %}{% load european_union_tag %}{% load russia_or_not_tag %}{% get_current_language as LANGUAGE_CODE %}{% load static %}{% spaceless %}<!doctype html>
+{% with js_ver="114" css_ver="43" %}
+<html lang="{{LANGUAGE_CODE}}">
+<head>
+  {% if not test and not noga and not user.is_staff %}
+
+    {% russia_or_not us.ip as is_russia %}
+    {% if ads_show and is_russia %}
+      <script>window.yaContextCb=window.yaContextCb||[]</script>
+      <script src="https://yandex.ru/ads/system/context.js" async></script>
+    {% endif %}
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KEXKX7GE6D"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      {% if user.is_authenticated %}
+      gtag('config', 'G-KEXKX7GE6D', {'user_id': '{{us.id}}'});
+      {% else %}
+      gtag('config', 'G-KEXKX7GE6D');
+      {% endif %}
+    </script>
+    <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_yjVsn2R7hepyB4kkrjNOcAIJ566s2cg7uVI9ZB2sH3D',{api_host:'https://an.bustm.net'})
+    </script>
+  {%endif%}
+  <meta charset="UTF-8"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
+  <link rel="manifest" href="https://bustm.net/static/img/favicons/bustime.webmanifest">
+  <link rel="mask-icon" href="{% static 'img/favicons/safari-pinned-tab.svg' %}" color="#ffe216">
+  <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
+  <meta name="msapplication-TileColor" content="#ffe216">
+  <meta name="msapplication-config" content="{% static 'img/favicons/browserconfig.xml' %}">
+  <title>{% block titlee %}{% if place %}{{place.name}} - {% trans "маршруты онлайн" %}{%else%}{% if LANGUAGE_CODE == "ru" %}Время Автобуса{% else %}Bustime{% endif %}{%endif%}{% endblock %}</title>
+
+<meta name="description" content="{% block meta_descr %}{% if place %}{% trans "Отслеживает, где автобусы онлайн в" %} {{place.name}}{% else %}
+{% trans "Онлайн автобусы, троллейбусы и трамваи по данным GPS"%}{% endif %}.
+{% trans "Маршруты, расписание в реальном времени и поиск проезда на общественном транспорте" %}.{% endblock %}">
+  <meta name="keywords" content="{% trans "автобусы" %}, {% trans "маршруты online" %}, {% trans "городской транспорт" %} {{us.city.name}}, {% trans "где едет" %}, {% trans "движение" %}, {% trans "положение" %}, {% trans "информационное табло" %}, {% trans "в режиме реального времени" %}, {% trans "на карте" %}, {% trans "остановки" %}, {% trans "схема движения" %}, {% trans "транспорт онлайн" %}{% if LANGUAGE_CODE == "ru" %}, бастайм{% endif %}">
+  <meta property="og:title" content="{% block title %}{% trans "Время Автобуса" %}{% endblock %}">
+  <meta property="og:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta property="vk:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#b30000">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="image_src" href="https://{{domain}}/static/img/bustime-2.0.png">
+  <link rel="apple-touch-icon" href="{% static 'img/icon_60px.png' %}" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/icon_76px.png' %}" />
+  <link rel="apple-touch-icon" sizes="120x120" href="{% static 'img/icon_120px.png' %}" />
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icon_152px.png' %}" />
+  <script src="{% static 'js/fast-json-patch.min.js' %}"></script>
+  <!-- <link rel="icon" sizes="192x192" href="{% static 'img/icon_192.png' %}"> -->
+  <link rel="preload" as="script" href="{% static 'js/system.min.js' %}">
+  <link rel="preload" href="{% static 'fonts/fontawesome-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+  {% if test %} {# Use cookie with name 'debug' and value 1 for this #}
+    {# see Gruntfile.js cssmin #}
+    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/semantic.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/jquery.modal.min.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'maplibre/maplibre-gl.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-maplibre.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-main.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-page.css' %}" type="text/css" />
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css' %}/base-union-{{css_ver}}.css" type="text/css" />
+  {% endif %}
+
+  {% if us.theme %}<link rel="stylesheet" href="{% static 'css/bustime-theme-{{us.theme}}.css' %}" type="text/css" />{% endif %}
+
+  {% if us.font_big %}<!-- mmm, sexy -->
+  <style>html,body {font-size:15px;}
+    @font-face {
+    font-family: 'PT Sans';
+    src: url("{% static 'fonts/PTS55F_W.eot' %}");
+    src:
+    url("{% static 'fonts/PTS55F_W.eot?#iefix' %}") format('embedded-opentype'),
+    url("{% static 'fonts/PTS55F_W.woff' %}") format('woff'),
+    url("{% static 'fonts/PTS55F_W.ttf' %}") format('truetype'),
+    url("{% static 'fonts/PTS55F_W.svg#PTSans-Regular' %}") format('svg');
+    font-weight: 400;
+    font-style: normal;
+  } @font-face {
+    font-family: 'PT Sans';
+    src: url("{% static 'fonts/PTS75F_W.eot' %}");
+    src:
+    url("{% static 'fonts/PTS75F_W.eot?#iefix' %}") format('embedded-opentype'),
+    url("{% static 'fonts/PTS75F_W.woff' %}") format('woff'),
+    url("{% static 'fonts/PTS75F_W.ttf' %}") format('truetype'),
+    url("{% static 'fonts/PTS75F_W.svg#PTSans-Bold' %}") format('svg');
+    font-weight: 700;
+    font-style: normal;
+  }</style>{% endif %}
+
+  {% block extra_head %}{% endblock %}
+  <script>{% include "_js_init.html" %}</script>
+  <script>
+{% if place %} {% if main_page or uevents_on_map_page %}
+  var path_dump = "{% static 'other/db/v8/' %}" + {{place.id}} + '-' + {{place.dump_version}} + '.json';    // + '?v={{dump_size|default:0}}';
+  var path_diff = "{% static 'other/db/v8/' %}" + {{place.id}} + '-' + {{place.dump_version}} + '-' + {{place.patch_version}} + '.json.patch';
+  {% if dump_size %}var dump_size = {{dump_size}};var diff_size = {{diff_size}};{% endif %}
+{% endif %} {% endif %}
+
+function loading_done() {
+      osd = document.querySelector('.osd_message');
+      osd_text = document.querySelector('.osd_message_text');
+      if (osd_text) {osd_text.textContent = ''}
+
+      setTimeout(function() {
+       if (osd) {osd.style.display = 'none'}
+      }, 250); // give user time to enjoy
+    if (typeof hashcheck === "function") {
+      hashcheck();
+    }
+}
+
+function diff_dump(db) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', path_diff);
+
+  xhr.onprogress = function(event) {
+      const prc = Math.round(event.loaded / diff_size * 100);
+      if (osd_text) { osd_text.textContent = 'DB patch: '+prc+'%'; }
+  };
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      diff_from_server = JSON.parse(xhr.responseText);
+      // применяем разницу к исходной бд
+      jsonpatch.applyPatch(db, diff_from_server);
+      loading_done();
+    } else {
+      console.error(`Error ${xhr.status}: ${xhr.statusText}`);
+      loading_done();
+    }
+  };
+
+  xhr.onerror = function() {
+    console.error('Patch request error');
+  };
+ xhr.send();
+}
+
+function dbget(model, id=null, field=null, meta=false) {
+    let db = DB;
+    if (db == null) return null;
+    if (id == null) return DB[model];
+    if (field != null) {
+        let index = db[model + '__meta'] != null && db[model + '__meta']['fields'] != null ?
+            db[model + '__meta']['fields'].indexOf(field) : -1
+        if (index < 0) return null;
+        if (db[model] != null && db[model][id] != null) {
+            return db[model][id][index];
+        }
+    } else if (meta && db[model + '__meta'] != null && db[model + '__meta']['fields'] != null) {
+        if (db[model] != null && db[model][id] != null) {
+            let o = {};
+            db[model][id].forEach(function(e, i) {
+                o[db[model + '__meta']['fields'][i]] = e;
+            });
+            return o;
+        }
+    } else if (!meta && db[model] != null && db[model][id] != null) {
+        return db[model][id]
+    }
+    return null;
+}
+
+function dbgetsafe(model, id=null, field=null, meta=false) {
+  return dbget(model, id, field, meta) || {}
+}
+</script>
+</head>
+
+{% block body %}<body>
+
+  {% block content %}{% endblock %}
+
+  {% block js_extra %}{% endblock %}
+
+  {% block js %}
+    <script src="{% static 'js/system.min.js' %}"></script>
+    {% if test %} {# Use cookie with name 'debug' and value 1 for this #}
+      <script type="systemjs-importmap" src="{% static 'importmap-test.json' %}"></script>
+      <script type="systemjs-importmap">
+        {
+          "imports": {
+              "bundle_built": "{% static 'js' %}/bustime-main-entry.js"
+          }
+        }
+      </script>
+    {%else%}
+      <script type="systemjs-importmap" src="{% static 'importmap.json' %}?v6"></script>
+      <script type="systemjs-importmap">
+        {
+          "imports": {
+              "bundle_built": "{% static 'js' %}/bundle-built-{{ js_ver }}.js"
+          }
+        }
+      </script>
+    {%endif%}
+    <script type="systemjs-module" src="import:bundle_built"></script>
+  {% endblock %}
+
+{% block body_end %}{% endblock %}
+</body>
+{% endblock %}
+</html>{% endwith %}{% endspaceless %}

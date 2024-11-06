@@ -1,0 +1,6265 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-15 17:13+0000\n"
+"PO-Revision-Date: 2024-08-16 18:27+0700\n"
+"Last-Translator: Andrey  <andrey.perliev@gmail.com>\n"
+"Language-Team: LANGUAGE\n"
+"Language: zxx\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Loco-Source-Locale: en_AE\n"
+"X-Translated-Using: django-rosetta 0.9.8\n"
+
+#: api/jsonrpc.py:250
+msgid "Данные, предоставляемые сервером в г."
+msgstr "The data provided by the server in the city of"
+
+#: api/jsonrpc.py:252
+msgid "не актуальны"
+msgstr "irrelevant"
+
+#: api/jsonrpc.py:267 api/jsonrpc.py:269
+msgid "неизвестно когда"
+msgstr "unknown when"
+
+#: api/jsonrpc.py:268
+msgid "Последний раз работало"
+msgstr "Last time it worked at"
+
+#: api/jsonrpc.py:270
+msgid "назад"
+msgstr "back"
+
+#: api/jsonrpc.py:273
+msgid "Мы не виноваты"
+msgstr "It's not our fault"
+
+#: api/jsonrpc.py:276
+msgid "Данные общественного транспорта не предоставляются. Город:"
+msgstr "Public transport data is not provided. City:"
+
+#: api/jsonrpc.py:600
+msgid "Ник не сохранён, так как содержит нецензурные слова."
+msgstr "Your nickname is not valid because it contains profanity"
+
+#: api/jsonrpc.py:634
+msgid "FAIL: Deprecated API"
+msgstr "FAIL: Deprecated API"
+
+#: api/jsonrpc.py:714
+msgid "Запрос звонка"
+msgstr "Call request"
+
+#: bustime/admin.py:193
+msgid "Editor"
+msgstr "Editor"
+
+#: bustime/admin.py:194 bustime/templates/reversion/object_history.html:16
+msgid "User"
+msgstr "User"
+
+#: bustime/models.py:376
+msgid "страна"
+msgstr "country"
+
+#: bustime/models.py:377
+msgid "страны"
+msgstr "countries"
+
+#: bustime/models.py:564
+msgid ""
+"Activate to skip: recalc interstops, buses_get cache, fill jamline_list. "
+"Speed up edits."
+msgstr ""
+"Activate to skip: recalc interstops, buses_get cache, fill jamline_list. "
+"Speed up edits."
+
+#: bustime/models.py:565
+msgid ""
+"Только редакторы и администраторы могут изменять связанную с городом "
+"информацию"
+msgstr "Only editors and administrators can change city-related information"
+
+#: bustime/models.py:572
+msgid "город"
+msgstr "city"
+
+#: bustime/models.py:573
+msgid "города"
+msgstr "cities"
+
+#: bustime/models.py:688 bustime/models.py:722
+msgid "Файл glonassd.conf занят, попробуйте через 5 сек."
+msgstr "The glonassd.conf file is busy, try again in 5 seconds."
+
+#: bustime/models.py:702
+#, python-format
+msgid "Порт %s неправильный или уже используется, попробуйте %s"
+msgstr "Port %s is wrong or already in use, try %s"
+
+#: bustime/models.py:706
+msgid "Glonassd приёмник"
+msgstr "Glonassd Receiver"
+
+#: bustime/models.py:707
+msgid "Glonassd приёмники"
+msgstr "Glonassd receivers"
+
+#: bustime/models.py:834
+msgid "Обработчик города"
+msgstr "City processor"
+
+#: bustime/models.py:835
+msgid "Обработчики городов"
+msgstr "City processors"
+
+#: bustime/models.py:924
+msgid "перевозчик"
+msgstr "carrier"
+
+#: bustime/models.py:925
+msgid "перевозчики"
+msgstr "carriers"
+
+#: bustime/models.py:958
+msgid "Порядок"
+msgstr "Order"
+
+#: bustime/models.py:961 bustime/models.py:962 bustime/models.py:2303
+#: bustime/templates/schedule-bus.html:191
+#: bustime/templates/schedule-bus.html:192
+msgid "Направление"
+msgstr "Direction"
+
+#: bustime/models.py:972 bustime/templates/history.html:36
+#: bustime/templates/history.html:47 bustime/templates/history1.html:37
+#: bustime/templates/history1.html:49
+msgid "Ссылка"
+msgstr "Link"
+
+#: bustime/models.py:1001 bustime/templates/city_mapping.html:43
+#: bustime/templates/city_mapping_table.html:73
+#: bustime/templates/status_offline.html:61 bustime/templates/top.html:103
+msgid "маршрут"
+msgstr "route"
+
+#: bustime/models.py:1002 bustime/templates/stop.html:139
+msgid "маршруты"
+msgstr "routes"
+
+#: bustime/models.py:1177 bustime/models.py:1199
+msgid "неизвестный"
+msgstr "unknown"
+
+#: bustime/models.py:1179 bustime/templates/_js_init.html:12
+#: bustime/templates/handbook/bus.html:10
+#: bustime/templates/handbook/model.html:10 bustime/templates/help.html:46
+#: bustime/templates/schedule-bus.html:267
+#: bustime/templates/schedule-bus.html:342 taxi/models.py:62
+msgid "Автобус"
+msgstr "Bus"
+
+#: bustime/models.py:1181 bustime/templates/_js_init.html:13
+#: bustime/templates/handbook/trolleybus.html:9 bustime/templates/help.html:51
+#: bustime/templates/schedule-bus.html:270
+#: bustime/templates/schedule-bus.html:345
+msgid "Троллейбус"
+msgstr "Trolleybus"
+
+#: bustime/models.py:1183 bustime/templates/_js_init.html:14
+#: bustime/templates/handbook/tramway.html:9 bustime/templates/help.html:55
+#: bustime/templates/schedule-bus.html:272
+#: bustime/templates/schedule-bus.html:347
+msgid "Трамвай"
+msgstr "Tramway"
+
+#: bustime/models.py:1185 bustime/templates/_js_init.html:15
+#: bustime/templates/handbook/bus-taxi.html:10 bustime/templates/help.html:59
+#: bustime/templates/schedule-bus.html:274
+#: bustime/templates/schedule-bus.html:349
+msgid "Маршрутное такси"
+msgstr "Shuttle bus"
+
+#: bustime/models.py:1187
+msgid "Аквабус"
+msgstr "Aqua-bus "
+
+#: bustime/models.py:1189 bustime/templates/_js_init.html:17
+#: bustime/templates/schedule-bus.html:277
+#: bustime/templates/schedule-bus.html:352
+msgid "Междугородний"
+msgstr "Intercity"
+
+#: bustime/models.py:1191 bustime/models.py:1213
+#: bustime/templates/_js_init.html:18 bustime/templates/handbook/train.html:10
+#: bustime/templates/help.html:71
+msgid "Поезд"
+msgstr "Train"
+
+#: bustime/models.py:1193 bustime/models.py:1215
+#: bustime/templates/_js_init.html:19 bustime/templates/handbook/metro.html:10
+#: bustime/templates/help.html:67 bustime/templates/new_ui_index.html:652
+#: bustime/templates/new_ui_index.html:655
+#: bustime/templates/turbo_index.html:355
+#: bustime/templates/turbo_index.html:358
+msgid "Метро"
+msgstr "Metro"
+
+#: bustime/models.py:1195 bustime/templates/_js_init.html:20
+#: bustime/templates/handbook/carpool.html:10 bustime/templates/help.html:83
+msgid "Попутка"
+msgstr "A hitchhiker"
+
+#: bustime/models.py:1201 bustime/templates/index.html:266
+#: bustime/templates/index.html:269 bustime/templates/index.old.html:260
+#: bustime/templates/index.old.html:261
+#: bustime/templates/new_ui_index.html:568
+#: bustime/templates/new_ui_index.html:571
+#: bustime/templates/select-admin.html:63
+#: bustime/templates/turbo_index.html:271
+#: bustime/templates/turbo_index.html:274
+msgid "Автобусы"
+msgstr "Buses"
+
+#: bustime/models.py:1203 bustime/templates/index.html:278
+#: bustime/templates/index.html:281 bustime/templates/index.old.html:265
+#: bustime/templates/index.old.html:266
+#: bustime/templates/new_ui_index.html:580
+#: bustime/templates/new_ui_index.html:583
+#: bustime/templates/select-admin.html:64
+#: bustime/templates/turbo_index.html:283
+#: bustime/templates/turbo_index.html:286
+msgid "Троллейбусы"
+msgstr "Trolleybuses"
+
+#: bustime/models.py:1205 bustime/templates/index.html:290
+#: bustime/templates/index.html:293 bustime/templates/index.old.html:271
+#: bustime/templates/index.old.html:272
+#: bustime/templates/new_ui_index.html:592
+#: bustime/templates/new_ui_index.html:595
+#: bustime/templates/select-admin.html:65
+#: bustime/templates/turbo_index.html:295
+#: bustime/templates/turbo_index.html:298
+msgid "Трамваи"
+msgstr "Tramways"
+
+#: bustime/models.py:1207
+msgid "Маршрутные такси"
+msgstr "Shuttle bus"
+
+#: bustime/models.py:1209
+msgid "Аквабусы"
+msgstr "Aqua-buses"
+
+#: bustime/models.py:1211 bustime/templates/index.html:326
+#: bustime/templates/index.html:329 bustime/templates/index.old.html:286
+#: bustime/templates/index.old.html:287
+#: bustime/templates/new_ui_index.html:628
+#: bustime/templates/new_ui_index.html:631
+#: bustime/templates/turbo_index.html:331
+#: bustime/templates/turbo_index.html:334
+msgid "Междугородние"
+msgstr "Intercity"
+
+#: bustime/models.py:1217 bustime/templates/index.old.html:295
+#: bustime/templates/index.old.html:298
+msgid "Попутки"
+msgstr "Hitchhiking cars"
+
+#: bustime/models.py:1787
+msgid "гос.номер"
+msgstr "state number"
+
+#: bustime/models.py:1788
+msgid "гос.номера"
+msgstr "state numbers"
+
+#: bustime/models.py:1863
+msgid "тестовый"
+msgstr "test"
+
+#: bustime/models.py:1865
+msgid "продление +30"
+msgstr "extension +30"
+
+#: bustime/models.py:1867
+msgid "премиум 2м"
+msgstr "premium 2m"
+
+#: bustime/models.py:1869
+msgid "стандарт"
+msgstr "standard"
+
+#: bustime/models.py:1871
+msgid "премиум 6м"
+msgstr "premium 6m"
+
+#: bustime/models.py:1873
+msgid "неизвестно"
+msgstr "is unknown"
+
+#: bustime/models.py:1875 bustime/templates/city_admin.html:887
+msgid "водитель"
+msgstr "driver"
+
+#: bustime/models.py:1970
+msgid "иконка транспорта"
+msgstr "transport icon"
+
+#: bustime/models.py:1971
+msgid "иконки транспорта"
+msgstr "transport icons"
+
+#: bustime/models.py:2046
+msgid "Vehicle Model"
+msgstr "Vehicle Model"
+
+#: bustime/models.py:2047
+msgid "Vehicle"
+msgstr "Vehicle"
+
+#: bustime/models.py:2048
+msgid "Bus Stop"
+msgstr "Bus Stop"
+
+#: bustime/models.py:2059
+msgid "feature"
+msgstr "feature"
+
+#: bustime/models.py:2060
+msgid "features"
+msgstr "features"
+
+#: bustime/models.py:2179
+msgid "nbusstop feature"
+msgstr "nbusstop feature"
+
+#: bustime/models.py:2180
+msgid "nbusstop features"
+msgstr "nbusstop features"
+
+#: bustime/models.py:2305
+msgid "нить маршрута"
+msgstr "route thread"
+
+#: bustime/models.py:2306
+msgid "нити маршрутов"
+msgstr "route threads"
+
+#: bustime/models.py:2641
+msgid "vehicle brand"
+msgstr "vehicle brand"
+
+#: bustime/models.py:2642
+msgid "vehicle brands"
+msgstr "vehicle brands"
+
+#: bustime/models.py:2677
+msgid "vehicle model"
+msgstr "vehicle model"
+
+#: bustime/models.py:2678
+msgid "vehicle models"
+msgstr "vehicle models"
+
+#: bustime/models.py:2695
+msgid "vehicle model feature"
+msgstr "vehicle model feature"
+
+#: bustime/models.py:2696
+msgid "vehicle model features"
+msgstr "vehicle model features"
+
+#: bustime/models.py:2803
+#, python-format
+msgid "Для ТС %s изменён гос.№ с %s на %s"
+msgstr "For the vehicle %s, the state has been changed from %s to %s"
+
+#: bustime/models.py:2805
+#, python-format
+msgid "У ТС %s удалён гос.№ %s"
+msgstr "Vehicle %s has its state № %s deleted"
+
+#: bustime/models.py:2807
+#, python-format
+msgid "Для ТС %s установлен гос.№ %s"
+msgstr "State number %s is set for the vehicle %s "
+
+#: bustime/models.py:2812
+msgid "Автоновость"
+msgstr "Auto news"
+
+#: bustime/models.py:2817
+msgid "Транспортное средство"
+msgstr "Transport vehicle"
+
+#: bustime/models.py:2818
+msgid "Транспортные средства"
+msgstr "Means of transport "
+
+#: bustime/models.py:2902
+msgid "vehicle feature"
+msgstr "vehicle feature"
+
+#: bustime/models.py:2903
+msgid "vehicle features"
+msgstr "vehicle features"
+
+#: bustime/models.py:2990
+msgid "голос"
+msgstr "voice"
+
+#: bustime/models.py:2991
+msgid "голоса"
+msgstr "voices "
+
+#: bustime/models.py:4752
+msgid "настройка"
+msgstr "setting"
+
+#: bustime/models.py:4753
+msgid "настройки"
+msgstr "settings"
+
+#: bustime/models.py:4773 bustime/templates/transport.html:237
+msgid "Есть данные по ТС"
+msgstr "There is data on the vehicle"
+
+#: bustime/models.py:4774 bustime/templates/transport.html:238
+msgid "Нет данных по ТС"
+msgstr "No vehicle data available"
+
+#: bustime/models.py:4775 bustime/templates/transport.html:239
+msgid "Установлен маршрут"
+msgstr "Set route"
+
+#: bustime/models.py:4776 bustime/templates/transport.html:240
+msgid "Потерян маршрут"
+msgstr "Lost route"
+
+#: bustime/models.py:4777 bustime/templates/transport.html:241
+msgid "Пришел на конечную"
+msgstr "Came to the end"
+
+#: bustime/models.py:4778 bustime/templates/transport.html:242
+msgid "Зомби"
+msgstr "Zombie"
+
+#: bustime/models.py:4779 bustime/templates/transport.html:243
+msgid "Стоянка на конечной"
+msgstr "Parking at the end"
+
+#: bustime/models.py:4780 bustime/templates/transport.html:244
+msgid "Сошел с маршрута"
+msgstr "Got off the route"
+
+#: bustime/models.py:4781 bustime/templates/transport.html:245
+msgid "Изменен маршрут"
+msgstr "The modified route"
+
+#: bustime/models.py:4782
+msgid "Резерв"
+msgstr "Reserve"
+
+#: bustime/models.py:4804
+msgid "Статус транспорта"
+msgstr "Status transport"
+
+#: bustime/models.py:4805
+msgid "Статусы транспорта"
+msgstr "Statuses transport"
+
+#: bustime/models.py:4840
+msgid "Общие"
+msgstr "Common"
+
+#: bustime/models.py:4841
+msgid "Обновления"
+msgstr "Updates"
+
+#: bustime/models.py:4866
+msgid "Городская новость"
+msgstr "City news"
+
+#: bustime/models.py:4867
+msgid "Городские новости"
+msgstr "City news"
+
+#: bustime/models.py:5587
+msgid "Версия маршрута"
+msgstr "Route version"
+
+#: bustime/models.py:5588
+msgid "Версии маршрутов"
+msgstr "Route versions"
+
+#: bustime/models.py:5609 bustime/models.py:5610
+msgid "Лог редактирования маршрута"
+msgstr "Route editing log"
+
+#: bustime/models.py:5647 bustime/templates/admin_gtfs_tools.html:66
+#: taxi/templates/taxi/agreement1.html:26 taxi/templates/taxi/profile.html:46
+msgid "Имя"
+msgstr "Name"
+
+#: bustime/models.py:5648 bustime/templates/admin_gtfs_tools.html:61
+msgid "Активен"
+msgstr "Active"
+
+#: bustime/models.py:5650
+msgid "Schedule"
+msgstr "Schedule"
+
+#: bustime/models.py:5653
+msgid "RT:Alerts"
+msgstr "RT:Alerts"
+
+#: bustime/models.py:5654
+msgid "RT:Positions"
+msgstr "RT:Positions"
+
+#: bustime/models.py:5655
+msgid "RT:Updates"
+msgstr "RT:Updates"
+
+#: bustime/models.py:5656 bustime/templates/admin_gtfs_tools.html:71
+msgid "Примечание"
+msgstr "Attention"
+
+#: bustime/models.py:5657
+msgid "Добавлен"
+msgstr "Added"
+
+#: bustime/models.py:5658
+msgid "Маппинг route_type"
+msgstr "Mapping of route_type"
+
+#: bustime/models.py:5659
+msgid "Преобразование имени агенства"
+msgstr "Agency name conversion"
+
+#: bustime/models.py:5660
+msgid "Преобразование имени маршрута"
+msgstr "Журнал редактирования маршрутов"
+
+#: bustime/models.py:5661
+msgid "Преобразование имени остановки"
+msgstr "Converting a stop name"
+
+#: bustime/models.py:5662 taxi/templates/taxi/profile.html:42
+msgid "Пользователь"
+msgstr "User"
+
+#: bustime/models.py:5667
+msgid "Авторизация"
+msgstr "Authorization"
+
+#: bustime/models.py:5669
+msgid "Метод"
+msgstr "Method"
+
+#: bustime/models.py:5670
+msgid "Для разных нужд"
+msgstr "For different needs"
+
+#: bustime/models.py:5673
+msgid "Каталог данных gtfs"
+msgstr "GTFS Data catalog"
+
+#: bustime/models.py:5674
+msgid "gtfs: Каталоги данных"
+msgstr "gtfs: data catalog"
+
+#: bustime/models.py:5727
+msgid "gtfs: Агенство"
+msgstr "gtfs: Agency"
+
+#: bustime/models.py:5728
+msgid "gtfs: Агенства"
+msgstr "gtfs: Agencies"
+
+#: bustime/models.py:5767
+msgid "gtfs: Маршрут"
+msgstr "gtfs: Route"
+
+#: bustime/models.py:5768
+msgid "gtfs: Маршруты"
+msgstr "gtfs: Routes"
+
+#: bustime/models.py:5787
+msgid "gtfs: Схема маршрута"
+msgstr "gtfs: Route scheme"
+
+#: bustime/models.py:5788
+msgid "gtfs: Схемы маршрутов"
+msgstr "gtfs: Route schemes"
+
+#: bustime/models.py:5811
+msgid "gtfs: Поездка"
+msgstr "gtfs: Trip"
+
+#: bustime/models.py:5812
+msgid "gtfs: Поездки"
+msgstr "gtfs: Trips"
+
+#: bustime/models.py:5836
+msgid "gtfs: Календарь"
+msgstr "gtfs: Calendar"
+
+#: bustime/models.py:5837
+msgid "gtfs: Календари"
+msgstr "gtfs: Calendars"
+
+#: bustime/models.py:5853
+msgid "gtfs: Исключение календаря"
+msgstr "gtfs: Calendar exception"
+
+#: bustime/models.py:5854
+msgid "gtfs: Исключения календаря"
+msgstr "gtfs: Calendar exceptions"
+
+#: bustime/models.py:5890
+msgid "gtfs: Остановка"
+msgstr "gtfs: Stop"
+
+#: bustime/models.py:5891
+msgid "gtfs: Остановки"
+msgstr "gtfs: Stops"
+
+#: bustime/models.py:5914
+msgid "gtfs: Расписание"
+msgstr "gtfs: Timetable"
+
+#: bustime/models.py:5915
+msgid "gtfs: Расписания"
+msgstr "gtfs: Timetables"
+
+#: bustime/models.py:5950
+msgid "Источник данных"
+msgstr "Data source"
+
+#: bustime/models.py:5951
+msgid "Источники данных"
+msgstr "Data sources"
+
+#: bustime/models.py:5968
+msgid "Статус источника данных"
+msgstr "Status of the data source"
+
+#: bustime/models.py:5969
+msgid "Статусы источников данных"
+msgstr "Data source statuses"
+
+#: bustime/models.py:6000
+msgid "Events count for a place datasource"
+msgstr "Events count for a place datasource"
+
+#: bustime/models.py:6001
+msgid "Events counts for a place datasource"
+msgstr "Events counts for a place datasource"
+
+#: bustime/templates/404.html:4
+msgid "Ошибка 404"
+msgstr "Error 404"
+
+#: bustime/templates/404.html:5
+msgid "не найдено"
+msgstr "not found"
+
+#: bustime/templates/404.html:8
+msgid "Нет такого файла здесь"
+msgstr "There is no such file here"
+
+#: bustime/templates/500.html:7
+msgid "Ошибка 500"
+msgstr "Error 500"
+
+#: bustime/templates/500.html:8
+msgid "ошибка приложения"
+msgstr "application error"
+
+#: bustime/templates/500.html:11
+msgid "Сервер не может успешно выполнить операцию"
+msgstr "The server cannot successfully execute the operation"
+
+#: bustime/templates/500.html:11
+msgid "Скорее всего ошибка будет исправлена в течение 5 минут"
+msgstr "The bug will most likely be fixed within 5 minutes"
+
+#: bustime/templates/_js_init.html:3
+msgid "Карта"
+msgstr "Map"
+
+#: bustime/templates/_js_init.html:4 bustime/templates/_js_init.html:55
+#: bustime/templates/base-new.html:139 bustime/templates/base-old.html:142
+#: bustime/templates/base.html:196 bustime/templates/base.old.html:142
+#: bustime/templates/edit_stop.html:27 bustime/templates/new_ui_base.html:207
+#: bustime/templates/stop.html:60 bustime/templates/stop.html:83
+#: bustime/templates/stops.html:22
+msgid "Остановки"
+msgstr "Stops"
+
+#: bustime/templates/_js_init.html:5
+msgid "Транспорт"
+msgstr "Transport"
+
+#: bustime/templates/_js_init.html:6 bustime/templates/select-admin.html:76
+msgid "Пробки"
+msgstr "Traffic"
+
+#: bustime/templates/_js_init.html:7
+msgid "Пассажиры"
+msgstr "Passengers"
+
+#: bustime/templates/_js_init.html:8
+msgid "км"
+msgstr "km"
+
+#: bustime/templates/_js_init.html:9 bustime/templates/feedback_ts.html:53
+#: bustime/templates/top.html:113
+msgid "на перерыве"
+msgstr "on break"
+
+#: bustime/templates/_js_init.html:10 bustime/templates/index.html:574
+#: bustime/templates/index.old.html:514 bustime/templates/turbo_index.html:624
+msgid "км/ч"
+msgstr "kph"
+
+#: bustime/templates/_js_init.html:16 bustime/templates/handbook/water.html:10
+msgid "Водный автобус"
+msgstr "Water bus"
+
+#: bustime/templates/_js_init.html:33
+msgid "Необходимо обновить базу JS в панеле администратора"
+msgstr "Requires to update JS database in administrator panel"
+
+#: bustime/templates/_js_init.html:34
+msgid "Ошибка обновления, сервер недоступен"
+msgstr "Update error, server not available"
+
+#: bustime/templates/_js_init.html:35
+msgid "Город не найден"
+msgstr "City not found"
+
+#: bustime/templates/_js_init.html:36
+msgid "Распознавание голоса работает только на Android и десктопах с Chrome"
+msgstr ""
+"Voice recognition only works with Android and with desktops running Chrome"
+
+#: bustime/templates/_js_init.html:37
+msgid "Принять видео звонок?"
+msgstr "Accept video call?"
+
+#: bustime/templates/_js_init.html:38
+msgid "Вы не можете голосовать в первый день"
+msgstr "You are not allowed to vote on your first day"
+
+#: bustime/templates/_js_init.html:39
+msgid "Ваши данные будут перезаписывать этот автобус"
+msgstr "Your input will override the current data of this bus"
+
+#: bustime/templates/_js_init.html:40
+msgid "Оценка без сообщения не принимается"
+msgstr "The grade will not be accepted without a message"
+
+#: bustime/templates/_js_init.html:41
+msgid "Сообщение без оценки не принимается"
+msgstr "Message without grade will not be accepted"
+
+#: bustime/templates/_js_init.html:42
+msgid "Напишите чтобы другие поняли причину оценки"
+msgstr "Write so that others would understand why you gave this grade"
+
+#: bustime/templates/_js_init.html:43
+msgid "Извините, гос.номер не определен. Оценка не возможна."
+msgstr ""
+"Sorry, license plate number is not defined. Not possible to assign rating."
+
+#: bustime/templates/_js_init.html:44
+msgid "Спасибо за отзыв!"
+msgstr "Thank you for this review!"
+
+#: bustime/templates/_js_init.html:45
+msgid "Слушаю команду"
+msgstr "Listening to the command"
+
+#: bustime/templates/_js_init.html:45
+msgid "пример"
+msgstr "example"
+
+#: bustime/templates/_js_init.html:45
+msgid "автобус 11"
+msgstr "bus 11"
+
+#: bustime/templates/_js_init.html:45
+msgid "трамвай номер пять"
+msgstr "tramway number five"
+
+#: bustime/templates/_js_init.html:46
+msgid "Слушаю, начинайте говорить..."
+msgstr "Listening, please start speaking"
+
+#: bustime/templates/_js_init.html:47
+msgid "Не распознано"
+msgstr "Unidentified"
+
+#: bustime/templates/_js_init.html:48
+msgid "не найден"
+msgstr "not found"
+
+#: bustime/templates/_js_init.html:49
+msgid "Введите идентификатор для звонка"
+msgstr "Enter called id"
+
+#: bustime/templates/_js_init.html:50
+msgid ""
+"У вас установлена блокировка рекламы. Чтобы отключить рекламу приобретите "
+"подписку."
+msgstr ""
+"You are running an addblock. To disable adds please purchase subscription "
+"instead."
+
+#: bustime/templates/_js_init.html:51
+msgid "Доступ к камере невозможен"
+msgstr "Camera is not accessible"
+
+#: bustime/templates/_js_init.html:52 bustime/templates/index.html:535
+#: bustime/templates/index.old.html:471
+#: bustime/templates/new_ui_index.html:860
+#: bustime/templates/turbo_index.html:585
+msgid "Показать карту"
+msgstr "Show map"
+
+#: bustime/templates/_js_init.html:53
+msgid "Скрыть карту"
+msgstr "Hide map"
+
+#: bustime/templates/_js_init.html:54
+msgid "Онлайн"
+msgstr "Online"
+
+#: bustime/templates/_js_init.html:56
+msgid "Линии маршрута"
+msgstr "Route lines"
+
+#: bustime/templates/_js_init.html:58
+msgid "ноль"
+msgstr "zero"
+
+#: bustime/templates/_js_init.html:59
+msgid "один"
+msgstr "one"
+
+#: bustime/templates/_js_init.html:60
+msgid "два"
+msgstr "two"
+
+#: bustime/templates/_js_init.html:61
+msgid "три"
+msgstr "three"
+
+#: bustime/templates/_js_init.html:62
+msgid "четыре"
+msgstr "four"
+
+#: bustime/templates/_js_init.html:63
+msgid "пять"
+msgstr "five"
+
+#: bustime/templates/_js_init.html:64
+msgid "шесть"
+msgstr "six"
+
+#: bustime/templates/_js_init.html:65
+msgid "семь"
+msgstr "seven"
+
+#: bustime/templates/_js_init.html:66
+msgid "восемь"
+msgstr "eight"
+
+#: bustime/templates/_js_init.html:67
+msgid "девять"
+msgstr "nine"
+
+#: bustime/templates/_js_init.html:68
+msgid "назначение изменено"
+msgstr "assignment changed"
+
+#: bustime/templates/_js_init.html:69
+msgid "отправление изменено"
+msgstr "shipment changed"
+
+#: bustime/templates/_js_init.html:70
+msgid "Ваш автобус приближается!"
+msgstr "Your bus is coming!"
+
+#: bustime/templates/_js_init.html:71
+msgid "Плюс один на маршруте!"
+msgstr "Plus one on the route!"
+
+#: bustime/templates/_js_init.html:72
+msgid "Минус один на маршруте..."
+msgstr "Minus one on the route..."
+
+#: bustime/templates/_js_init.html:73
+msgid "в прямом направлении маршрута"
+msgstr "forward"
+
+#: bustime/templates/_js_init.html:74
+msgid "в обратном направлении маршрута"
+msgstr "in the opposite direction of the route"
+
+#: bustime/templates/_js_init.html:166
+msgid "Цена проезда"
+msgstr "Price of travel"
+
+#: bustime/templates/_js_init.html:167
+msgid "добавить информацию о перевозчике"
+msgstr "add carrier information"
+
+#: bustime/templates/_js_init.html:169
+msgid "Загрузка данных через"
+msgstr "Downloading data via"
+
+#: bustime/templates/_js_init.html:170
+msgid "Данные обновлены"
+msgstr "Data updated"
+
+#: bustime/templates/_js_init.html:171
+msgid "Обработано событий:"
+msgstr "Events processed:"
+
+#: bustime/templates/_js_init.html:172
+msgid "Получено от поставщика:"
+msgstr "Received from the supplier:"
+
+#: bustime/templates/_js_init.html:173
+msgid "за"
+msgstr "for"
+
+#: bustime/templates/_welcome.html:12
+msgid "Показывает автобусы, троллейбусы и трамваи через GPS"
+msgstr "Shows buses, trolleybuses, tramways via GPS"
+
+#: bustime/templates/_welcome.html:20
+msgid "Онлайн обновления в реальном времени"
+msgstr "Online updates in real time"
+
+#: bustime/templates/_welcome.html:29
+msgid "Поддержка всех современных устройств"
+msgstr "Support of all current devices"
+
+#: bustime/templates/_welcome.html:43
+msgid ""
+"Сервис показывает местонахождение <b>автобусов, троллейбусов и трамваев</b> "
+"через систему спутникового позиционирования GPS/ГЛОНАСС. Вы можете узнать "
+"где едет общественный транспорт и принять решение когда идти на остановку."
+msgstr ""
+"The service shows locations of buses, trolleybuses and tramways based on "
+"GPS/GLONASS data. You can find out exactly where the bus is at the moment "
+"and head out to the bus-stop just in time."
+
+#: bustime/templates/about.html:6 bustime/templates/about.html:25
+#: bustime/templates/base-new.html:146 bustime/templates/base-old.html:149
+#: bustime/templates/base.html:203 bustime/templates/base.old.html:149
+#: bustime/templates/blog.html:35 bustime/templates/handbook.html:35
+#: bustime/templates/new_ui_base.html:219
+msgid "О проекте"
+msgstr "About Bustime"
+
+#: bustime/templates/about.html:7
+msgid ""
+"Подробное описание проекта Время Автобуса. История, философия, ключевые "
+"возможности"
+msgstr ""
+"Detailed description of project Bustime. Background, vision, specifications"
+
+#: bustime/templates/about.html:23 bustime/templates/admin_vehicle.html:8
+#: bustime/templates/agreement.html:20 bustime/templates/base-new.html:222
+#: bustime/templates/base-old.html:225 bustime/templates/base.old.html:225
+#: bustime/templates/blog.html:5 bustime/templates/blog_10-tips.html:13
+#: bustime/templates/blog_better-data.html:10
+#: bustime/templates/broadcast.html:117 bustime/templates/bus-classic.html:33
+#: bustime/templates/bus_new.html:6 bustime/templates/buy.html:19
+#: bustime/templates/censored.html:15 bustime/templates/chat.html:49
+#: bustime/templates/city_admin.html:522 bustime/templates/city_mapping.html:6
+#: bustime/templates/city_mapping_table.html:6
+#: bustime/templates/city_provider.html:7 bustime/templates/contacts.html:22
+#: bustime/templates/cookies.html:18 bustime/templates/detector.html:17
+#: bustime/templates/devices.html:86 bustime/templates/edit_stop.html:23
+#: bustime/templates/edit_stops.html:23
+#: bustime/templates/explorer_events.html:29
+#: bustime/templates/feedback_ts.html:26 bustime/templates/handbook.html:5
+#: bustime/templates/handbook/airplane.html:6
+#: bustime/templates/handbook/bus-intercity.html:6
+#: bustime/templates/handbook/bus-taxi.html:6
+#: bustime/templates/handbook/bus.html:6
+#: bustime/templates/handbook/carpool.html:6
+#: bustime/templates/handbook/metro.html:6
+#: bustime/templates/handbook/model.html:6
+#: bustime/templates/handbook/taxi.html:6
+#: bustime/templates/handbook/train.html:6
+#: bustime/templates/handbook/tramway.html:5
+#: bustime/templates/handbook/trolleybus.html:5
+#: bustime/templates/handbook/water.html:6
+#: bustime/templates/handbook_10-tips.html:13
+#: bustime/templates/handbook_better-data.html:10
+#: bustime/templates/help.html:23 bustime/templates/history.html:23
+#: bustime/templates/history1.html:24 bustime/templates/icon_editor.html:5
+#: bustime/templates/index-classic-routes.html:20
+#: bustime/templates/index-classic.html:22 bustime/templates/index.html:102
+#: bustime/templates/jam.html:21 bustime/templates/load_bus.html:17
+#: bustime/templates/logs_on_map.html:10
+#: bustime/templates/new_ui_index.html:97 bustime/templates/noadblock.html:21
+#: bustime/templates/open-letter-for-transport-data-es.html:9
+#: bustime/templates/open-letter-for-transport-data-pt.html:9
+#: bustime/templates/open-letter-for-transport-data-ru.html:9
+#: bustime/templates/open-letter-for-transport-data.html:9
+#: bustime/templates/plan.html:12 bustime/templates/plan_select.html:6
+#: bustime/templates/pro.html:13 bustime/templates/provider.html:22
+#: bustime/templates/providers.html:21 bustime/templates/register.html:35
+#: bustime/templates/route-test.html:25 bustime/templates/route.html:25
+#: bustime/templates/route_delete.html:8 bustime/templates/route_edit.html:66
+#: bustime/templates/route_edit1.html:37
+#: bustime/templates/schedule-bus-edit.html:110
+#: bustime/templates/schedule-bus.html:105 bustime/templates/schedule.html:22
+#: bustime/templates/select-admin.html:18 bustime/templates/select.html:22
+#: bustime/templates/select.html:24 bustime/templates/services.html:33
+#: bustime/templates/settings.html:104
+#: bustime/templates/settings_photo.html:19
+#: bustime/templates/settings_profile.html:93
+#: bustime/templates/status-data.html:89
+#: bustime/templates/status-sheet.html:36 bustime/templates/status.html:25
+#: bustime/templates/status_day.html:31
+#: bustime/templates/status_offline.html:43
+#: bustime/templates/status_passengers.html:31
+#: bustime/templates/stop_new.html:25 bustime/templates/stops.html:18
+#: bustime/templates/terms.html:29 bustime/templates/tests_rpc.html:18
+#: bustime/templates/top.html:21 bustime/templates/transport.html:89
+#: bustime/templates/turbine_inspector.html:28
+#: bustime/templates/turbo_index.html:103
+#: bustime/templates/uevents-on-map-test.html:23
+#: bustime/templates/uevents-on-map.html:23 bustime/templates/work.html:12
+msgid "Выбор города"
+msgstr "Select city"
+
+#: bustime/templates/about.html:33
+msgid ""
+"анализ и визуализация общественного транспорта по данным датчиков "
+"ГЛОНАСС/GPS"
+msgstr "Public transport analysis and GPS data visualization."
+
+#: bustime/templates/about.html:36
+msgid ""
+"Сайт Bustime создан в 2012 году с целью предоставлять информацию для "
+"пассажиров о текущем местонахождении общественного  транспорта в реальном "
+"времени. Предоставляемая информация основана на данных спутниковой навигации"
+" ГЛОНАСС/GPS. Используя сервис пассажиры меньше проводят времени на "
+"остановках в ожидании, что особенно актуально в неблагоприятные погодные "
+"условия"
+msgstr ""
+"The Bustime website was created in 2012 to provide passengers with real-time"
+" information on the current location of public transport. The information "
+"provided is based on GPS navigation data. Using the service, passengers "
+"spend less time waiting at stops, which is especially important in "
+"unfavorable weather conditions"
+
+#: bustime/templates/about.html:36
+msgid "Философия проекта"
+msgstr "Project vision"
+
+#: bustime/templates/about.html:37
+msgid ""
+"Предоставить пассажирам достоверную информацию наиболее оперативно с "
+"минимальными затратами энергии"
+msgstr ""
+"To provide passengers with up-to-date information in the most efficient way"
+
+#: bustime/templates/about.html:38
+msgid "Повысить удобство использования общественным транспортом"
+msgstr "To improve the convenience of public transit"
+
+#: bustime/templates/about.html:39
+msgid "Не преумножать сущности"
+msgstr "Not to multiply the essence"
+
+#: bustime/templates/about.html:39
+msgid "свыше необходимого"
+msgstr "more than necessary"
+
+#: bustime/templates/about.html:46
+msgid "Возможности"
+msgstr "Capabilities"
+
+#: bustime/templates/about.html:51
+msgid ""
+"Высокая оптимизация компонентов. Обратите внимание как всё молниеносно "
+"быстро открывается и обновляется"
+msgstr ""
+"High component optimization. Note how lightning fast the responses and "
+"updates are."
+
+#: bustime/templates/about.html:58
+msgid "Под капотом система распределения данных по технологии"
+msgstr "Under the hood the system of data distribution by technology"
+
+#: bustime/templates/about.html:58
+msgid "соединение по инициативе сервера"
+msgstr "server initiated connecction"
+
+#: bustime/templates/about.html:65
+msgid "Соответствие"
+msgstr "Compliance"
+
+#: bustime/templates/about.html:65
+msgid "c упрощенной"
+msgstr "with simplified"
+
+#: bustime/templates/about.html:65
+msgid "и классической версией для совместимости"
+msgstr "and classic version for compatibility"
+
+#: bustime/templates/about.html:72
+msgid ""
+"Пользовательский интерфейс обеспечивает непревзойдённо быстрый доступ к "
+"информации о транспорте"
+msgstr ""
+"User interface provides exceptionally quick access to public transportation "
+"information"
+
+#: bustime/templates/about.html:79
+msgid ""
+"Система <b>Дождь</b> позволяет непрерывно принимать данные из нескольких "
+"источников и распределять их по пассажирам-подписчикам"
+msgstr ""
+"System <b>Rain</b> allows to constantly receive data from multiple sources "
+"and distribute it among subscribing passengers"
+
+#: bustime/templates/about.html:86
+msgid ""
+"Фирменная технология <b>Мульти-автобус</b> позволяет видеть весь транспорт "
+"передвигающийся по остановкам"
+msgstr ""
+"Signature technology <b>Multi-bus</b> allows to track all available vehicles"
+
+#: bustime/templates/about.html:93
+msgid "Более"
+msgstr "Over"
+
+#: bustime/templates/about.html:93
+msgid "посетителей ежедневно"
+msgstr "visitors daily"
+
+#: bustime/templates/about.html:99
+msgid "Открытые исходные коды"
+msgstr "Open source code"
+
+#: bustime/templates/about.html:100
+msgid "Исходные коды проекта Время Автобуса"
+msgstr "Project Bustime source code"
+
+#: bustime/templates/about.html:100
+msgid "открыты под свободной"
+msgstr "open under free"
+
+#: bustime/templates/about.html:100
+msgid "лицензией"
+msgstr "license"
+
+#: bustime/templates/about.html:101
+msgid ""
+"Вы можете бесплатно использовать их в своих целях или принять участие в "
+"доработке продукта"
+msgstr ""
+"You are welcome to use them for your own purposes or help us improve this "
+"project"
+
+#: bustime/templates/about.html:102
+msgid "Консультируем и дорабатываем"
+msgstr "Advising and improving"
+
+#: bustime/templates/about.html:102
+msgid "под ваши нужды"
+msgstr "according to your needs"
+
+#: bustime/templates/about.html:105
+msgid "История"
+msgstr "History"
+
+#: bustime/templates/about.html:107
+msgid "Октябрь"
+msgstr "October"
+
+#: bustime/templates/about.html:108
+msgid ""
+"Большое количество изменений и улучшений интерфейса. Безопасный протокол "
+"HTTPS, быстрый доступ к маршрутам, рейтинг, расписание, голосовой набор"
+msgstr ""
+"Multiple changes and improvements to the interface. Safe HTTPS protocol. "
+"Quick access to routes, ratings, timetables, and voice dialing."
+
+#: bustime/templates/about.html:113 bustime/templates/about.html:119
+msgid "Ноябрь"
+msgstr "November"
+
+#: bustime/templates/about.html:114
+msgid ""
+"Еще одно видео с демонстрацией работы. Здесь интерфейс принимает более "
+"проработанный вид, применяется responsive верстка для удобного отображения "
+"на мобильных устройствах с небольшими экранами"
+msgstr ""
+"One more how-to video. Here the interface is more detailed, with responsive "
+"layout to fit small screens of mobile devices."
+
+#: bustime/templates/about.html:120
+msgid ""
+"Здесь уже сформирована основа пользовательского интерфейса и демонстрируется"
+" работа сайта и онлайн обновления в реальном времени"
+msgstr ""
+"Here the user interface is already well defined and you can see it in action"
+" online in real time"
+
+#: bustime/templates/about.html:125
+msgid "Декабрь"
+msgstr "December"
+
+#: bustime/templates/about.html:126
+msgid ""
+"Запись сделана в первые дни создания сайта. Основная работа приходилась на "
+"определение координат остановок и регистрации маршрутов по этим остановкам. "
+"Хорошее настроение и оптимизм обязательны для такой кропотливой и "
+"однообразной задачи. Здесь мы можем увидеть первые наброски интерфейса и "
+"жёлтые квадратики маршрутов, которые появились с самого первого дня и "
+"сохранились до сих пор."
+msgstr ""
+"Record was made within a few days of site creation. Most efforts were "
+"focused on stops locations and registering them with certain routes. Good "
+"mood and optimism are a must for such tedious work. Here you can see the "
+"first outlines of the interface and yellow squares of route numbers, which "
+"have been in use ever since."
+
+#: bustime/templates/account_deletion.html:8
+msgid "Инструкция по удалению аккаунта в Bustime "
+msgstr "Instructions on how to delete your Bustime account"
+
+#: bustime/templates/account_deletion.html:11
+msgid "Чтобы удалить аккаунт в приложении Bustime нужно:"
+msgstr "To delete an account in the Bustime app you need to:"
+
+#: bustime/templates/account_deletion.html:14
+msgid "Написать письмо на почту "
+msgstr "Write a letter to the post office "
+
+#: bustime/templates/account_deletion.html:14
+msgid " с заголовком 'УДАЛЕНИЕ АККАУНТА' и в тексте письма добавить ваш ID. "
+msgstr ""
+" with the heading 'DELETE ACCOUNT' and add your ID in the text of the email."
+" "
+
+#: bustime/templates/account_deletion.html:15
+msgid "Чтобы узнать свой ID, нужно открыть в приложении экран 'Диагностика'."
+msgstr "To find out your ID, you need to open the Diagnostics application."
+
+#: bustime/templates/account_deletion.html:18
+msgid "После этого в течение 90 дней ваш профиль будет удалён, включая: "
+msgstr "After this, your profile will be deleted within 90 days, including:"
+
+#: bustime/templates/account_deletion.html:20
+msgid "номер телефона"
+msgstr "phone number"
+
+#: bustime/templates/account_deletion.html:21
+msgid "имя пользователя"
+msgstr "user name"
+
+#: bustime/templates/admin/bustime/change_user_form.html:7
+msgid "Изменения пользователя"
+msgstr "User changes"
+
+#: bustime/templates/admin/bustime/change_user_form.html:8
+msgid "Заблокировать на год"
+msgstr "Block for a year"
+
+#: bustime/templates/admin/bustime/change_user_form.html:9
+msgid "Заблокировать на 3 месяца"
+msgstr "Blocked for 3 months"
+
+#: bustime/templates/admin/bustime/change_user_form.html:10
+msgid "Разблокировать"
+msgstr "Unblock"
+
+#: bustime/templates/admin/bustime/receiver_inline.html:14
+msgid "Change"
+msgstr "Change"
+
+#: bustime/templates/admin/bustime/receiver_inline.html:14
+msgid "View"
+msgstr "View"
+
+#: bustime/templates/admin/bustime/receiver_inline.html:16
+msgid "View on site"
+msgstr "View on site"
+
+#: bustime/templates/admin_gtfs_import.html:25
+#: bustime/templates/city_admin.html:794 bustime/templates/city_admin.html:842
+#: bustime/templates/feedback_ts.html:44 bustime/templates/tests_rpc.html:37
+msgid "Маршрут"
+msgstr "Route"
+
+#: bustime/templates/admin_gtfs_import.html:38
+msgid "Импортировать"
+msgstr "Import"
+
+#: bustime/templates/admin_gtfs_load.html:28
+msgid "Загрузить"
+msgstr "Load"
+
+#: bustime/templates/admin_gtfs_tools.html:13
+#: bustime/templates/admin_gtfs_tools.html:37
+#: bustime/templates/services.html:97
+msgid "или"
+msgstr "or"
+
+#: bustime/templates/admin_gtfs_tools.html:23
+#: bustime/templates/admin_gtfs_tools.html:47
+msgid "Тест"
+msgstr "Test"
+
+#: bustime/templates/admin_gtfs_tools.html:54
+msgid "Добавить в каталог"
+msgstr "Add to catalog"
+
+#: bustime/templates/admin_load_gtfs.html:47
+#: bustime/templates/city_admin.html:613
+#: bustime/templates/city_mapping.html:10
+#: bustime/templates/city_mapping_table.html:10
+msgid "Диспетчер"
+msgstr "Dispatcher"
+
+#: bustime/templates/admin_load_gtfs.html:59 bustime/templates/history.html:48
+#: bustime/templates/history1.html:50 bustime/templates/history1.html:51
+msgid "Просмотр"
+msgstr "View"
+
+#: bustime/templates/admin_load_gtfs.html:60
+msgid "Инструменты"
+msgstr "Tools"
+
+#: bustime/templates/admin_load_gtfs.html:61
+msgid "Загрузка Schedule"
+msgstr "Download Schedule"
+
+#: bustime/templates/admin_load_gtfs.html:62
+msgid "Импорт Schedule"
+msgstr "Import Schedule"
+
+#: bustime/templates/admin_load_gtfs.html:64
+msgid "Статистика"
+msgstr "Statistics"
+
+#: bustime/templates/agreement.html:6 bustime/templates/agreement.html:22
+msgid "Пользовательское соглашение"
+msgstr "User agreement"
+
+#: bustime/templates/agreement.html:234
+msgid "Редакция от"
+msgstr "Edition dated"
+
+#: bustime/templates/agreement.html:234
+msgid "сентября"
+msgstr "September"
+
+#: bustime/templates/base-new.html:32 bustime/templates/base-new.html:33
+#: bustime/templates/base-old.html:32 bustime/templates/base-old.html:33
+#: bustime/templates/base.old.html:32 bustime/templates/base.old.html:33
+#: bustime/templates/new_ui_base.html:30 bustime/templates/stop.html:107
+msgid "Маршруты"
+msgstr "Routes of"
+
+#: bustime/templates/base-new.html:32 bustime/templates/base-new.html:33
+#: bustime/templates/base-old.html:32 bustime/templates/base-old.html:33
+#: bustime/templates/base.old.html:32 bustime/templates/base.old.html:33
+#: bustime/templates/feedback_ts.html:55 bustime/templates/new_ui_base.html:30
+#: bustime/templates/schedule.html:33 bustime/templates/top.html:109
+msgid "онлайн"
+msgstr "online"
+
+#: bustime/templates/base-new.html:34 bustime/templates/base-new.html:42
+#: bustime/templates/base-new.html:181 bustime/templates/base-new.html:183
+#: bustime/templates/base-old.html:34 bustime/templates/base-old.html:42
+#: bustime/templates/base-old.html:184 bustime/templates/base-old.html:186
+#: bustime/templates/base.html:44 bustime/templates/base.html:237
+#: bustime/templates/base.old.html:34 bustime/templates/base.old.html:42
+#: bustime/templates/base.old.html:184 bustime/templates/base.old.html:186
+#: bustime/templates/base_empty.html:9 bustime/templates/base_empty.html:14
+#: bustime/templates/base_empty.old.html:9
+#: bustime/templates/base_empty.old.html:14 bustime/templates/help.html:169
+#: bustime/templates/help.html:172 bustime/templates/help.html:173
+#: bustime/templates/new_ui_base.html:30 bustime/templates/new_ui_base.html:41
+#: bustime/templates/new_ui_base.html:260 bustime/templates/pro.html:7
+#: bustime/templates/select.html:6 bustime/templates/turbo_base_empty.html:9
+#: bustime/templates/turbo_base_empty.html:14
+msgid "Время Автобуса"
+msgstr "Bustime"
+
+#: bustime/templates/base-new.html:36 bustime/templates/base-old.html:36
+#: bustime/templates/base.html:36 bustime/templates/base.old.html:36
+#: bustime/templates/new_ui_base.html:32
+msgid "Отслеживает, где автобусы онлайн в"
+msgstr "Keeps track of where the buses are online at"
+
+#: bustime/templates/base-new.html:36 bustime/templates/base-old.html:36
+#: bustime/templates/base.html:37 bustime/templates/base.old.html:36
+#: bustime/templates/new_ui_base.html:34 bustime/templates/select.html:7
+#: bustime/templates/turbo_select.html:7
+msgid "Онлайн автобусы, троллейбусы и трамваи по данным GPS"
+msgstr "Online buses, trolleybuses and tramways according to GPS data"
+
+#: bustime/templates/base-new.html:36 bustime/templates/base-old.html:36
+#: bustime/templates/base.html:38 bustime/templates/base.old.html:36
+#: bustime/templates/new_ui_base.html:35 bustime/templates/select.html:7
+#: bustime/templates/turbo_select.html:7
+msgid ""
+"Маршруты, расписание в реальном времени и поиск проезда на общественном "
+"транспорте"
+msgstr "Public transport: routes, real-time timetables and transit search"
+
+#: bustime/templates/base-new.html:39 bustime/templates/base-old.html:39
+#: bustime/templates/base.html:41 bustime/templates/base.old.html:39
+#: bustime/templates/new_ui_base.html:38
+msgid "Подробная информация об общественном транспорте"
+msgstr "Comprehensive information on public transportation"
+
+#: bustime/templates/base-new.html:39 bustime/templates/base-old.html:39
+#: bustime/templates/base.html:41 bustime/templates/base.old.html:39
+#: bustime/templates/new_ui_base.html:38
+msgid "Непрерывные обновления в реальном времени"
+msgstr "Constant real time updates"
+
+#: bustime/templates/base-new.html:39 bustime/templates/base-old.html:39
+#: bustime/templates/base.html:41 bustime/templates/base.old.html:39
+#: bustime/templates/new_ui_base.html:38
+msgid "Автобусы на карте, маршруты, расписание"
+msgstr "Buses on map, public transport routes and schedules"
+
+#: bustime/templates/base-new.html:39 bustime/templates/base-old.html:39
+#: bustime/templates/base.html:41 bustime/templates/base.old.html:39
+#: bustime/templates/new_ui_base.html:38
+msgid ""
+"Сервис отслеживает онлайн где сейчас едут автобусы, троллейбусы и трамваи по"
+" данным GPS"
+msgstr ""
+"The service shows current location of buses, tramways, trolleybuses using "
+"GPS online data"
+
+#: bustime/templates/base-new.html:39 bustime/templates/base-old.html:39
+#: bustime/templates/base.html:41 bustime/templates/base.old.html:39
+#: bustime/templates/new_ui_base.html:38
+msgid ""
+"Маршруты городского транспорта, расписание и другая информация для "
+"пассажиров"
+msgstr ""
+"Public transit routes online, timetable and other information for passengers"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "автобусы"
+msgstr "Buses"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "маршруты online"
+msgstr "routes online"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "городской транспорт"
+msgstr "city public transit"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "где едет"
+msgstr "current location"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "движение"
+msgstr "movement"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "положение"
+msgstr "location"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "информационное табло"
+msgstr "information board"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "в режиме реального времени"
+msgstr "in real time"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "на карте"
+msgstr "on the map"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "остановки"
+msgstr "stops"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "схема движения"
+msgstr "traffic schematic"
+
+#: bustime/templates/base-new.html:41 bustime/templates/base-old.html:41
+#: bustime/templates/base.html:43 bustime/templates/base.old.html:41
+#: bustime/templates/new_ui_base.html:40
+msgid "транспорт онлайн"
+msgstr "transport online"
+
+#: bustime/templates/base-new.html:136 bustime/templates/base-old.html:139
+#: bustime/templates/base.old.html:139 bustime/templates/index-menu.html:31
+#: bustime/templates/new_ui_base.html:217 bustime/templates/settings.html:3
+#: bustime/templates/settings.html:109
+msgid "Настройки"
+msgstr "Settings"
+
+#: bustime/templates/base-new.html:137 bustime/templates/base-old.html:140
+#: bustime/templates/base.html:194 bustime/templates/base.old.html:140
+#: bustime/templates/schedule-bus-edit.html:113
+#: bustime/templates/schedule-bus.html:109 bustime/templates/schedule.html:6
+#: bustime/templates/schedule.html:27
+msgid "Расписание"
+msgstr "Timetable"
+
+#: bustime/templates/base-new.html:138 bustime/templates/base-old.html:141
+#: bustime/templates/base.html:195 bustime/templates/base.old.html:141
+#: bustime/templates/new_ui_base.html:208 bustime/templates/provider.html:26
+#: bustime/templates/providers.html:6 bustime/templates/providers.html:25
+msgid "Перевозчики"
+msgstr "Agencies"
+
+#: bustime/templates/base-new.html:140 bustime/templates/base-old.html:143
+#: bustime/templates/base.old.html:143 bustime/templates/index-menu.html:30
+msgid "Состояние сервера и системы мониторинга"
+msgstr "Server and system status"
+
+#: bustime/templates/base-new.html:140 bustime/templates/base-old.html:143
+#: bustime/templates/base.old.html:143 bustime/templates/index-menu.html:30
+msgid "Состояние"
+msgstr "Status"
+
+#: bustime/templates/base-new.html:141 bustime/templates/base-old.html:144
+#: bustime/templates/base.html:197 bustime/templates/base.old.html:144
+#: bustime/templates/new_ui_base.html:209
+msgid "Транспортный журнал - обмен данными, события и трэки"
+msgstr "Track history - data statistics, events and tracks in the past"
+
+#: bustime/templates/base-new.html:141 bustime/templates/base-old.html:144
+#: bustime/templates/base.html:197 bustime/templates/base.old.html:144
+#: bustime/templates/new_ui_base.html:209
+#: bustime/templates/status-data.html:93 bustime/templates/status.html:264
+msgid "Журнал"
+msgstr "Track history"
+
+#: bustime/templates/base-new.html:142 bustime/templates/base-old.html:145
+#: bustime/templates/base.html:199 bustime/templates/base.old.html:145
+#: bustime/templates/new_ui_base.html:211 bustime/templates/top.html:25
+msgid "Рейтинг"
+msgstr "Rating"
+
+#: bustime/templates/base-new.html:143 bustime/templates/base-old.html:146
+#: bustime/templates/base.html:200 bustime/templates/base.old.html:146
+#: bustime/templates/history.html:7 bustime/templates/history.html:27
+#: bustime/templates/history1.html:8 bustime/templates/history1.html:28
+msgid "История изменений"
+msgstr "History of changes"
+
+#: bustime/templates/base-new.html:145 bustime/templates/base-old.html:148
+#: bustime/templates/base.old.html:148 bustime/templates/contacts.html:6
+#: bustime/templates/contacts.html:24
+msgid "Контакты"
+msgstr "Contacts"
+
+#: bustime/templates/base-new.html:147 bustime/templates/base-new.html:225
+#: bustime/templates/base-old.html:150 bustime/templates/base-old.html:228
+#: bustime/templates/base.html:352 bustime/templates/base.old.html:150
+#: bustime/templates/base.old.html:228 bustime/templates/new_ui_base.html:366
+msgid "Помощь"
+msgstr "Help"
+
+#: bustime/templates/base-new.html:223 bustime/templates/base-old.html:226
+#: bustime/templates/base.html:343 bustime/templates/base.old.html:226
+#: bustime/templates/new_ui_base.html:364
+msgid "Подключение"
+msgstr "Connect your city"
+
+#: bustime/templates/base-new.html:227 bustime/templates/base-new.html:237
+#: bustime/templates/base-old.html:230 bustime/templates/base-old.html:240
+#: bustime/templates/base.html:350 bustime/templates/base.html:399
+#: bustime/templates/base.old.html:230 bustime/templates/base.old.html:240
+#: bustime/templates/new_ui_base.html:365
+msgid "Исходные коды Bustime на Github"
+msgstr "Source code Bustime on Github"
+
+#: bustime/templates/base-new.html:235 bustime/templates/base-old.html:238
+#: bustime/templates/base.old.html:238 bustime/templates/new_ui_base.html:407
+msgid "Страница Bustime в Вконтакте"
+msgstr "Page Bustime Vkontakte"
+
+#: bustime/templates/base-new.html:236 bustime/templates/base-old.html:239
+#: bustime/templates/base.old.html:239
+msgid "Страница Bustime в Instagram"
+msgstr " Page Bustime  Instagram"
+
+#: bustime/templates/base-new.html:251 bustime/templates/base-old.html:254
+#: bustime/templates/base.html:375 bustime/templates/base.old.html:254
+#: bustime/templates/new_ui_base.html:384
+#: bustime/templates/select-admin.html:55
+msgid "Данные"
+msgstr "Data"
+
+#: bustime/templates/base-new.html:341 bustime/templates/base-old.html:311
+#: bustime/templates/base.html:493 bustime/templates/base.old.html:311
+#: bustime/templates/new_ui_base.html:489
+msgid "Я согласен"
+msgstr "I Agree"
+
+#: bustime/templates/base-new.html:343 bustime/templates/base-old.html:313
+#: bustime/templates/base.html:495 bustime/templates/base.old.html:313
+#: bustime/templates/new_ui_base.html:491
+msgid "Куки помогают нам предоставлять наши услуги"
+msgstr "Cookies facilitate our service"
+
+#: bustime/templates/base-new.html:343 bustime/templates/base-old.html:313
+#: bustime/templates/base.html:495 bustime/templates/base.old.html:313
+#: bustime/templates/new_ui_base.html:491
+msgid ""
+"Используя сервис или нажимая Я согласен, вы соглашаетесь на использование "
+"куки"
+msgstr ""
+"By using our Services or clicking \"I agree\", you consent to deploy cookies"
+
+#: bustime/templates/base-new.html:344 bustime/templates/base-old.html:314
+#: bustime/templates/base.html:496 bustime/templates/base.old.html:314
+#: bustime/templates/new_ui_base.html:492
+msgid "Узнать Больше"
+msgstr "Learn More"
+
+#: bustime/templates/base.html:34
+msgid "маршруты онлайн"
+msgstr "online routes"
+
+#: bustime/templates/base.html:190 bustime/templates/new_ui_base.html:199
+msgid "Имя не установлено"
+msgstr "Name not set"
+
+#: bustime/templates/base.html:190 bustime/templates/new_ui_base.html:199
+msgid "Войти в профиль"
+msgstr "Sign in  profile"
+
+#: bustime/templates/base.html:193 bustime/templates/new_ui_base.html:205
+msgid "Санкт-Петербург"
+msgstr "St. Petersburg"
+
+#: bustime/templates/base.html:198 bustime/templates/chat.html:5
+#: bustime/templates/chat.html:54 bustime/templates/chat.html:58
+#: bustime/templates/new_ui_base.html:210
+msgid "Чат"
+msgstr "Chat"
+
+#: bustime/templates/base.html:281
+msgid "Search"
+msgstr "Search"
+
+#: bustime/templates/base.html:288 bustime/templates/new_ui_base.html:305
+msgid "Откуда"
+msgstr " Where"
+
+#: bustime/templates/base.html:294 bustime/templates/new_ui_base.html:311
+msgid "Куда"
+msgstr "To"
+
+#: bustime/templates/base.html:301 bustime/templates/new_ui_base.html:318
+msgid "Откуда(остановка)"
+msgstr "Where (stop)"
+
+#: bustime/templates/base.html:306 bustime/templates/new_ui_base.html:323
+msgid "Куда(остановка)"
+msgstr "To (stop)"
+
+#: bustime/templates/base.html:333 bustime/templates/new_ui_base.html:354
+msgid "Включить радио"
+msgstr "Turn on the radio"
+
+#: bustime/templates/base.html:333 bustime/templates/new_ui_base.html:354
+#: bustime/templates/settings.html:185
+msgid "Радио"
+msgstr "Radio"
+
+#: bustime/templates/base.html:334 bustime/templates/new_ui_base.html:355
+msgid "Скрыть или показать таблицу маршрутов"
+msgstr "Hide or show the route table"
+
+#: bustime/templates/base.html:334 bustime/templates/new_ui_base.html:355
+msgid "Скрыть"
+msgstr "Hide"
+
+#: bustime/templates/base.html:334 bustime/templates/city_admin.html:784
+#: bustime/templates/city_admin.html:832 bustime/templates/city_admin.html:880
+#: bustime/templates/status_offline.html:82
+msgid "Показать"
+msgstr "Show"
+
+#: bustime/templates/base.html:334 bustime/templates/new_ui_base.html:355
+msgid " маршруты"
+msgstr "routes"
+
+#: bustime/templates/base.html:342
+msgid "Открытые данные"
+msgstr "Open data"
+
+#: bustime/templates/base.html:344 bustime/templates/blog.html:7
+#: bustime/templates/blog_10-tips.html:15
+#: bustime/templates/blog_better-data.html:12
+#: bustime/templates/handbook.html:7
+#: bustime/templates/handbook_10-tips.html:15
+#: bustime/templates/handbook_better-data.html:12
+msgid "Блог"
+msgstr "Blog"
+
+#: bustime/templates/base.html:390
+msgid "Поддержка"
+msgstr "Support"
+
+#: bustime/templates/base.html:420
+msgid "Offline"
+msgstr "Offline"
+
+#: bustime/templates/blog.html:13 bustime/templates/handbook.html:13
+msgid "Последние статьи"
+msgstr "Recent articles"
+
+#: bustime/templates/blog.html:18 bustime/templates/blog_10-tips.html:17
+#: bustime/templates/handbook.html:18
+#: bustime/templates/handbook_10-tips.html:17
+msgid "10 советов для комфортного путешествия на общественном транспорте"
+msgstr "Comprehensive information on public transport"
+
+#: bustime/templates/blog.html:20 bustime/templates/feedback_ts.html:65
+#: bustime/templates/feedback_ts.html:73 bustime/templates/feedback_ts.html:95
+#: bustime/templates/feedback_ts.html:101
+#: bustime/templates/feedback_ts.html:111
+#: bustime/templates/feedback_ts.html:117 bustime/templates/handbook.html:20
+#: bustime/templates/history.html:38 bustime/templates/history.html:56
+#: bustime/templates/history1.html:39 bustime/templates/history1.html:61
+#: bustime/templates/history1.html:62
+msgid "Дата"
+msgstr "Date"
+
+#: bustime/templates/blog.html:23 bustime/templates/handbook.html:23
+msgid ""
+"Эта статья предлагает десять практических советов для тех, кто регулярно "
+"пользуется общественным транспортом"
+msgstr ""
+"This article offers ten practical tips for those who use public "
+"transportation on a regular basis"
+
+#: bustime/templates/blog.html:26 bustime/templates/handbook.html:26
+msgid "Читать далее"
+msgstr "Read More"
+
+#: bustime/templates/blog.html:36 bustime/templates/handbook.html:36
+msgid ""
+"Bustime — это современное решение для пользователей общественного "
+"транспорта, предоставляющее актуальную информацию о местоположении "
+"транспорта в реальном времени с использованием данных GPS. Этот сервис "
+"позволяет пассажирам сократить время ожидания на остановках, предоставляя "
+"точные сведения о времени прибытия автобусов, троллейбусов и трамваев. "
+"Проект направлен на улучшение городской мобильности и повышение комфорта "
+"путешествий, делая использование общественного транспорта более "
+"предсказуемым и удобным."
+msgstr ""
+"Bustime is a modern solution for public transport users that provides up-to-"
+"date information on the real-time location of transport using GPS data. This"
+" service allows passengers to reduce waiting time at bus stops by providing "
+"accurate information about the arrival time of buses, trolleybuses and "
+"streetcars. The project aims to improve urban mobility and travel comfort by"
+" making the use of public transport more predictable and convenient."
+
+#: bustime/templates/blog_10-tips.html:24
+#: bustime/templates/handbook_10-tips.html:24
+msgid "Используйте мобильные приложения для планирования поездок"
+msgstr "Use mobile apps to plan your trips"
+
+#: bustime/templates/blog_10-tips.html:25
+#: bustime/templates/handbook_10-tips.html:25
+msgid ""
+"Современные приложения помогут вам выбрать оптимальный маршрут и избежать "
+"пробок в часы пик"
+msgstr ""
+"Modern apps can help you choose the best route and avoid traffic jams during"
+" rush hours"
+
+#: bustime/templates/blog_10-tips.html:30
+#: bustime/templates/handbook_10-tips.html:30
+msgid "Избегайте часы пик"
+msgstr "Avoid rush hours"
+
+#: bustime/templates/blog_10-tips.html:31
+#: bustime/templates/handbook_10-tips.html:31
+msgid ""
+"Если ваш график позволяет, постарайтесь планировать поездки в менее "
+"загруженное время"
+msgstr "If your schedule allows, try to plan trips at less busy times"
+
+#: bustime/templates/blog_10-tips.html:36
+#: bustime/templates/handbook_10-tips.html:36
+msgid "Приобретайте проездные билеты заранее"
+msgstr "Purchase travel tickets in advance"
+
+#: bustime/templates/blog_10-tips.html:37
+#: bustime/templates/handbook_10-tips.html:37
+msgid ""
+"Это поможет избежать очередей и сэкономить время на покупку билетов перед "
+"каждой поездкой"
+msgstr ""
+"This will help avoid lines and save time buying tickets before each trip"
+
+#: bustime/templates/blog_10-tips.html:42
+#: bustime/templates/handbook_10-tips.html:42
+msgid "Выбирайте правильное место"
+msgstr "Choose the right place"
+
+#: bustime/templates/blog_10-tips.html:43
+#: bustime/templates/handbook_10-tips.html:43
+msgid "В метро и автобусах обычно меньше людей у конца состава или автобуса"
+msgstr ""
+"Subways and buses tend to have fewer people near the end of the train or bus"
+
+#: bustime/templates/blog_10-tips.html:48
+#: bustime/templates/handbook_10-tips.html:48
+msgid "Следите за личными вещами"
+msgstr "Keep an eye on your personal belongings"
+
+#: bustime/templates/blog_10-tips.html:49
+#: bustime/templates/handbook_10-tips.html:49
+msgid ""
+"В общественном транспорте важно внимательно следить за своими вещами, "
+"особенно в часы пик"
+msgstr ""
+"It's important to keep a close eye on your belongings on public "
+"transportation, especially during peak hours"
+
+#: bustime/templates/blog_10-tips.html:54
+#: bustime/templates/handbook_10-tips.html:54
+msgid "Используйте время в пути с пользой"
+msgstr "Make the most of your travel time"
+
+#: bustime/templates/blog_10-tips.html:55
+#: bustime/templates/handbook_10-tips.html:55
+msgid ""
+"Чтение книги или прослушивание подкастов может сделать поездку более "
+"приятной"
+msgstr ""
+"Reading a book or listening to podcasts can make the trip more enjoyable"
+
+#: bustime/templates/blog_10-tips.html:60
+#: bustime/templates/handbook_10-tips.html:60
+msgid "Будьте вежливы с другими пассажирами"
+msgstr "Be courteous to other passengers"
+
+#: bustime/templates/blog_10-tips.html:61
+#: bustime/templates/handbook_10-tips.html:61
+msgid ""
+"Уступите место пожилым людям, беременным женщинам и пассажирам с детьми"
+msgstr ""
+"Give way to elderly people, pregnant women and passengers with children"
+
+#: bustime/templates/blog_10-tips.html:66
+#: bustime/templates/handbook_10-tips.html:66
+msgid "Следуйте указаниям водителя и информационным табло"
+msgstr "Follow the driver's instructions and the information boards"
+
+#: bustime/templates/blog_10-tips.html:67
+#: bustime/templates/handbook_10-tips.html:67
+msgid "Это обеспечит вашу безопасность и порядок в транспорте"
+msgstr "This will ensure your safety and orderliness in transportation"
+
+#: bustime/templates/blog_10-tips.html:72
+#: bustime/templates/handbook_10-tips.html:72
+msgid "Оставайтесь на связи"
+msgstr "Stay in touch"
+
+#: bustime/templates/blog_10-tips.html:73
+#: bustime/templates/handbook_10-tips.html:73
+msgid ""
+"Уведомляйте близких о своем местоположении во время поездок, особенно если "
+"путешествуете ночью"
+msgstr ""
+"Notify loved ones of your location when traveling, especially if traveling "
+"at night"
+
+#: bustime/templates/blog_10-tips.html:78
+#: bustime/templates/handbook_10-tips.html:78
+msgid "Наслаждайтесь пейзажами"
+msgstr "Enjoy the scenery"
+
+#: bustime/templates/blog_10-tips.html:79
+#: bustime/templates/handbook_10-tips.html:79
+msgid ""
+"Если маршрут проходит через красивые или интересные места, выберите место у "
+"окна и наслаждайтесь видами"
+msgstr ""
+"If the route passes through beautiful or interesting places, choose a window"
+" seat and enjoy the views"
+
+#: bustime/templates/chat.html:92
+msgid "Отправить"
+msgstr "Send"
+
+#: bustime/templates/chat.html:97
+msgid "Максимальное количество символов в сообщении 260"
+msgstr "Maximum number of characters in a message 260"
+
+#: bustime/templates/city_admin.html:516 bustime/templates/city_admin.html:526
+#: bustime/templates/city_provider.html:11
+#: bustime/templates/icon_editor.html:7 bustime/templates/logs_on_map.html:12
+msgid "Администратор"
+msgstr "Administrator"
+
+#: bustime/templates/city_admin.html:536
+msgid "админ БД"
+msgstr "DB admin"
+
+#: bustime/templates/city_admin.html:537
+msgid "app build"
+msgstr "app build"
+
+#: bustime/templates/city_admin.html:566
+msgid "yproto"
+msgstr "yproto"
+
+#: bustime/templates/city_admin.html:616
+msgid "Устройства"
+msgstr "Device"
+
+#: bustime/templates/city_admin.html:617
+msgid "Список устройств для передачи данных"
+msgstr "List of devices for data transmission"
+
+#: bustime/templates/city_admin.html:621
+#: bustime/templates/city_mapping.html:12
+#: bustime/templates/city_mapping_table.html:12
+msgid "Таблица соответствия"
+msgstr "Mapping table"
+
+#: bustime/templates/city_admin.html:622
+msgid ""
+"Позволяет устанавливать соответствие между идентификатором, маршрутом и "
+"номером."
+msgstr ""
+"Allows you to establish a match between an identifier, route, and number."
+
+#: bustime/templates/city_admin.html:626
+msgid "План-наряд"
+msgstr "Plan-order"
+
+#: bustime/templates/city_admin.html:627
+msgid "План наряд, с выгрузкой на FTP в формате XML и PDF."
+msgstr "Plan-order, with upload to FTP in XML and PDF format."
+
+#: bustime/templates/city_admin.html:631
+msgid "Офлайн отчет"
+msgstr "Offline status"
+
+#: bustime/templates/city_admin.html:632
+msgid ""
+"Список устройств за последние 3 часа, которые не отправляли данные больше 15"
+" минут"
+msgstr ""
+"List of devices in the last 3 hours that have not sent data for more than 15"
+" minutes"
+
+#: bustime/templates/city_admin.html:635
+msgid "МЧС оповещение"
+msgstr "Emergency message"
+
+#: bustime/templates/city_admin.html:636
+msgid ""
+"Позволяет отправить сообщение по громкой связи на все подключенные терминалы"
+" водителей"
+msgstr ""
+"Allows you to send a hands-free message to all connected driver terminals"
+
+#: bustime/templates/city_admin.html:639 bustime/templates/logs_on_map.html:14
+msgid "Логи на карте"
+msgstr "Logs on the map"
+
+#: bustime/templates/city_admin.html:640
+msgid "Отображение на карте всех ненайденных маршрутов"
+msgstr "Display on the map all routes that have not been found"
+
+#: bustime/templates/city_admin.html:645
+msgid "Инженер"
+msgstr "Engineer"
+
+#: bustime/templates/city_admin.html:648
+msgid "ТС на карте"
+msgstr "vehicles on map "
+
+#: bustime/templates/city_admin.html:649
+msgid "Все ТС города на карте (необработанные)"
+msgstr "All vehicles of the city on the map (raw)"
+
+#: bustime/templates/city_admin.html:651
+msgid "Загрузить маршрут"
+msgstr "Load route"
+
+#: bustime/templates/city_admin.html:652
+msgid "Добавить или перезаписать маршрут из JS"
+msgstr "Add or overwrite a route from JS"
+
+#: bustime/templates/city_admin.html:654
+msgid "Заполнить inter_stops"
+msgstr "Fill inter_stops"
+
+#: bustime/templates/city_admin.html:655
+msgid ""
+"Заполнить (форсированно) максмальное межостановочное расстояние для всех "
+"маршрутов города"
+msgstr ""
+"Fill in (forced) maximal inter-stop distance for all routes in the city"
+
+#: bustime/templates/city_admin.html:659
+msgid "Выполнить gtfs-{{place.id}}"
+msgstr "Execute gtfs-{{{place.id}}}"
+
+#: bustime/templates/city_admin.html:661
+msgid "Скрипт gtfs"
+msgstr "Script gtfs"
+
+#: bustime/templates/city_admin.html:661
+msgid "выполняется 2-3 минуты."
+msgstr "takes about 2-3 minutes"
+
+#: bustime/templates/city_admin.html:662
+msgid "Запустить gtfs"
+msgstr "Run gtfs"
+
+#: bustime/templates/city_admin.html:668
+msgid "Выполнить route_auto {{place.id}}"
+msgstr "Execute route_auto {{place.id}}"
+
+#: bustime/templates/city_admin.html:670
+msgid "Скрипт route_auto"
+msgstr "Script route_auto"
+
+#: bustime/templates/city_admin.html:670
+msgid "выполняется около минуты."
+msgstr "takes about a minute"
+
+#: bustime/templates/city_admin.html:671
+msgid "Запустить route_auto.py"
+msgstr "Run route_auto.py"
+
+#: bustime/templates/city_admin.html:678
+msgid "Обновить БД сайта"
+msgstr "Update website DB"
+
+#: bustime/templates/city_admin.html:682
+msgid ""
+"Для обновления маршрутов на сайте. Автоматически выполняется каждую ночь."
+msgstr "To update routes on the website. Automatically executed every night."
+
+#: bustime/templates/city_admin.html:688
+msgid "Обновить БД приложений"
+msgstr "Update mobile DB"
+
+#: bustime/templates/city_admin.html:692
+msgid "Для обновления маршрутов. Автоматически выполняется каждую ночь."
+msgstr "To update routes. Automatically executed every night."
+
+#: bustime/templates/city_admin.html:697
+msgid "Перезапустить обработчик"
+msgstr "Restart processing"
+
+#: bustime/templates/city_admin.html:698
+msgid "Перезапуск системы обработки и анализа маршрутов"
+msgstr "Restart processing and analyzing"
+
+#: bustime/templates/city_admin.html:704
+msgid "Системные"
+msgstr "System"
+
+#: bustime/templates/city_admin.html:708
+msgid "Обновить конфигурации"
+msgstr "Update configurations"
+
+#: bustime/templates/city_admin.html:709
+msgid "Генерирует конфигурационные файлы для supervisor: windmill и rainsys."
+msgstr "Generates configuration files for supervisor: windmill and rainsys."
+
+#: bustime/templates/city_admin.html:709
+msgid ""
+"Перезапускает его и обновляет присутствие типа транспорта во всех городах."
+msgstr ""
+"Restarts it and updates the presence of the transportation type in all "
+"cities."
+
+#: bustime/templates/city_admin.html:713
+msgid "Лог gtfs"
+msgstr "GTFS log"
+
+#: bustime/templates/city_admin.html:714
+msgid "Смотреть лог gtfs"
+msgstr "View GTFS log"
+
+#: bustime/templates/city_admin.html:714 bustime/templates/city_admin.html:727
+#: bustime/templates/city_admin.html:734
+msgid "от"
+msgstr "from"
+
+#: bustime/templates/city_admin.html:719
+msgid "Лог route_auto"
+msgstr "Route_auto log"
+
+#: bustime/templates/city_admin.html:720
+msgid "Смотреть лог route_auto"
+msgstr "View route_auto log"
+
+#: bustime/templates/city_admin.html:726
+msgid "Лог update_js"
+msgstr "Update_js log"
+
+#: bustime/templates/city_admin.html:727
+msgid "Смотреть лог update_js"
+msgstr "View update_js log"
+
+#: bustime/templates/city_admin.html:733
+msgid "Лог update_mobile"
+msgstr "Update_mobile log"
+
+#: bustime/templates/city_admin.html:734
+msgid "Смотреть лог update_mobile"
+msgstr "View update_mobile log"
+
+#: bustime/templates/city_admin.html:738
+msgid "Редактор переводов"
+msgstr "Translation editing"
+
+#: bustime/templates/city_admin.html:739
+msgid "Редактировать переводы на другие языки"
+msgstr "Edit translations"
+
+#: bustime/templates/city_admin.html:742
+msgid "Цензура"
+msgstr "Censorship"
+
+#: bustime/templates/city_admin.html:743
+msgid "Страница для просмотра всех фото на сервере"
+msgstr "Browse all the server's photos"
+
+#: bustime/templates/city_admin.html:746
+msgid "Пересчитать нити маршрутов"
+msgstr "Update geo-routes"
+
+#: bustime/templates/city_admin.html:747
+msgid "Пересчитать нити всех маршрутов города"
+msgstr "Update all geo-routes"
+
+#: bustime/templates/city_admin.html:750
+msgid "Данные GTFS"
+msgstr "GTFS data"
+
+#: bustime/templates/city_admin.html:751
+msgid "Просмотр загруженных данных GTFS"
+msgstr "View loaded GTFS"
+
+#: bustime/templates/city_admin.html:762
+msgid "Лог"
+msgstr " Log"
+
+#: bustime/templates/city_admin.html:774
+msgid "Мониторинг"
+msgstr "Monitoring"
+
+#: bustime/templates/city_admin.html:781
+msgid "Госномера"
+msgstr "License numbers"
+
+#: bustime/templates/city_admin.html:782 bustime/templates/city_admin.html:830
+msgid "номеров/сегодня"
+msgstr "numbers/today"
+
+#: bustime/templates/city_admin.html:790 bustime/templates/city_admin.html:838
+msgid "Гос"
+msgstr "No."
+
+#: bustime/templates/city_admin.html:791 bustime/templates/city_admin.html:839
+msgid "Гар"
+msgstr "Gar"
+
+#: bustime/templates/city_admin.html:792 bustime/templates/city_admin.html:840
+#: taxi/templates/taxi/setcar.html:51
+msgid "Модель"
+msgstr "Model"
+
+#: bustime/templates/city_admin.html:793 bustime/templates/city_admin.html:841
+msgid "Создано"
+msgstr "Created"
+
+#: bustime/templates/city_admin.html:795
+msgid "Создал"
+msgstr "Created by"
+
+#: bustime/templates/city_admin.html:796 bustime/templates/city_admin.html:844
+msgid "Сигнал"
+msgstr "Signal"
+
+#: bustime/templates/city_admin.html:829
+msgid "Госномера (авто)"
+msgstr "License number"
+
+#: bustime/templates/city_admin.html:843 bustime/templates/feedback_ts.html:45
+msgid "Перевозчик"
+msgstr "Carrier"
+
+#: bustime/templates/city_admin.html:877
+msgid "Прямая отправка GPS"
+msgstr "direct GPS transmission"
+
+#: bustime/templates/city_admin.html:878
+msgid "за последние 24 часа"
+msgstr "for last 24h"
+
+#: bustime/templates/city_admin.html:886
+msgid "точек/час, дата посл."
+msgstr "sent/hour, last"
+
+#: bustime/templates/city_admin.html:888
+msgid "маршрут / номер"
+msgstr "route / number"
+
+#: bustime/templates/city_admin.html:889
+msgid "скорость (точность) / остановка"
+msgstr "velocity / stop"
+
+#: bustime/templates/city_admin.html:894
+msgid "бонус"
+msgstr "bonus"
+
+#: bustime/templates/city_admin.html:908
+msgid "ориг"
+msgstr "orig"
+
+#: bustime/templates/city_admin.html:911
+msgid "GPS не определен"
+msgstr "GPS not available"
+
+#: bustime/templates/city_admin.html:914
+msgid "пробег"
+msgstr "mileage"
+
+#: bustime/templates/city_admin.html:929
+msgid "supervisorctl status"
+msgstr "supervisorctl status"
+
+#: bustime/templates/city_admin.html:932
+msgid "Для разработчиков"
+msgstr "For developers"
+
+#: bustime/templates/city_admin.html:940
+msgid "choose one"
+msgstr "choose one"
+
+#: bustime/templates/city_admin.html:951
+msgid "Reset developer's virtual machine state."
+msgstr "Reset developer's virtual machine state."
+
+#: bustime/templates/city_admin.html:952
+msgid "All unsaved data will be lost forever!"
+msgstr "All unsaved data will be lost forever!"
+
+#: bustime/templates/city_admin.html:953
+msgid "reset"
+msgstr "reset"
+
+#: bustime/templates/city_admin.html:957 bustime/templates/tests_rpc.html:3
+#: bustime/templates/tests_rpc.html:24
+msgid "Тесты RPC"
+msgstr "RPC tests"
+
+#: bustime/templates/city_admin.html:958
+msgid "Страница для тестирования некоторых функций"
+msgstr "Special testing page"
+
+#: bustime/templates/city_admin.html:961
+msgid "Turbine inspector"
+msgstr "Turbine inspector"
+
+#: bustime/templates/city_admin.html:962
+msgid "Диагностика обработки данных в турбомельнице"
+msgstr "Diagnostics of data processing in turbo mill"
+
+#: bustime/templates/city_admin.html:966
+msgid "Текст сообщения"
+msgstr "Message text"
+
+#: bustime/templates/city_admin.html:967
+msgid "Сообщение для всех городов"
+msgstr "Message for all cities"
+
+#: bustime/templates/city_admin.html:968
+msgid "Разместить"
+msgstr "Publish"
+
+#: bustime/templates/city_admin.html:969 taxi/templates/taxi/setcar.html:113
+msgid "Удалить"
+msgstr "Delete"
+
+#: bustime/templates/city_admin.html:980
+msgid "Обновить тестовый билд приложения"
+msgstr "Update the test build of the application"
+
+#: bustime/templates/city_admin.html:981
+msgid "обновить"
+msgstr "refresh"
+
+#: bustime/templates/city_mapping.html:18
+msgid ""
+"Выберите транспорт и в появившейся таблице установите маршрут или поменяйте "
+"номер."
+msgstr ""
+"Select transportation and in the table that appears, set the route or change"
+" the number."
+
+#: bustime/templates/city_mapping.html:19
+msgid "Для добавления нового идентификатора воспользуйтесь формой снизу."
+msgstr "To add new identificator use the form below"
+
+#: bustime/templates/city_mapping.html:20
+msgid ""
+"Кнопка 'очистить все' обнуляет установленные маршруты для всего транспорта."
+msgstr ""
+"The 'clear all' button resets the set routes for all vehicles to zero."
+
+#: bustime/templates/city_mapping.html:41
+#: bustime/templates/city_mapping_table.html:71
+msgid "идентификатор"
+msgstr "ID"
+
+#: bustime/templates/city_mapping.html:42
+#: bustime/templates/city_mapping_table.html:72
+msgid "гос. номер"
+msgstr "license number"
+
+#: bustime/templates/city_mapping.html:44
+#: bustime/templates/city_provider.html:59
+#: bustime/templates/city_provider.html:75
+msgid "удалить"
+msgstr "delete"
+
+#: bustime/templates/city_mapping.html:59
+#: bustime/templates/city_mapping_table.html:104
+msgid "Не установлен"
+msgstr "Not set"
+
+#: bustime/templates/city_mapping.html:90
+#: bustime/templates/city_mapping_table.html:134 taxi/api.py:139
+msgid "Добавить"
+msgstr "Add"
+
+#: bustime/templates/city_mapping.html:94
+#: bustime/templates/city_mapping_table.html:53
+msgid "очистить все"
+msgstr "clear all"
+
+#: bustime/templates/city_mapping_table.html:58
+msgid "Выход"
+msgstr "Exit"
+
+#: bustime/templates/city_mapping_table.html:60
+msgid "Вход"
+msgstr "Entry"
+
+#: bustime/templates/city_mapping_table.html:70
+msgid "№ п/п"
+msgstr "N"
+
+#: bustime/templates/city_mapping_table.html:74
+msgid "последняя активность"
+msgstr "last activity"
+
+#: bustime/templates/city_mapping_table.html:75
+msgid "управление"
+msgstr "control"
+
+#: bustime/templates/city_provider.html:20
+msgid "Поставщик данных"
+msgstr "Data provider"
+
+#: bustime/templates/city_provider.html:21
+msgid "расширенные права доступа"
+msgstr "extended access rights"
+
+#: bustime/templates/city_provider.html:28
+msgid "Поставка данных"
+msgstr "Data publication"
+
+#: bustime/templates/city_provider.html:35
+msgid "Качество данных"
+msgstr "Data quality"
+
+#: bustime/templates/city_provider.html:46
+msgid "включен"
+msgstr "enabled"
+
+#: bustime/templates/city_provider.html:47
+#: bustime/templates/city_provider.html:48
+msgid "Разрешен полный доступ к"
+msgstr "Granted full access to"
+
+#: bustime/templates/city_provider.html:47
+msgid "трэкам"
+msgstr "of tracks"
+
+#: bustime/templates/city_provider.html:47
+#: bustime/templates/city_provider.html:48 bustime/templates/status.html:235
+msgid "дней"
+msgstr "days"
+
+#: bustime/templates/city_provider.html:48
+msgid "истории состояний"
+msgstr "condition history"
+
+#: bustime/templates/city_provider.html:51
+msgid "Публиковать новость"
+msgstr "Publish news"
+
+#: bustime/templates/city_provider.html:53
+msgid ""
+"Новость публикуется в разделе новости города. Размещайте сюда информацию об "
+"изменениях маршрутов, и другую важную информацию касающуюся общественного "
+"транспорта."
+msgstr ""
+"The news is published in the city news section. Post here information about "
+"changes of routes, and other important information about public transport."
+
+#: bustime/templates/city_provider.html:57
+#: bustime/templates/city_provider.html:73
+msgid "Максимум 160 символов"
+msgstr "Maximum 160 characters"
+
+#: bustime/templates/city_provider.html:59
+#: bustime/templates/city_provider.html:75
+msgid "опубликовать"
+msgstr "publish"
+
+#: bustime/templates/city_provider.html:67
+msgid "Срочное сообщение"
+msgstr "Urgency of message"
+
+#: bustime/templates/city_provider.html:69
+msgid ""
+"Сообщение всплывает при каждом запуске приложения и на главной странице "
+"сайта. Размещайте срочную и важную информацию - аварии, недоступность "
+"серверов"
+msgstr ""
+"The message pops up every time you launch the application and on the main "
+"page of the site. Post urgent and important information - crashes, server "
+"unavailability"
+
+#: bustime/templates/city_provider.html:78
+msgid "Статистика посещений"
+msgstr "Visit statistics"
+
+#: bustime/templates/city_provider.html:80
+msgid ""
+"Информация о посещаемости сервиса - сайта и приложений, доступна в разделе"
+msgstr ""
+"Information about the attendance of the service - website and applications, "
+"is available in the section"
+
+#: bustime/templates/city_provider.html:80
+msgid "Состояние сервера"
+msgstr "Server status"
+
+#: bustime/templates/contacts.html:7
+msgid ""
+"Контактная информация для поддержки и связи с администрацией сайта Время "
+"Автобуса"
+msgstr "Project Bustime contacts"
+
+#: bustime/templates/contacts.html:34
+msgid "Ваше сообщение успешно отправлено"
+msgstr "Your message has been sent"
+
+#: bustime/templates/contacts.html:37
+msgid "Докажите что вы не робот"
+msgstr "Prove you are not a robot"
+
+#: bustime/templates/contacts.html:42
+msgid "Отправить сообщение"
+msgstr "Send message"
+
+#: bustime/templates/contacts.html:48
+msgid "Ваш email для ответа"
+msgstr "Provide your return email"
+
+#: bustime/templates/contacts.html:52
+msgid "Сообщение"
+msgstr "Message"
+
+#: bustime/templates/contacts.html:60
+msgid "отправить"
+msgstr "send"
+
+#: bustime/templates/contacts.html:64
+msgid "Отправить сообщение можно только зарегистрированным пользователям"
+msgstr "Only registered users can send a message"
+
+#: bustime/templates/contacts.html:67 bustime/templates/register.html:6
+#: bustime/templates/register.html:41
+msgid "Регистрация"
+msgstr "Registration"
+
+#: bustime/templates/contacts.html:74
+msgid "Новости проекта, поддержка"
+msgstr "Project new, support"
+
+#: bustime/templates/contacts.html:86
+msgid "Поддержка по email"
+msgstr "Support by email"
+
+#: bustime/templates/contacts.html:90
+msgid "Остап Остащенко"
+msgstr "Ostap Ostaschenko"
+
+#: bustime/templates/contacts.html:91
+msgid "мобильные приложения Android и iOS"
+msgstr "applications for Android and iOS"
+
+#: bustime/templates/edit_stop.html:31 bustime/templates/register.html:53
+#: bustime/templates/schedule-bus-edit.html:115
+msgid "Редактирование"
+msgstr "Editing"
+
+#: bustime/templates/feedback_ts.html:6 bustime/templates/feedback_ts.html:7
+#: bustime/templates/feedback_ts.html:8
+msgid "Отзывы о ТС"
+msgstr "Reviews about vehicle"
+
+#: bustime/templates/feedback_ts.html:30 bustime/templates/feedback_ts.html:62
+msgid "Отзывы"
+msgstr "Reviews"
+
+#: bustime/templates/feedback_ts.html:36
+msgid "Информация о ТС"
+msgstr "Information about the vehicle"
+
+#: bustime/templates/feedback_ts.html:37 bustime/templates/index.html:631
+#: bustime/templates/index.old.html:571 bustime/templates/turbo_index.html:681
+msgid "журнал"
+msgstr "track history"
+
+#: bustime/templates/feedback_ts.html:40
+msgid "Гос.№"
+msgstr "State No."
+
+#: bustime/templates/feedback_ts.html:41
+msgid "Борт.№"
+msgstr "Board.no."
+
+#: bustime/templates/feedback_ts.html:42
+#: bustime/templates/settings_profile.html:244
+#: bustime/templates/settings_profile.html:245
+msgid "Низкопольность"
+msgstr "Handicap accessible"
+
+#: bustime/templates/feedback_ts.html:43
+msgid "Модель ТС"
+msgstr "TC model"
+
+#: bustime/templates/feedback_ts.html:47 bustime/templates/status_day.html:35
+#: bustime/templates/status_offline.html:47
+msgid "Статус"
+msgstr "Status"
+
+#: bustime/templates/feedback_ts.html:49 bustime/templates/top.html:115
+msgid "оффлайн"
+msgstr "offline"
+
+#: bustime/templates/feedback_ts.html:51 bustime/templates/top.html:111
+#: bustime/templates/transport.html:253
+msgid "зомби"
+msgstr "zombie"
+
+#: bustime/templates/feedback_ts.html:56
+msgid "обновление"
+msgstr "update"
+
+#: bustime/templates/feedback_ts.html:66 bustime/templates/feedback_ts.html:74
+#: taxi/templates/taxi/order_item.html:62
+msgid "Комментарий"
+msgstr "Comment"
+
+#: bustime/templates/feedback_ts.html:67 bustime/templates/feedback_ts.html:75
+msgid "Оценка"
+msgstr "Evaluation"
+
+#: bustime/templates/feedback_ts.html:68 bustime/templates/feedback_ts.html:85
+#: bustime/templates/history.html:37 bustime/templates/history.html:51
+#: bustime/templates/history1.html:38 bustime/templates/history1.html:54
+msgid "Автор"
+msgstr "Author"
+
+#: bustime/templates/feedback_ts.html:91
+msgid "Изменения статуса"
+msgstr "Status changes"
+
+#: bustime/templates/feedback_ts.html:96
+#: bustime/templates/feedback_ts.html:102
+#: bustime/templates/feedback_ts.html:112
+#: bustime/templates/feedback_ts.html:118
+msgid "Изменение"
+msgstr "Change"
+
+#: bustime/templates/feedback_ts.html:108
+msgid "Изменения гос.№"
+msgstr "Changes to state no."
+
+#: bustime/templates/from-to.html:10 bustime/templates/from-to3.html:21
+#: bustime/templates/from-to3.html:52
+msgid " откуда "
+msgstr " Where"
+
+#: bustime/templates/from-to.html:15 bustime/templates/from-to3.html:30
+#: bustime/templates/from-to3.html:58
+msgid " куда "
+msgstr "To"
+
+#: bustime/templates/from-to.html:16 bustime/templates/from-to3.html:27
+msgid "Найти маршрут"
+msgstr "Find a route"
+
+#: bustime/templates/from-to2.html:216 bustime/templates/from-to4.html:156
+#: bustime/templates/transport.html:273
+msgid "Назад"
+msgstr "Back"
+
+#: bustime/templates/from-to2.html:221
+msgid "До ост."
+msgstr "To the stop."
+
+#: bustime/templates/from-to2.html:258 bustime/templates/from-to2.html:297
+#: bustime/templates/from-to2.html:315 bustime/templates/from-to2.html:333
+#: bustime/templates/from-to4.html:184 bustime/templates/from-to4.html:223
+#: bustime/templates/from-to4.html:241 bustime/templates/from-to4.html:259
+msgid "ост."
+msgstr "stop."
+
+#: bustime/templates/from-to2.html:309 bustime/templates/from-to4.html:235
+msgid "Мой GPS"
+msgstr "My GPS"
+
+#: bustime/templates/from-to3.html:38
+msgid "Поменять остановки местами"
+msgstr "Swap out the stops"
+
+#: bustime/templates/from-to4.html:16
+msgid "Городской"
+msgstr "Сities"
+
+#: bustime/templates/from-to4.html:23
+msgid "На попутке"
+msgstr "Use carpool"
+
+#: bustime/templates/from-to4.html:31
+msgid "Подвезти"
+msgstr "Give me a lift"
+
+#: bustime/templates/from-to4.html:52
+msgid "Заполните данные водителя в профиле"
+msgstr "Заполните данные водителя в профиле"
+
+#: bustime/templates/from-to4.html:52 bustime/templates/from-to4.html:54
+msgid "что бы начать подвозить"
+msgstr "что бы начать подвозить"
+
+#: bustime/templates/from-to4.html:54 taxi/templates/taxi/order_inputs.html:79
+msgid "Зарегистрируйтесь"
+msgstr "Register"
+
+#: bustime/templates/from-to4.html:60
+msgid "Заполните"
+msgstr "Fill out"
+
+#: bustime/templates/from-to4.html:61
+msgid " данные водителя, что бы начать подвозить."
+msgstr "driver's data to start a ride."
+
+#: bustime/templates/from-to4.html:166 bustime/templates/schedule-bus.html:147
+msgid "км."
+msgstr "km."
+
+#: bustime/templates/handbook/airplane.html:8
+#: bustime/templates/handbook/bus-intercity.html:8
+#: bustime/templates/handbook/bus-taxi.html:8
+#: bustime/templates/handbook/bus.html:8
+#: bustime/templates/handbook/carpool.html:8
+#: bustime/templates/handbook/metro.html:8
+#: bustime/templates/handbook/model.html:8
+#: bustime/templates/handbook/taxi.html:8
+#: bustime/templates/handbook/train.html:8
+#: bustime/templates/handbook/tramway.html:7
+#: bustime/templates/handbook/trolleybus.html:7
+#: bustime/templates/handbook/water.html:8 bustime/templates/help.html:6
+#: bustime/templates/help.html:25
+msgid "Справочник"
+msgstr "Reference book"
+
+#: bustime/templates/handbook/airplane.html:10 bustime/templates/help.html:79
+msgid "Самолёт"
+msgstr "Airplane"
+
+#: bustime/templates/handbook/airplane.html:18
+msgid ""
+"Самолёт — это летательный аппарат с неподвижными крыльями, предназначенный "
+"для перевозки пассажиров и грузов по воздуху. Самолёты используются для "
+"коммерческих, грузовых, военных и частных полётов, обеспечивая быстрое "
+"перемещение на большие расстояния."
+msgstr ""
+"An airplane is an aircraft with fixed wings designed to transport passengers"
+" and cargo through the air. Airplanes are used for commercial, cargo, "
+"military and private flights, providing fast travel over long distances."
+
+#: bustime/templates/handbook/bus-intercity.html:10
+#: bustime/templates/help.html:63
+msgid "Междугородний автобус"
+msgstr "Intercity bus"
+
+#: bustime/templates/handbook/bus-intercity.html:18
+msgid ""
+"Междугородний автобус — это транспортное средство, предназначенное для "
+"перевозки пассажиров между городами. Он выполняет рейсы по установленному "
+"расписанию, обеспечивая комфортные условия для длительных поездок, включая "
+"удобные сиденья, багажные отсеки и часто дополнительные удобства, такие как "
+"туалеты и кондиционеры."
+msgstr ""
+"An intercity bus is a vehicle designed to transport passengers between "
+"cities. It runs on a set schedule, providing comfortable conditions for long"
+" journeys, including comfortable seats, luggage compartments and often "
+"additional amenities such as toilets and air conditioning."
+
+#: bustime/templates/handbook/bus-taxi.html:18
+msgid ""
+"Маршрутное такси — это небольшой коммерческий автобус или микроавтобус, "
+"который перевозит пассажиров по фиксированному маршруту, часто "
+"останавливаясь по требованию. Оно совмещает особенности такси и "
+"общественного транспорта, предоставляя более гибкое и быстрое передвижение "
+"по сравнению с обычными автобусами."
+msgstr ""
+"A cab is a small commercial bus or minibus that transports passengers along "
+"a fixed route, often stopping on demand. It combines the features of cabs "
+"and public transportation, providing more flexible and faster travel than "
+"conventional buses."
+
+#: bustime/templates/handbook/bus.html:18
+msgid ""
+"Автобус – это транспортное средство, предназначенное для перевозки большого "
+"количества пассажиров по заранее определенным маршрутам. В отличие от "
+"легковых автомобилей, автобусы способны вместить большое количество людей, "
+"что делает их важным элементом общественного транспорта в городах и "
+"междугородных перевозках."
+msgstr ""
+"A bus is a vehicle designed to transport a large number of passengers along "
+"predetermined routes. Unlike passenger cars, buses can accommodate a large "
+"number of people, which makes them an important element of public transport "
+"in cities and intercity transportation."
+
+#: bustime/templates/handbook/bus.html:25
+msgid "Доступность"
+msgstr "Accessibility"
+
+#: bustime/templates/handbook/bus.html:26
+msgid ""
+"Автобусы доступны большинству людей, так как имеют относительно низкую "
+"стоимость проезда по сравнению с другими видами транспорта, такими как такси"
+" или личный автомобиль. Кроме того, они часто предоставляют льготы для "
+"студентов, пенсионеров и людей с ограниченными возможностями."
+msgstr ""
+"Buses are accessible to most people because they have relatively low fares "
+"compared to other modes of transportation such as cabs or private cars. In "
+"addition, they often provide benefits for students, pensioners and people "
+"with disabilities."
+
+#: bustime/templates/handbook/bus.html:31
+msgid "Экономичность"
+msgstr "Cost-effectiveness"
+
+#: bustime/templates/handbook/bus.html:32
+msgid ""
+"Использование автобусов позволяет существенно сократить транспортные "
+"расходы, особенно в больших городах, где содержание личного автомобиля может"
+" быть дорогим из-за высоких цен на топливо, парковку и техническое "
+"обслуживание."
+msgstr ""
+"The use of buses can significantly reduce transportation costs, especially "
+"in large cities where maintaining a private car can be expensive due to high"
+" fuel, parking and maintenance costs."
+
+#: bustime/templates/handbook/bus.html:37
+msgid "Экологичность"
+msgstr "Environmental friendliness"
+
+#: bustime/templates/handbook/bus.html:38
+msgid ""
+"Автобусы, особенно современные модели на электричестве или с гибридными "
+"двигателями, способствуют снижению выбросов вредных веществ в атмосферу. Это"
+" важно для улучшения экологической обстановки в городах и борьбы с "
+"изменением климата."
+msgstr ""
+"Buses, especially modern models powered by electricity or hybrid engines, "
+"contribute to the reduction of harmful emissions into the atmosphere. This "
+"is important for improving the environmental situation in cities and "
+"fighting climate change."
+
+#: bustime/templates/handbook/bus.html:43
+msgid "Социальное взаимодействие"
+msgstr "Social interaction"
+
+#: bustime/templates/handbook/bus.html:44
+msgid ""
+"Автобусы способствуют социальному взаимодействию и сплочению общества, так "
+"как предоставляют людям возможность встречаться и общаться во время поездок."
+msgstr ""
+"Buses promote social interaction and community cohesion as they provide "
+"opportunities for people to meet and socialize while traveling."
+
+#: bustime/templates/handbook/bus.html:49
+msgid "Уменьшение заторов"
+msgstr "Reducing congestion"
+
+#: bustime/templates/handbook/bus.html:50
+msgid ""
+"Общественный транспорт, включая автобусы, помогает уменьшить количество "
+"частных автомобилей на дорогах, что способствует снижению уровня заторов и "
+"улучшению дорожной ситуации."
+msgstr ""
+"Public transportation, including buses, helps reduce the number of private "
+"cars on the road, which helps reduce congestion and improve traffic "
+"conditions."
+
+#: bustime/templates/handbook/bus.html:55
+msgid "Инфраструктура и маршруты"
+msgstr "Infrastructure and routes"
+
+#: bustime/templates/handbook/bus.html:56
+msgid ""
+"Для эффективного функционирования автобусного транспорта необходима развитая"
+" инфраструктура, включающая остановки, терминалы и выделенные полосы для "
+"движения автобусов. Маршруты автобусов обычно тщательно планируются для "
+"охвата максимально возможного числа районов города и обеспечения удобных "
+"пересадок на другие виды общественного транспорта."
+msgstr ""
+"The efficient operation of bus transport requires a well-developed "
+"infrastructure including bus stops, terminals and dedicated bus lanes. Bus "
+"routes are usually carefully planned to cover as many areas of the city as "
+"possible and provide convenient connections to other public transport modes."
+
+#: bustime/templates/handbook/bus.html:61
+msgid "Комфорт и безопасность"
+msgstr "Comfort and safety"
+
+#: bustime/templates/handbook/bus.html:62
+msgid ""
+"Современные автобусы оборудованы для обеспечения комфорта пассажиров, "
+"включая удобные сиденья, кондиционеры, информационные дисплеи и Wi-Fi. "
+"Безопасность также является важным аспектом, который обеспечивается за счет "
+"регулярного технического обслуживания и соблюдения правил дорожного "
+"движения."
+msgstr ""
+"Modern buses are equipped to ensure passenger comfort, including comfortable"
+" seats, air conditioning, information displays and Wi-Fi. Safety is also an "
+"important aspect, which is ensured through regular maintenance and "
+"compliance with traffic regulations."
+
+#: bustime/templates/handbook/bus.html:67
+msgid "Интеграция с другими видами транспорта"
+msgstr "Integration with other modes of transportation"
+
+#: bustime/templates/handbook/bus.html:68
+msgid ""
+"Автобусы часто интегрированы с другими видами общественного транспорта, "
+"такими как метро, трамваи и пригородные поезда, что обеспечивает удобные "
+"пересадки и облегчает перемещение по городу."
+msgstr ""
+"Buses are often integrated with other forms of public transportation such as"
+" subways, streetcars, and commuter trains, providing convenient transfers "
+"and making it easier to get around the city."
+
+#: bustime/templates/handbook/bus.html:73
+msgid "Модели"
+msgstr "Models"
+
+#: bustime/templates/handbook/carpool.html:18
+msgid ""
+"Попутка — это неофициальный способ передвижения, когда водитель частного "
+"автомобиля подбирает пассажиров, следующих в том же направлении, обычно за "
+"символическую плату или бесплатно. Этот способ удобен для людей, которым "
+"нужно добраться до определенного места, и для водителей, которые хотят "
+"сэкономить на топливе или просто ищут компанию в дороге."
+msgstr ""
+"A hitchhiker is an informal method of transportation where the driver of a "
+"private car picks up passengers traveling in the same direction, usually for"
+" a nominal fee or for free. This method is convenient for people who need to"
+" get to a certain place, and for drivers who want to save money on fuel or "
+"are just looking for company on the road."
+
+#: bustime/templates/handbook/metro.html:18
+msgid ""
+"Метро — это система городского общественного транспорта, состоящая из "
+"подземных, наземных и надземных железнодорожных линий. Оно предназначено для"
+" быстрой и регулярной перевозки большого числа пассажиров по фиксированным "
+"маршрутам с частыми остановками. Метро эффективно разгружает наземный "
+"транспорт и уменьшает пробки в городах."
+msgstr ""
+"Metro is an urban public transportation system consisting of underground, "
+"surface and elevated railway lines. It is designed for fast and regular "
+"transportation of a large number of passengers along fixed routes with "
+"frequent stops. The metro effectively relieves ground transportation and "
+"reduces congestion in cities."
+
+#: bustime/templates/handbook/taxi.html:10 bustime/templates/help.html:87
+#: taxi/models.py:59 taxi/templates/taxi/agreement.html:3
+#: taxi/templates/taxi/agreement.html:19 taxi/templates/taxi/profile.html:3
+#: taxi/templates/taxi/selcar.html:3 taxi/templates/taxi/setcar.html:3
+msgid "Такси"
+msgstr "Taxi"
+
+#: bustime/templates/handbook/taxi.html:18
+msgid ""
+"Такси — это частное или коммерческое транспортное средство с водителем, "
+"которое предоставляет услуги по перевозке пассажиров по требованию за плату."
+" Пассажиры могут вызвать такси для поездок в любое нужное им место, и оплата"
+" обычно зависит от расстояния и времени поездки."
+msgstr ""
+"A cab is a private or commercial vehicle with a driver that provides on-"
+"demand transportation services to passengers for a fee. Passengers can hail "
+"a cab to go anywhere they need to go, and the charge is usually based on the"
+" distance and time of the trip."
+
+#: bustime/templates/handbook/train.html:18
+msgid ""
+"Поезд — это железнодорожное транспортное средство, состоящее из локомотива и"
+" прицепленных к нему вагонов, предназначенное для перевозки пассажиров или "
+"грузов. Поезда движутся по рельсовым путям и могут быть различных типов: "
+"пассажирские, грузовые, скоростные и пригородные. Они являются эффективным "
+"средством для дальних перевозок и массового транспорта."
+msgstr ""
+"A train is a railway vehicle consisting of a locomotive and attached wagons "
+"designed for the transportation of passengers or freight. Trains run on rail"
+" tracks and can be of different types: passenger, freight, express and "
+"suburban. They are an efficient means of long-distance transportation and "
+"mass transit."
+
+#: bustime/templates/handbook/tramway.html:17
+msgid ""
+"Трамвай — это рельсовое транспортное средство, предназначенное для перевозки"
+" пассажиров по городским маршрутам. Трамваи движутся по рельсам, встроенным "
+"в дорожное полотно, и получают питание от электрической контактной сети. Они"
+" экологичны и способны перевозить большое количество пассажиров, что делает "
+"их важной частью общественного транспорта в городах."
+msgstr ""
+"A streetcar is a rail vehicle designed to transport passengers on urban "
+"routes. Streetcars run on rails built into the roadbed and are powered by an"
+" electric catenary. They are environmentally friendly and can carry a large "
+"number of passengers, making them an important part of public transportation"
+" in cities."
+
+#: bustime/templates/handbook/trolleybus.html:17
+msgid ""
+"Троллейбус — это электрическое транспортное средство, предназначенное для "
+"перевозки пассажиров по городским маршрутам. Он получает электроэнергию от "
+"воздушных контактных линий с помощью токоприёмников — штанг. Троллейбусы "
+"сочетают в себе черты автобуса и трамвая: маневренность автобуса и "
+"экологичность трамвая, так как работают на электричестве и не выбрасывают "
+"выхлопные газы."
+msgstr ""
+"A trolleybus is an electric vehicle designed to transport passengers along "
+"urban routes. It receives electricity from overhead catenary lines by means "
+"of current collectors - rods. Trolleybuses combine the features of buses and"
+" streetcars: the maneuverability of a bus and the environmental friendliness"
+" of a streetcar, as they run on electricity and do not emit exhaust fumes."
+
+#: bustime/templates/handbook/water.html:18
+msgid ""
+"Водный автобус — это пассажирское судно, предназначенное для регулярных "
+"перевозок по водным маршрутам в пределах города или между прибрежными "
+"районами. Оно действует по аналогии с наземным общественным транспортом, "
+"обеспечивая частые и удобные рейсы для пассажиров."
+msgstr ""
+"A water bus is a passenger vessel designed for regular transportation on "
+"water routes within a city or between coastal areas. It operates similarly "
+"to land public transportation, providing frequent and convenient trips for "
+"passengers."
+
+#: bustime/templates/help.html:7
+msgid "Раздел помощи поможет разобраться с интерфейсом сайта"
+msgstr "Help section will assist in figuring out the website interface"
+
+#: bustime/templates/help.html:7
+msgid ""
+"Здесь вы найдете ответы на вопросы, а также описание дополнительных "
+"возможностей и различных информационных элементов"
+msgstr ""
+"Here you can find answers to frequently asked questions and descriptions of "
+"various interface elements"
+
+#: bustime/templates/help.html:33
+msgid "Выберите маршрут из списка, чтобы открыть схему маршрута"
+msgstr "Select a route from the list to open the route map"
+
+#: bustime/templates/help.html:33
+msgid "Цвет кнопки зависит от количества активного транспорта."
+msgstr "The colour of the button depends on the number of active transports."
+
+#: bustime/templates/help.html:34
+msgid ""
+"В центре указано название, а ниже количество транспортных средств на "
+"маршруте в прямом и обратном направлении"
+msgstr ""
+"In the center is the name and below that is the number of vehicles on the "
+"route in the forward and reverse directions"
+
+#: bustime/templates/help.html:34
+msgid "Знак процента указывает на маршруты со скидками"
+msgstr "The percent sign indicates discounted routes"
+
+#: bustime/templates/help.html:40 bustime/templates/help.html:98
+msgid "Символ и значение"
+msgstr "Symbol and meaning"
+
+#: bustime/templates/help.html:41 bustime/templates/help.html:99
+msgid "Описание"
+msgstr "Description"
+
+#: bustime/templates/help.html:47
+msgid ""
+"Крупное моторное транспортное средство, предназначенное для перевозки "
+"большого числа пассажиров по заданным маршрутам в пределах города или "
+"междугородных сообщений."
+msgstr ""
+"A large motorized vehicle designed to carry a large number of passengers on "
+"specified routes within a city or intercity."
+
+#: bustime/templates/help.html:52
+msgid ""
+"Электрическое транспортное средство, использующее контактные провода для "
+"питания и предназначенное для перевозки пассажиров по городским маршрутам."
+msgstr ""
+"An electric vehicle that uses catenary wires for power and is designed to "
+"carry passengers on urban routes."
+
+#: bustime/templates/help.html:56
+msgid ""
+"Рельсовое транспортное средство, передвигающееся по специально проложенным "
+"путям и предназначенное для перевозки пассажиров в пределах городской "
+"транспортной системы."
+msgstr ""
+"A rail vehicle that travels on specially laid tracks and is designed to "
+"carry passengers within an urban transportation system."
+
+#: bustime/templates/help.html:60
+msgid ""
+"Небольшой пассажирский автобус, курсирующий по фиксированному маршруту с "
+"возможностью высадки и посадки пассажиров в любом удобном месте по пути "
+"следования."
+msgstr ""
+"A small passenger bus operating on a fixed route with the ability to drop "
+"off and pick up passengers at any convenient location along the route."
+
+#: bustime/templates/help.html:64
+msgid ""
+"Крупное пассажирское транспортное средство, предназначенное для перевозки "
+"людей на длительные расстояния между различными городами, обеспечивающее "
+"комфортные условия во время поездки."
+msgstr ""
+"A large passenger vehicle designed to transport people for long distances "
+"between different cities, providing comfortable conditions during the trip."
+
+#: bustime/templates/help.html:68
+msgid ""
+"Подземная или наземная железнодорожная система общественного транспорта, "
+"состоящая из электрических поездов, предназначенных для быстрого и массового"
+" перемещения пассажиров по городу и его пригородам."
+msgstr ""
+"An underground or surface public transportation rail system consisting of "
+"electric trains designed to move passengers quickly and en masse throughout "
+"a city and its suburbs."
+
+#: bustime/templates/help.html:72
+msgid ""
+"Состав из нескольких вагонов, тянущийся локомотивом по рельсам и "
+"предназначенный для перевозки пассажиров и грузов на дальние расстояния "
+"между городами и регионами."
+msgstr ""
+"A train of several cars pulled by a locomotive on rails and designed for "
+"long-distance transportation of passengers and freight between cities and "
+"regions."
+
+#: bustime/templates/help.html:75
+msgid "Водный транспорт"
+msgstr "Water transport"
+
+#: bustime/templates/help.html:76
+msgid ""
+"Водное транспортное средство, предназначенное для перевозки пассажиров по "
+"водным маршрутам, часто используемое в прибрежных городах и для "
+"туристических экскурсий."
+msgstr ""
+"A water vehicle designed to carry passengers along water routes, often used "
+"in coastal cities and for tourist excursions."
+
+#: bustime/templates/help.html:80
+msgid ""
+"Быстрое воздушное транспортное средство, используемое для перевозки "
+"пассажиров и грузов на дальние расстояния между городами и странами, "
+"обеспечивая регулярное и удобное сообщение."
+msgstr ""
+"A fast air vehicle used to transport passengers and cargo over long "
+"distances between cities and countries, providing regular and convenient "
+"connections."
+
+#: bustime/templates/help.html:84
+msgid ""
+"Способ совместного использования автомобиля несколькими людьми, чтобы "
+"сократить расходы на топливо, снизить нагрузку на дороги и уменьшить выбросы"
+" в окружающую среду."
+msgstr ""
+"A way for multiple people to share a car to cut fuel costs, reduce the "
+"strain on the roads and reduce emissions."
+
+#: bustime/templates/help.html:88
+msgid ""
+"Персонализированные поездки по запросу, обеспечивающие гибкость и удобство "
+"для пассажиров по сравнению с фиксированными маршрутами традиционных "
+"общественных транспортных средств."
+msgstr ""
+"Personalized, on-demand rides that provide flexibility and convenience for "
+"passengers compared to the fixed routes of traditional public "
+"transportation."
+
+#: bustime/templates/help.html:94
+msgid "Индикаторы"
+msgstr "Indicators"
+
+#: bustime/templates/help.html:103
+msgid ""
+"Символ пассажира появляется при нажатии на остановку, что устанавливает "
+"звуковое оповещение по приезду транспорта. Обозначение видят все "
+"пользователи Bustime. Водители могут видеть, что вы ждете транспорт на "
+"данной остановке."
+msgstr ""
+"The passenger symbol appears when you tap on a stop, which sets an audible "
+"notification when transport arrives. The symbol is visible to all Bustime "
+"users. Drivers can see that you are waiting for transportation at this stop."
+
+#: bustime/templates/help.html:107
+msgid ""
+"Индикатор статуса транспортного средства, находящегося на конечной "
+"остановке."
+msgstr "Status indicator for the status of the vehicle at the final stop."
+
+#: bustime/templates/help.html:112
+msgid "Индикатор ночного времени, данные сервера не обновляются."
+msgstr "No data available at this time"
+
+#: bustime/templates/help.html:121
+msgid "Схема маршрута"
+msgstr "Route scheme"
+
+#: bustime/templates/help.html:124
+msgid ""
+"На схеме маршрута отображены остановки в двух направлениях и текущее "
+"местонахождение общественного транспорта. Рядом с названием остановки "
+"указано прогнозируемое время прибытия."
+msgstr ""
+"The route diagram shows stops in two directions and the current location of "
+"public transportation. The predicted arrival time is shown next to the stop "
+"name."
+
+#: bustime/templates/help.html:128
+msgid "Дополнительные и специальные возможности"
+msgstr "Additional and special features"
+
+#: bustime/templates/help.html:129
+msgid "Откройте настройки "
+msgstr "Open the settings "
+
+#: bustime/templates/help.html:129
+msgid " с помощью кнопки сверху чтобы установить дополнительные параметры."
+msgstr "using the button at the top to set additional parameters."
+
+#: bustime/templates/help.html:130
+msgid "Здесь вы можете:"
+msgstr "Here you can:"
+
+#: bustime/templates/help.html:132
+msgid "отключить звук"
+msgstr "mute"
+
+#: bustime/templates/help.html:133
+msgid ""
+"отключить оповещения об изменении количества единиц транспорта на маршруте"
+msgstr ""
+"disable notifications about changes in the number of transport units on the "
+"route"
+
+#: bustime/templates/help.html:134
+msgid ""
+"отключить автопоиск текущего местонахождения по GPS (ближайшие к вам "
+"остановки автоматически появляться не будут)"
+msgstr ""
+"disable auto search of your current location by GPS (stops closest to you "
+"will not automatically appear)"
+
+#: bustime/templates/help.html:135
+msgid "очистить список любимых маршрутов"
+msgstr "clear the list of favorite routes"
+
+#: bustime/templates/help.html:137
+msgid "Приложения адаптированы для"
+msgstr "The applications are adapted for"
+
+#: bustime/templates/help.html:138
+msgid "незрячих и слабовидящих"
+msgstr "blind and visually impaired"
+
+#: bustime/templates/help.html:139
+msgid "при участии экспертов по доступной среде "
+msgstr "with the participation of experts on accessible environment"
+
+#: bustime/templates/help.html:140
+msgid "Проектного офиса Стратегии развития Нижегородской области"
+msgstr "Nizhny Novgorod Region Development Strategy Project Office"
+
+#: bustime/templates/help.html:141
+msgid ""
+"Для удобства пользования незрячими и слабовидящими пассажирами Bustime "
+"предусматривает следующие возможности:"
+msgstr ""
+"For the convenience of blind and visually impaired passengers, Bustime "
+"provides the following features:"
+
+#: bustime/templates/help.html:143
+msgid "голосовой поиск"
+msgstr "voice search"
+
+#: bustime/templates/help.html:144
+msgid "настраиваемое голосовое оповещение"
+msgstr "customizable voice alert"
+
+#: bustime/templates/help.html:145
+msgid "работа в фоновом режиме"
+msgstr "background operation"
+
+#: bustime/templates/help.html:149
+msgid "Как работает Bustime"
+msgstr "How Bustime works"
+
+#: bustime/templates/help.html:152
+msgid ""
+"Bustime предоставляет данные, основанные на анализе GPS-данных текущего "
+"местоположения общественного транспорта. Городской транспорт оснащен "
+"устройствами, которые в режиме реального времени отправляют информацию о "
+"своем местоположении через мобильный интернет. Этот процесс включает "
+"несколько этапов:"
+msgstr ""
+"Bustime provides data based on the analysis of GPS data of the current "
+"location of public transport. Public transport is equipped with devices that"
+" send real-time information about their location via mobile internet. This "
+"process involves several steps:"
+
+#: bustime/templates/help.html:155
+msgid "Данные спутниковой навигации передаются на сервер"
+msgstr "Satellite navigation data is transmitted to the server"
+
+#: bustime/templates/help.html:156
+msgid ""
+"На сервере данные записываются в базу данных и пересылаются на сервер "
+"Bustime"
+msgstr ""
+"On the server, the data is written to a database and forwarded to the "
+"Bustime server"
+
+#: bustime/templates/help.html:157
+msgid ""
+"Сервер Bustime анализирует точки местоположения транспорта и передает "
+"обновленную информацию подключенным пользователям"
+msgstr ""
+"The Bustime server analyzes vehicle location points and transmits updated "
+"information to connected users"
+
+#: bustime/templates/help.html:160
+msgid ""
+"Этот механизм позволяет получать актуальную информацию о местоположении "
+"общественного транспорта в реальном времени."
+msgstr ""
+"This mechanism provides up-to-date information on the real-time location of "
+"public transportation."
+
+#: bustime/templates/help.html:161
+msgid ""
+"Сайт работает на телефонах без JS, смартфонах, планшетах, ноутбуках, "
+"компьютерах, телевизорах"
+msgstr ""
+"The site works on non-JS phones, smartphones, tablets, laptops, computers, "
+"TVs"
+
+#: bustime/templates/help.html:162
+msgid "Есть отдельные приложения для Android и IOS"
+msgstr "There are separate apps for Android and IOS"
+
+#: bustime/templates/help.html:165
+msgid "Ссылки"
+msgstr "Links"
+
+#: bustime/templates/help.html:167
+msgid "Веб-сайт"
+msgstr "Website"
+
+#: bustime/templates/help.html:169 bustime/templates/help.html:171
+#: bustime/templates/help.html:172 bustime/templates/help.html:173
+#: bustime/templates/transport.html:6
+msgid "для"
+msgstr "for"
+
+#: bustime/templates/help.html:170
+msgid "Время Автобуса для"
+msgstr "Bustime for"
+
+#: bustime/templates/help.html:179
+msgid "Удаление аккаунта"
+msgstr "Account Deletion"
+
+#: bustime/templates/help.html:180
+msgid "Ознакомиться с инструкцией по удалению своего аккаунта можно "
+msgstr "You can view instructions on how to delete your account"
+
+#: bustime/templates/help.html:180
+msgid "здесь"
+msgstr "here"
+
+#: bustime/templates/history.html:31 bustime/templates/history1.html:32
+msgid "история изменений"
+msgstr "history of changes"
+
+#: bustime/templates/history.html:35 bustime/templates/history.html:45
+#: bustime/templates/history1.html:36 bustime/templates/history1.html:46
+#: bustime/templates/history1.html:47
+msgid "Новость"
+msgstr "News"
+
+#: bustime/templates/icon_editor.html:10
+msgid "Наклейки"
+msgstr "Stickers"
+
+#: bustime/templates/icon_editor.html:15
+msgid "Редактор наклеек"
+msgstr "Sticker Editor"
+
+#: bustime/templates/icon_editor.html:15
+msgid "сделай транспорт красивее"
+msgstr "make the transportation more beautiful."
+
+#: bustime/templates/icon_editor.html:26
+msgid "создана"
+msgstr "established"
+
+#: bustime/templates/icon_editor.html:27
+msgid "активность"
+msgstr "activity"
+
+#: bustime/templates/icon_editor.html:28
+msgid "владелец"
+msgstr "owner"
+
+#: bustime/templates/icon_editor.html:29
+msgid "номер"
+msgstr "number"
+
+#: bustime/templates/icon_editor.html:30
+msgid "картинка"
+msgstr "image"
+
+#: bustime/templates/index-menu.html:6 bustime/templates/new_ui_base.html:218
+msgid "Погода"
+msgstr "Weather"
+
+#: bustime/templates/index-menu.html:7 bustime/templates/stop_info.html:97
+#: bustime/templates/turbo_stop_info.html:96
+msgid "дождь"
+msgstr "rain"
+
+#: bustime/templates/index-menu.html:8 bustime/templates/stop_info.html:98
+#: bustime/templates/turbo_stop_info.html:97
+msgid "снег"
+msgstr "snow"
+
+#: bustime/templates/index-menu.html:9 bustime/templates/stop_info.html:99
+#: bustime/templates/turbo_stop_info.html:98
+msgid "град"
+msgstr "hail"
+
+#: bustime/templates/index-menu.html:10
+msgid "смог"
+msgstr "smoke"
+
+#: bustime/templates/index-menu.html:11 bustime/templates/stop_info.html:101
+#: bustime/templates/turbo_stop_info.html:100
+msgid "ясно"
+msgstr "got it"
+
+#: bustime/templates/index-menu.html:12 bustime/templates/stop_info.html:102
+#: bustime/templates/turbo_stop_info.html:101
+msgid "облачно"
+msgstr "in a cloud"
+
+#: bustime/templates/index-menu.html:13 bustime/templates/stop_info.html:103
+#: bustime/templates/turbo_stop_info.html:102
+msgid "пасмурно"
+msgstr "gloomy"
+
+#: bustime/templates/index-menu.html:14 bustime/templates/stop_info.html:104
+#: bustime/templates/turbo_stop_info.html:103
+msgid "туман"
+msgstr "fog"
+
+#: bustime/templates/index-menu.html:19
+msgid "менее 5 поездок"
+msgstr "less than 5 rides"
+
+#: bustime/templates/index-menu.html:19
+msgid "Транспортная карта"
+msgstr "Транспортная карта"
+
+#: bustime/templates/index-menu.html:22
+msgid "раз"
+msgstr "times"
+
+#: bustime/templates/index-menu.html:28
+msgid " баллов "
+msgstr " points"
+
+#: bustime/templates/index-menu.html:28
+msgid "Дорожная ситуация"
+msgstr " Traffic situation"
+
+#: bustime/templates/index-menu.html:31
+msgid "Настройки сайта"
+msgstr "Site Settings"
+
+#: bustime/templates/index-menu.html:38
+msgid "Стоимость 0.001 Биткоина"
+msgstr "0.001 BTC price"
+
+#: bustime/templates/index-menu.html:39
+msgid "Источник"
+msgstr "Source"
+
+#: bustime/templates/index-menu.html:40
+msgid "Логи"
+msgstr " Logs"
+
+#: bustime/templates/index-menu.html:41 bustime/templates/tests_rpc.html:22
+msgid "Управление сервером"
+msgstr "Server controls"
+
+#: bustime/templates/index-menu.html:41
+msgid "Сервер"
+msgstr "Server"
+
+#: bustime/templates/index.html:81 bustime/templates/index.old.html:72
+#: bustime/templates/new_ui_index.html:77
+#: bustime/templates/turbo_index.html:83 taxi/templates/taxi/orders.html:4
+#: taxi/templates/taxi/orders.html:21 taxi/templates/taxi/profile.html:21
+#: taxi/templates/taxi/selcar.html:20
+msgid "Попутчик"
+msgstr "Companion"
+
+#: bustime/templates/index.html:104
+msgid "admin"
+msgstr "admin"
+
+#: bustime/templates/index.html:120 bustime/templates/index.old.html:88
+#: bustime/templates/new_ui_index.html:116
+#: bustime/templates/turbo_index.html:121
+msgid "Внимание!"
+msgstr "Caution!"
+
+#: bustime/templates/index.html:120 bustime/templates/index.old.html:88
+#: bustime/templates/new_ui_index.html:116
+#: bustime/templates/turbo_index.html:121
+msgid "Акаунт заблокирован до"
+msgstr "Account is blocked until"
+
+#: bustime/templates/index.html:162 bustime/templates/index.old.html:152
+#: bustime/templates/new_ui_index.html:158
+#: bustime/templates/turbo_index.html:163
+msgid "Закрыть объявление"
+msgstr "Close ad"
+
+#: bustime/templates/index.html:163 bustime/templates/index.old.html:153
+#: bustime/templates/new_ui_index.html:159
+#: bustime/templates/turbo_index.html:164
+msgid "Сервер данных"
+msgstr "Data server"
+
+#: bustime/templates/index.html:163 bustime/templates/index.old.html:153
+#: bustime/templates/new_ui_index.html:159
+#: bustime/templates/turbo_index.html:164
+msgid "не работает"
+msgstr "does not work"
+
+#: bustime/templates/index.html:165 bustime/templates/index.old.html:155
+#: bustime/templates/new_ui_index.html:161
+#: bustime/templates/turbo_index.html:166
+msgid "Невозможно принять координаты общественного транспорта"
+msgstr "Public transit data is not provided"
+
+#: bustime/templates/index.html:165 bustime/templates/index.old.html:155
+#: bustime/templates/new_ui_index.html:161
+#: bustime/templates/turbo_index.html:166
+msgid "Информация, предоставляемая сервером данных в"
+msgstr "Data from the service provider in"
+
+#: bustime/templates/index.html:167 bustime/templates/index.old.html:155
+#: bustime/templates/new_ui_index.html:161
+#: bustime/templates/turbo_index.html:166
+msgid "не актуальна"
+msgstr "out of date"
+
+#: bustime/templates/index.html:168 bustime/templates/new_ui_index.html:162
+#: bustime/templates/turbo_index.html:167
+msgid "Последний раз данные успешно получены"
+msgstr "Last time it worked at"
+
+#: bustime/templates/index.html:196 bustime/templates/index.old.html:184
+#: bustime/templates/new_ui_index.html:190
+#: bustime/templates/turbo_index.html:202
+msgid "Ошибка отправки данных - гос .номер не установлен"
+msgstr "Data transfer error - license plate number is not defined"
+
+#: bustime/templates/index.html:206
+msgid ""
+"Вы можете отправлять свои координаты напрямую в Bustime, чтобы ваш транспорт"
+" было видно даже если центральный диспетчерский пункт не работает"
+msgstr ""
+"You can send your coordinates directly to Bustime, so that your "
+"transportation can be seen without dispatcher service."
+
+#: bustime/templates/index.html:207 bustime/templates/index.old.html:195
+#: bustime/templates/new_ui_index.html:201
+#: bustime/templates/turbo_index.html:212
+msgid "Включите в"
+msgstr "Turn on in"
+
+#: bustime/templates/index.html:207 bustime/templates/index.old.html:195
+#: bustime/templates/new_ui_index.html:201
+#: bustime/templates/turbo_index.html:212
+msgid "Настройках"
+msgstr "Settings"
+
+#: bustime/templates/index.html:207 bustime/templates/index.old.html:195
+#: bustime/templates/new_ui_index.html:201
+#: bustime/templates/turbo_index.html:212
+msgid "Отправлять свои координаты, выберете свой маршрут и введите гос. номер"
+msgstr ""
+"To send your coordinates, choose your route and enter license plate number"
+
+#: bustime/templates/index.html:214 bustime/templates/index.old.html:202
+#: bustime/templates/new_ui_index.html:208
+#: bustime/templates/turbo_index.html:219
+msgid "Срок подписки истекает через"
+msgstr "Subscription expires in"
+
+#: bustime/templates/index.html:214 bustime/templates/index.old.html:202
+#: bustime/templates/new_ui_index.html:208
+#: bustime/templates/turbo_index.html:219
+msgid "Рекомендуется"
+msgstr "Recommended"
+
+#: bustime/templates/index.html:215 bustime/templates/index.old.html:203
+#: bustime/templates/new_ui_index.html:209
+#: bustime/templates/turbo_index.html:220
+msgid "продлить подписку"
+msgstr "Renew subscription"
+
+#: bustime/templates/index.html:244 bustime/templates/index.html:424
+#: bustime/templates/index.old.html:242 bustime/templates/index.old.html:379
+#: bustime/templates/new_ui_index.html:238
+#: bustime/templates/new_ui_index.html:749
+#: bustime/templates/turbo_index.html:249
+#: bustime/templates/turbo_index.html:473
+msgid "Троллейбус номер"
+msgstr "Trolleybus number"
+
+#: bustime/templates/index.html:244 bustime/templates/index.html:424
+#: bustime/templates/index.old.html:242 bustime/templates/index.old.html:379
+#: bustime/templates/new_ui_index.html:238
+#: bustime/templates/new_ui_index.html:749
+#: bustime/templates/turbo_index.html:249
+#: bustime/templates/turbo_index.html:473
+msgid "Трамвай номер"
+msgstr "Tramway number"
+
+#: bustime/templates/index.html:244 bustime/templates/index.html:424
+#: bustime/templates/index.old.html:242 bustime/templates/index.old.html:379
+#: bustime/templates/new_ui_index.html:238
+#: bustime/templates/new_ui_index.html:749
+#: bustime/templates/turbo_index.html:249
+#: bustime/templates/turbo_index.html:473
+msgid "Маршрутное такси номер"
+msgstr "The route cab number"
+
+#: bustime/templates/index.html:244 bustime/templates/index.html:424
+#: bustime/templates/index.old.html:242 bustime/templates/index.old.html:379
+#: bustime/templates/new_ui_index.html:238
+#: bustime/templates/new_ui_index.html:749
+#: bustime/templates/turbo_index.html:249
+#: bustime/templates/turbo_index.html:473
+msgid "Автобус номер"
+msgstr "Bus number"
+
+#: bustime/templates/index.html:244 bustime/templates/index.html:424
+#: bustime/templates/index.old.html:242 bustime/templates/index.old.html:379
+#: bustime/templates/new_ui_index.html:238
+#: bustime/templates/new_ui_index.html:749
+#: bustime/templates/turbo_index.html:249
+#: bustime/templates/turbo_index.html:473
+msgid "Междугородний автобус номер"
+msgstr "Intercity bus number"
+
+#: bustime/templates/index.html:264 bustime/templates/index.old.html:260
+#: bustime/templates/new_ui_index.html:566
+#: bustime/templates/turbo_index.html:269
+msgid "Отобразить маршруты автобусов"
+msgstr "Show bus routes"
+
+#: bustime/templates/index.html:276 bustime/templates/index.old.html:265
+#: bustime/templates/new_ui_index.html:578
+#: bustime/templates/turbo_index.html:281
+msgid "Отобразить маршруты троллейбусов"
+msgstr "Show trolleybus routes"
+
+#: bustime/templates/index.html:288 bustime/templates/index.old.html:270
+#: bustime/templates/new_ui_index.html:590
+#: bustime/templates/turbo_index.html:293
+msgid "Отобразить маршруты трамваев"
+msgstr "Show tramway routes"
+
+#: bustime/templates/index.html:300 bustime/templates/index.old.html:276
+#: bustime/templates/new_ui_index.html:602
+#: bustime/templates/turbo_index.html:305
+msgid "Отобразить маршрутные такси"
+msgstr "Show bus-taxi routes"
+
+#: bustime/templates/index.html:302 bustime/templates/index.html:305
+#: bustime/templates/index.old.html:276 bustime/templates/index.old.html:277
+#: bustime/templates/new_ui_index.html:604
+#: bustime/templates/new_ui_index.html:607
+#: bustime/templates/turbo_index.html:307
+#: bustime/templates/turbo_index.html:310
+msgid "Маршрутки"
+msgstr "Bus-taxis"
+
+#: bustime/templates/index.html:312 bustime/templates/index.old.html:281
+#: bustime/templates/new_ui_index.html:614
+#: bustime/templates/turbo_index.html:317
+msgid "Отобразить водный транспорт"
+msgstr "Display water transport"
+
+#: bustime/templates/index.html:314 bustime/templates/index.html:317
+#: bustime/templates/index.old.html:281 bustime/templates/index.old.html:282
+#: bustime/templates/new_ui_index.html:616
+#: bustime/templates/new_ui_index.html:619
+#: bustime/templates/turbo_index.html:319
+#: bustime/templates/turbo_index.html:322
+msgid "Водный"
+msgstr "Water"
+
+#: bustime/templates/index.html:324 bustime/templates/index.old.html:286
+#: bustime/templates/new_ui_index.html:626
+#: bustime/templates/turbo_index.html:329
+msgid "Отобразить междугородние автобусы"
+msgstr "Show intercity routes"
+
+#: bustime/templates/index.html:335 bustime/templates/new_ui_index.html:661
+#: bustime/templates/turbo_index.html:364
+msgid "Поиск маршрута"
+msgstr "Route Search"
+
+#: bustime/templates/index.html:337 bustime/templates/index.html:340
+#: bustime/templates/new_ui_base.html:254
+#: bustime/templates/new_ui_index.html:663
+#: bustime/templates/new_ui_index.html:666
+#: bustime/templates/turbo_index.html:366
+#: bustime/templates/turbo_index.html:369
+msgid "Поиск"
+msgstr "Search"
+
+#: bustime/templates/index.html:401 bustime/templates/new_ui_index.html:726
+#: bustime/templates/turbo_index.html:450
+msgid ""
+"Введите &laquo;откуда&raquo; и &laquo;куда&raquo;, чтобы поиск сработал"
+msgstr ""
+"Enter &laquo;from&raquo; and &laquo;where&raquo; for the search to work"
+
+#: bustime/templates/index.html:429 bustime/templates/turbo_index.html:485
+msgid "Подробности расчетов"
+msgstr "Calculation details"
+
+#: bustime/templates/index.html:432 bustime/templates/turbo_index.html:488
+msgid "Журнал маршрута"
+msgstr "Route log"
+
+#: bustime/templates/index.html:435 bustime/templates/turbo_index.html:482
+msgid "Редактировать в админке"
+msgstr "Edit in the admin"
+
+#: bustime/templates/index.html:438 bustime/templates/turbo_index.html:491
+msgid ""
+"Определение направления. Тестирование подсистемы определения направления "
+"движения ТС по двум заданным точкам."
+msgstr ""
+"Determination of direction. Testing of the subsystem for determining the "
+"direction of vehicle movement by two specified points."
+
+#: bustime/templates/index.html:441 bustime/templates/turbo_index.html:478
+msgid "Редактировать"
+msgstr "Edit"
+
+#: bustime/templates/index.html:442 bustime/templates/index.old.html:393
+#: bustime/templates/new_ui_index.html:767 bustime/templates/provider.html:115
+#: bustime/templates/provider.html:120 bustime/templates/stop.html:132
+#: bustime/templates/turbo_index.html:479
+msgid "редактировать"
+msgstr "edit"
+
+#: bustime/templates/index.html:444 bustime/templates/index.html:445
+#: bustime/templates/new_ui_index.html:770
+#: bustime/templates/turbo_index.html:494
+#: bustime/templates/turbo_index.html:495
+msgid "Пересчитать нити"
+msgstr "Update geo-tracks"
+
+#: bustime/templates/index.html:448 bustime/templates/index.old.html:395
+#: bustime/templates/new_ui_index.html:773
+#: bustime/templates/turbo_index.html:498
+msgid "Добавить новый маршрут"
+msgstr "Add a new route"
+
+#: bustime/templates/index.html:464 bustime/templates/new_ui_index.html:789
+#: bustime/templates/settings.html:203 bustime/templates/turbo_index.html:514
+msgid "Отображать всех"
+msgstr "Show all"
+
+#: bustime/templates/index.html:465 bustime/templates/new_ui_index.html:790
+#: bustime/templates/settings.html:204 bustime/templates/turbo_index.html:515
+msgid "Отображать смежные маршруты"
+msgstr "Display adjacent routes"
+
+#: bustime/templates/index.html:466 bustime/templates/new_ui_index.html:791
+#: bustime/templates/settings.html:205 bustime/templates/turbo_index.html:516
+msgid ""
+"Отображает транспортные средства других маршрутов, остановки у которых "
+"совпадают с выбранным"
+msgstr "Tracks other routes that stop here"
+
+#: bustime/templates/index.html:477 bustime/templates/index.html:490
+#: bustime/templates/index.old.html:417 bustime/templates/index.old.html:430
+#: bustime/templates/new_ui_index.html:802
+#: bustime/templates/new_ui_index.html:815
+#: bustime/templates/turbo_index.html:527
+#: bustime/templates/turbo_index.html:540
+msgid "перв."
+msgstr "first"
+
+#: bustime/templates/index.html:478 bustime/templates/index.html:491
+#: bustime/templates/index.old.html:418 bustime/templates/index.old.html:431
+#: bustime/templates/new_ui_index.html:803
+#: bustime/templates/new_ui_index.html:816
+#: bustime/templates/turbo_index.html:528
+#: bustime/templates/turbo_index.html:541
+msgid "след."
+msgstr "next"
+
+#: bustime/templates/index.html:479 bustime/templates/index.html:492
+#: bustime/templates/index.old.html:419 bustime/templates/index.old.html:432
+#: bustime/templates/new_ui_index.html:804
+#: bustime/templates/new_ui_index.html:817
+#: bustime/templates/turbo_index.html:529
+#: bustime/templates/turbo_index.html:542
+msgid "посл."
+msgstr "last"
+
+#: bustime/templates/index.html:532 bustime/templates/new_ui_index.html:857
+#: bustime/templates/turbo_index.html:582
+msgid "Чат маршрута"
+msgstr "Route chat"
+
+#: bustime/templates/index.html:547 bustime/templates/index.old.html:487
+#: bustime/templates/new_ui_index.html:872
+#: bustime/templates/turbo_index.html:597
+msgid "Посетителей вчера"
+msgstr "Visitors yesterday"
+
+#: bustime/templates/index.html:548 bustime/templates/index.old.html:488
+#: bustime/templates/new_ui_index.html:873
+#: bustime/templates/turbo_index.html:598
+msgid "сегодня"
+msgstr "today"
+
+#: bustime/templates/index.html:549 bustime/templates/index.old.html:489
+#: bustime/templates/new_ui_index.html:874
+#: bustime/templates/turbo_index.html:599
+msgid "сейчас"
+msgstr "now"
+
+#: bustime/templates/index.html:549 bustime/templates/index.old.html:489
+#: bustime/templates/new_ui_index.html:874
+#: bustime/templates/turbo_index.html:599
+msgid "прил."
+msgstr "app"
+
+#: bustime/templates/index.html:560 bustime/templates/index.old.html:500
+#: bustime/templates/turbo_index.html:610
+msgid "Аватар водителя"
+msgstr "Driver's avatar"
+
+#: bustime/templates/index.html:567 bustime/templates/index.old.html:507
+#: bustime/templates/top.html:77 bustime/templates/turbo_index.html:617
+msgid "рейтинг"
+msgstr "rating"
+
+#: bustime/templates/index.html:583 bustime/templates/index.old.html:523
+#: bustime/templates/turbo_index.html:633
+msgid "направление"
+msgstr "direction"
+
+#: bustime/templates/index.html:598 bustime/templates/index.old.html:538
+#: bustime/templates/turbo_index.html:648
+msgid "комментарий"
+msgstr "comment"
+
+#: bustime/templates/index.html:599 bustime/templates/index.old.html:539
+#: bustime/templates/turbo_index.html:649
+msgid "оценить"
+msgstr "to grade"
+
+#: bustime/templates/index.html:602 bustime/templates/index.old.html:542
+#: bustime/templates/turbo_index.html:652
+msgid "чтобы оставить отзыв, пройдите"
+msgstr "To leave a review, go to"
+
+#: bustime/templates/index.html:602 bustime/templates/index.old.html:542
+#: bustime/templates/turbo_index.html:652
+msgid "регистрацию"
+msgstr "registration"
+
+#: bustime/templates/index.html:610 bustime/templates/index.html:617
+#: bustime/templates/index.old.html:550 bustime/templates/index.old.html:557
+#: bustime/templates/pro.html:169 bustime/templates/turbo_index.html:660
+#: bustime/templates/turbo_index.html:667
+msgid "введите номер"
+msgstr "input the vehicle number"
+
+#: bustime/templates/index.html:611 bustime/templates/index.html:619
+#: bustime/templates/index.old.html:551 bustime/templates/index.old.html:559
+#: bustime/templates/turbo_index.html:661
+#: bustime/templates/turbo_index.html:669
+msgid "ввод"
+msgstr "Input"
+
+#: bustime/templates/index.html:621 bustime/templates/index.old.html:561
+#: bustime/templates/turbo_index.html:671
+msgid "для ввода номеров нужна"
+msgstr "to enter numbers, you need"
+
+#: bustime/templates/index.html:621 bustime/templates/index.old.html:561
+#: bustime/templates/turbo_index.html:671
+msgid "регистрация"
+msgstr "registration"
+
+#: bustime/templates/index.html:628 bustime/templates/index.old.html:568
+#: bustime/templates/turbo_index.html:678
+msgid "это мой"
+msgstr "this is my"
+
+#: bustime/templates/index.html:630 bustime/templates/index.old.html:570
+#: bustime/templates/turbo_index.html:680
+msgid "отзывы"
+msgstr "reviews"
+
+#: bustime/templates/index.html:632 bustime/templates/index.old.html:572
+#: bustime/templates/turbo_index.html:682
+msgid "закрыть"
+msgstr "close"
+
+#: bustime/templates/index.html:700 bustime/templates/index.old.html:640
+#: bustime/templates/new_ui_index.html:958
+#: bustime/templates/turbo_index.html:750
+msgid "скрыть"
+msgstr "hide"
+
+#: bustime/templates/index.old.html:194
+#: bustime/templates/new_ui_index.html:200
+#: bustime/templates/turbo_index.html:211
+msgid ""
+"Вы можете отправлять свои координаты напрямую в bustime.ru, чтобы ваш "
+"транспорт было видно даже если центральный диспетчерский пункт не работает"
+msgstr ""
+"You can send data to Bustime directly from your phone. This way, the "
+"location of your vehicle will be visible to users even if the conventional "
+"tracking infrastructure is down."
+
+#: bustime/templates/index.old.html:293
+msgid "Отобразить попутки"
+msgstr "Display hitchhikers"
+
+#: bustime/templates/logs_on_map.html:19
+msgid "Всего событий: "
+msgstr "Total events:"
+
+#: bustime/templates/new_ui_base.html:215
+msgid "Версия"
+msgstr "Version"
+
+#: bustime/templates/new_ui_base.html:216
+msgid "Статус системы"
+msgstr "System Status"
+
+#: bustime/templates/new_ui_base.html:424
+msgid " Offline"
+msgstr " Offline"
+
+#: bustime/templates/new_ui_index.html:638
+#: bustime/templates/turbo_index.html:341
+msgid "Отобразить маршруты поездов"
+msgstr "Display train routes"
+
+#: bustime/templates/new_ui_index.html:640
+#: bustime/templates/new_ui_index.html:643
+#: bustime/templates/turbo_index.html:343
+#: bustime/templates/turbo_index.html:346
+msgid "Поезда"
+msgstr "Trains"
+
+#: bustime/templates/new_ui_index.html:650
+#: bustime/templates/turbo_index.html:353
+msgid "Отобразить маршруты метро"
+msgstr "Display subway routes"
+
+#: bustime/templates/open-letter-for-transport-data-es.html:11
+#: bustime/templates/open-letter-for-transport-data-pt.html:11
+#: bustime/templates/open-letter-for-transport-data-ru.html:11
+#: bustime/templates/open-letter-for-transport-data.html:11
+msgid "Открытое письмо к транспортным предприятиям и администрациям городов"
+msgstr "Open letter to transportation companies and city administrations"
+
+#: bustime/templates/pro.html:6
+msgid "Купить подписку"
+msgstr "purchase subscription"
+
+#: bustime/templates/pro.html:7
+msgid "Здесь вы можете приобрести профессиональную подписку для сайта"
+msgstr "Here you can purchase paid subscription"
+
+#: bustime/templates/pro.html:7
+msgid ""
+"Поддержите проект и наслаждайтесь дополнительным функционалом и отключенной "
+"рекламой"
+msgstr "Support the project and enjoy extra perks, such as adds removal"
+
+#: bustime/templates/pro.html:15
+msgid "Подписка"
+msgstr "Subscription"
+
+#: bustime/templates/pro.html:22
+msgid "без подписки"
+msgstr "No subscription"
+
+#: bustime/templates/pro.html:32
+msgid "Использование"
+msgstr "Usage"
+
+#: bustime/templates/pro.html:38
+msgid "менее 2 ч. в день"
+msgstr "less than 2 hours a day"
+
+#: bustime/templates/pro.html:41
+msgid "менее 6 ч. в день"
+msgstr "less than 6 hours a day"
+
+#: bustime/templates/pro.html:44
+msgid "24 ч. в день"
+msgstr "24 hours a day"
+
+#: bustime/templates/pro.html:54
+msgid "Отключение рекламы"
+msgstr "Turning off advertisement"
+
+#: bustime/templates/pro.html:55
+msgid "сайт работает и загружается быстрее"
+msgstr "website works and downloads faster"
+
+#: bustime/templates/pro.html:76
+msgid "Гос. номера на главном интерфейсе"
+msgstr "License plate in primary interface"
+
+#: bustime/templates/pro.html:93
+msgid "Персональная наклейка"
+msgstr "Personal label"
+
+#: bustime/templates/pro.html:93
+msgid ""
+"позволяет сделать наклейку с вашей картинкой на транспорт с определенным "
+"номером, наклейки видят все пассажиры"
+msgstr ""
+"allows to make a personalized sticky for your vehicle, which is visible to "
+"all passengers"
+
+#: bustime/templates/pro.html:110
+msgid "Видеосвязь"
+msgstr "Video chat"
+
+#: bustime/templates/pro.html:111
+msgid "требуется поддержка браузера"
+msgstr "requires browser support"
+
+#: bustime/templates/pro.html:134
+msgid "срок действия"
+msgstr "validity"
+
+#: bustime/templates/pro.html:135
+msgid "стоимость"
+msgstr "value"
+
+#: bustime/templates/pro.html:146
+msgid "месяцев"
+msgstr "months"
+
+#: bustime/templates/pro.html:157
+msgid "месяца"
+msgstr "months"
+
+#: bustime/templates/pro.html:166
+msgid "Номер телефона"
+msgstr "Phone number"
+
+#: bustime/templates/pro.html:170
+msgid "оплатить"
+msgstr "pay"
+
+#: bustime/templates/pro.html:172
+msgid "Если у вас нет QIWI кошелька, он создастся автоматически"
+msgstr "If you don't have a QIWI wallet, it'll be created for you"
+
+#: bustime/templates/provider.html:39
+msgid "Логотип перевозчика"
+msgstr "Carrier logo"
+
+#: bustime/templates/provider.html:45
+msgid "изменен"
+msgstr "changed"
+
+#: bustime/templates/provider.html:50
+msgid "Сайт"
+msgstr "Website"
+
+#: bustime/templates/provider.html:53
+msgid "Сайт перевозчика"
+msgstr "Carrier website"
+
+#: bustime/templates/provider.html:55 bustime/templates/provider.html:66
+#: bustime/templates/provider.html:77 bustime/templates/provider.html:88
+msgid "не заполнен"
+msgstr "not filled in"
+
+#: bustime/templates/provider.html:61 bustime/templates/providers.html:34
+#: taxi/templates/taxi/profile.html:65
+msgid "Телефон"
+msgstr "Telephone"
+
+#: bustime/templates/provider.html:64
+msgid "Номер телефона перевозчика"
+msgstr "Phone number of the carrier"
+
+#: bustime/templates/provider.html:75
+msgid "Почта перевозчика"
+msgstr "Carrier mail"
+
+#: bustime/templates/provider.html:83
+msgid "Адрес"
+msgstr "Address"
+
+#: bustime/templates/provider.html:84
+msgid "Адрес перевозчика"
+msgstr "Carrier's address"
+
+#: bustime/templates/provider.html:96
+msgid "Дополнительно"
+msgstr "Additionally"
+
+#: bustime/templates/provider.html:102
+msgid "Обслуживает маршруты"
+msgstr "Serves routes"
+
+#: bustime/templates/provider.html:115 bustime/templates/provider.html:120
+msgid "изменить"
+msgstr "to change"
+
+#: bustime/templates/provider.html:116
+msgid "обновления вступают в силу в течение 24 часов"
+msgstr "updates take effect within 24 hours"
+
+#: bustime/templates/provider.html:121
+msgid "сайт будет обновлен в течение 24 часов"
+msgstr "the site will be updated within 24 hours"
+
+#: bustime/templates/providers.html:7
+msgid "Реестр транспортных организаций города"
+msgstr "Register of transport organizations of the city"
+
+#: bustime/templates/providers.html:29
+msgid "Организации осуществляющие перевозки на маршрутах города"
+msgstr "Organizations carrying out transportation on the routes of the city"
+
+#: bustime/templates/providers.html:33
+msgid "Название"
+msgstr "Title"
+
+#: bustime/templates/providers.html:35
+msgid "Маршрутов"
+msgstr "Routes"
+
+#: bustime/templates/providers.html:41
+msgid "Имя перевозчика"
+msgstr "Carrier's name"
+
+#: bustime/templates/providers.html:42
+msgid "Телефон перевозчика"
+msgstr "Carrier phone number"
+
+#: bustime/templates/providers.html:43
+msgid "Количество маршрутов перевозчика"
+msgstr "Number of carrier routes"
+
+#: bustime/templates/register.html:7
+msgid ""
+"Привяжите свой аккаунт к своему номеру телефона и получите дополнительные "
+"приемущества - редактирование маршрутов и расписаний, чат и возможность "
+"писать отзывы"
+msgstr ""
+"Link your account to your phone number and get additional benefits-editing "
+"routes and timetables, chat and the ability to write reviews"
+
+#: bustime/templates/register.html:46
+msgid "Зарегистрируйтесь и получите"
+msgstr "Register and receive"
+
+#: bustime/templates/register.html:46
+msgid "бесплатно"
+msgstr "free"
+
+#: bustime/templates/register.html:46
+msgid "дополнительные преимущества:"
+msgstr "additional advantage:"
+
+#: bustime/templates/register.html:54
+msgid "Возможность изменять информацию о"
+msgstr "Ability to change information about"
+
+#: bustime/templates/register.html:54
+msgid "перевозчиках, расписании, маршрутах и остановках"
+msgstr "carriers, timetables, routes and stops"
+
+#: bustime/templates/register.html:62
+msgid "Отзывы и общение"
+msgstr "Feedback and communication"
+
+#: bustime/templates/register.html:63
+msgid "Пишите отзывы на транспорт и влияйте на оценку в "
+msgstr "Write reviews on transport and influence the rating in"
+
+#: bustime/templates/register.html:63
+msgid "ежемесячном рейтинге"
+msgstr "monthly rating"
+
+#: bustime/templates/register.html:63
+msgid ""
+"Городской чат позволит быть в курсе событий в реальном времени и общаться с "
+"другими пассажирами любимого маршрута."
+msgstr ""
+"City chat allows you to keep up to date with events in real time and "
+"communicate with other passengers on your favorite route."
+
+#: bustime/templates/register.html:70
+msgid "Месяц без рекламы"
+msgstr "A month without advertising"
+
+#: bustime/templates/register.html:71
+msgid "Дарим месяц без рекламы в качестве комплимента за регистрацию!"
+msgstr "We give you a month without ads as a compliment for registration!"
+
+#: bustime/templates/register.html:82
+msgid "Регистрация временно отключена."
+msgstr "Registration is temporarily disabled."
+
+#: bustime/templates/register.html:83
+msgid "Регистрация будет включена в ближайшее время."
+msgstr "Registration will be turned on shortly."
+
+#: bustime/templates/register.html:84
+msgid "Приносим свои извинения за временное неудобство."
+msgstr "We apologize for the temporary inconvenience."
+
+#: bustime/templates/register.html:89
+msgid "Для регистрации отправьте SMS на номер:"
+msgstr "To register, send an SMS to the number:"
+
+#: bustime/templates/register.html:92
+msgid "с текстом (можно без пробелов):"
+msgstr "with text (can be without spaces):"
+
+#: bustime/templates/register.html:97
+msgid "SMS тарифицируется как обычное сообщение"
+msgstr "SMS is charged as a regular message"
+
+#: bustime/templates/register.html:98
+msgid "Регистрируясь вы принимаете условия"
+msgstr "By registering you accept the terms and conditions"
+
+#: bustime/templates/register.html:98
+msgid "пользовательского соглашения"
+msgstr "user agreement"
+
+#: bustime/templates/register.html:99
+msgid "Вы можете зарегистрировать на свой номер любое количество устройств"
+msgstr "You can register any number of devices to your phone number"
+
+#: bustime/templates/register.html:106
+msgid "Поздравляем!"
+msgstr "Congratulations!"
+
+#: bustime/templates/register.html:106
+msgid "Вы зарегистрированы."
+msgstr "You are registered."
+
+#: bustime/templates/reversion/object_history.html:8
+msgid ""
+"Choose a date from the list below to revert to a previous version of this "
+"object."
+msgstr ""
+"Choose a date from the list below to revert to a previous version of this "
+"object."
+
+#: bustime/templates/reversion/object_history.html:15
+msgid "Date/time"
+msgstr "Date/time"
+
+#: bustime/templates/reversion/object_history.html:17
+msgid "Action"
+msgstr "Action"
+
+#: bustime/templates/reversion/object_history.html:38
+msgid ""
+"This object doesn't have a change history. It probably wasn't added via this"
+" admin site."
+msgstr ""
+"This object doesn't have a change history. It probably wasn't added via this"
+" admin site."
+
+#: bustime/templates/route_edit.html:4
+msgid "Редактирвание"
+msgstr "Edit by"
+
+#: bustime/templates/schedule-bus-edit.html:119
+msgid ""
+"Для удобства, вместо двоеточия(:) можно вводить точку. Разделитель - пробел,"
+" другие разделители недопустимы."
+msgstr ""
+"For convenience, a colon (:) can be replaced by a period. The separator is a"
+" space, no other separators are allowed."
+
+#: bustime/templates/schedule-bus-edit.html:124
+msgid "Ошибка"
+msgstr "Mistake"
+
+#: bustime/templates/schedule-bus-edit.html:143
+#: bustime/templates/schedule-bus-edit.html:199
+msgid "рабочий день"
+msgstr "working day"
+
+#: bustime/templates/schedule-bus-edit.html:146
+#: bustime/templates/schedule-bus-edit.html:170
+#: bustime/templates/schedule-bus-edit.html:202
+#: bustime/templates/schedule-bus-edit.html:224
+msgid "отправление с"
+msgstr "departure from"
+
+#: bustime/templates/schedule-bus-edit.html:152
+#: bustime/templates/schedule-bus-edit.html:176
+#: bustime/templates/schedule-bus-edit.html:208
+#: bustime/templates/schedule-bus-edit.html:230
+msgid "Сбросить изменения"
+msgstr "Reset changes"
+
+#: bustime/templates/schedule-bus-edit.html:153
+#: bustime/templates/schedule-bus-edit.html:177
+#: bustime/templates/schedule-bus-edit.html:209
+#: bustime/templates/schedule-bus-edit.html:231
+#: taxi/templates/taxi/profile.html:80 taxi/templates/taxi/setcar.html:112
+msgid "Сохранить"
+msgstr "Save"
+
+#: bustime/templates/schedule-bus-edit.html:167
+#: bustime/templates/schedule-bus-edit.html:221
+msgid "выходной день"
+msgstr "weekend"
+
+#: bustime/templates/schedule-bus-edit.html:247
+msgid "Сохранить все изменения"
+msgstr "Save all changes"
+
+#: bustime/templates/schedule-bus-edit.html:247
+msgid "сохранить"
+msgstr "save"
+
+#: bustime/templates/schedule-bus.html:4 bustime/templates/schedule-bus.html:5
+msgid "Расписание и маршрут"
+msgstr "Schedule and route"
+
+#: bustime/templates/schedule-bus.html:6
+msgid ""
+"Автобусы онлайн в реальном времени и другая информация для пассажиров "
+"общественного транспорта"
+msgstr ""
+"Real-time online buses and other information for public transportation "
+"passengers"
+
+#: bustime/templates/schedule-bus.html:121
+msgid "троллейбус рядом с остановкой"
+msgstr "trolleybus is near the stop"
+
+#: bustime/templates/schedule-bus.html:124
+msgid "трамвай рядом с остановкой"
+msgstr "tramway is near the stop"
+
+#: bustime/templates/schedule-bus.html:127
+#: bustime/templates/schedule-bus.html:133
+msgid "автобус рядом с остановкой"
+msgstr "bus is near the stop"
+
+#: bustime/templates/schedule-bus.html:130
+msgid "поезд рядом с остановкой"
+msgstr "train near the stop"
+
+#: bustime/templates/schedule-bus.html:136
+msgid "Тип транспортного средства"
+msgstr "Type of vehicle"
+
+#: bustime/templates/schedule-bus.html:138
+msgid "Обслуживает"
+msgstr "Serves"
+
+#: bustime/templates/schedule-bus.html:143
+msgid "Маршрут проходит через"
+msgstr "The route passes through"
+
+#: bustime/templates/schedule-bus.html:147
+msgid "Протяженность маршрута"
+msgstr "Route's length"
+
+#: bustime/templates/schedule-bus.html:149
+msgid "Время в пути"
+msgstr "Travel time"
+
+#: bustime/templates/schedule-bus.html:150
+msgid "мин."
+msgstr "min."
+
+#: bustime/templates/schedule-bus.html:152
+msgid "Текущее время в населенном пункте"
+msgstr "Current time in the locality"
+
+#: bustime/templates/schedule-bus.html:154
+msgid "смотреть онлайн"
+msgstr "view online"
+
+#: bustime/templates/schedule-bus.html:179
+#: bustime/templates/schedule-bus.html:184
+msgid "редактировать расписание"
+msgstr "edit the timetable"
+
+#: bustime/templates/schedule-bus.html:198
+#: bustime/templates/schedule-bus.html:199
+msgid "на маршруте"
+msgstr "on the route"
+
+#: bustime/templates/schedule-bus.html:288
+#: bustime/templates/schedule-bus.html:363
+msgid "вверх"
+msgstr "go to top"
+
+#: bustime/templates/schedule.html:7
+msgid "Все маршруты городского транспорта в"
+msgstr "All public transit routes in"
+
+#: bustime/templates/schedule.html:7
+msgid "Подробная информация по остановкам"
+msgstr "Comprehensive information on stops"
+
+#: bustime/templates/select-admin.html:6
+msgid "Общественный транспорт онлайн в городах России"
+msgstr "Public transportation in Russian cities"
+
+#: bustime/templates/select-admin.html:7
+msgid ""
+"Вы можете выбрать город для отображения маршрутов общественного транспорта "
+"онлайн в реальном времени"
+msgstr "You can choose a city and track all its public transit in real time"
+
+#: bustime/templates/select-admin.html:56
+#: bustime/templates/settings_profile.html:130
+msgid "Город"
+msgstr "City"
+
+#: bustime/templates/select-admin.html:57
+msgid "Население"
+msgstr "Population"
+
+#: bustime/templates/select-admin.html:58
+msgid "Страна"
+msgstr "Country"
+
+#: bustime/templates/select-admin.html:59
+msgid "Часовой пояс"
+msgstr "Timezone"
+
+#: bustime/templates/select-admin.html:61
+msgid "Всего ТС"
+msgstr "Total vehicles"
+
+#: bustime/templates/select-admin.html:62
+msgid "вне маршрута"
+msgstr "out of the route"
+
+#: bustime/templates/select-admin.html:66
+msgid "Маршрутные"
+msgstr "Route"
+
+#: bustime/templates/select-admin.html:69
+msgid "Сайт вчера"
+msgstr "Website yesterday"
+
+#: bustime/templates/select-admin.html:70
+msgid "Приложений"
+msgstr "Applications"
+
+#: bustime/templates/select-admin.html:70
+msgid "активных за 1 д"
+msgstr "Active within 1 days"
+
+#: bustime/templates/select-admin.html:71
+msgid "Установок"
+msgstr "Settings"
+
+#: bustime/templates/select-admin.html:71
+msgid "приложений вчера"
+msgstr "applications yesterday"
+
+#: bustime/templates/select-admin.html:74
+msgid "t ответа"
+msgstr "t response"
+
+#: bustime/templates/select-admin.html:74
+msgid "сервера"
+msgstr "server"
+
+#: bustime/templates/select-admin.html:75
+msgid "задержка"
+msgstr "delay"
+
+#: bustime/templates/select-admin.html:75
+msgid "устройств"
+msgstr "devices"
+
+#: bustime/templates/select-admin.html:77
+msgid "t обработки"
+msgstr "t of processing"
+
+#: bustime/templates/select.html:26
+msgid ""
+"Выберите город для отображения маршрутов общественного транспорта онлайн в "
+"реальном времени"
+msgstr "Choose city to show its public transit vehicles online in real-time"
+
+#: bustime/templates/select.html:37 bustime/templates/turbo_select.html:66
+#: bustime/templates/turbo_select.html:86
+#: bustime/templates/turbo_select.html:143
+msgid "транспортных средств онлайн"
+msgstr "vehicles online"
+
+#: bustime/templates/services.html:6 bustime/templates/services.html:35
+msgid "Подключение города"
+msgstr "Add your data"
+
+#: bustime/templates/services.html:7
+msgid ""
+"Предложение для городской администрации, перевозчиков, операторов "
+"информационных систем и водителей."
+msgstr ""
+"Offer for city administration, carriers, information system operators and "
+"drivers."
+
+#: bustime/templates/services.html:7
+msgid ""
+"Бесплатное подключение, аналитика, функции диспетчера и приложение для "
+"водителей."
+msgstr ""
+"Free processing, analytics, dispatcher functions and driver application."
+
+#: bustime/templates/services.html:7
+msgid ""
+"Набор сервисов и доступ к инфраструктуре для онлайн отслеживания транспорта"
+msgstr ""
+"Set of services and access to infrastructure for online tracking of "
+"transport"
+
+#: bustime/templates/services.html:44
+msgid "Подключитесь"
+msgstr "Connect"
+
+#: bustime/templates/services.html:44
+msgid "к стабильной и технологичной"
+msgstr "to the stable and technological"
+
+#: bustime/templates/services.html:44
+msgid "системе по отслеживанию общественного транспорта"
+msgstr "system of public transportation"
+
+#: bustime/templates/services.html:46
+msgid ""
+"Сайт и приложения Bustime предоставляют информацию для пассажиров о текущем "
+"положении общественного транспорта"
+msgstr ""
+"The Bustime website and apps provide information to passengers about the "
+"current status of public transportation"
+
+#: bustime/templates/services.html:54
+msgid "Бесплатно"
+msgstr "Free"
+
+#: bustime/templates/services.html:56
+msgid "Открытое"
+msgstr "Open"
+
+#: bustime/templates/services.html:56
+msgid "подключение и никаких платежей"
+msgstr "connection with no fees"
+
+#: bustime/templates/services.html:57
+#, python-format
+msgid "Более 99.5%% надежности"
+msgstr "Over 99.5%% reliability"
+
+#: bustime/templates/services.html:57
+msgid "аптайм"
+msgstr "uptime"
+
+#: bustime/templates/services.html:58
+msgid "Отлаженные и доступные методы доставки информации"
+msgstr "Reliable and optimized information delivery methods"
+
+#: bustime/templates/services.html:65
+msgid "Высшее качество для пассажиров"
+msgstr "Superior quality for passengers"
+
+#: bustime/templates/services.html:66
+msgid "Приложения для смарфтонов и планшетов c лидирующими позициями в"
+msgstr "Apps for smartphones and tablets with leading positions in the"
+
+#: bustime/templates/services.html:67
+msgid "Универсальный и доступный"
+msgstr "Versatile and affordable"
+
+#: bustime/templates/services.html:67
+msgid "адаптированный под все устройства"
+msgstr "adaptable for all devices"
+
+#: bustime/templates/services.html:68
+msgid "Высокая скорость и изысканный сервис в простом интерфейсе"
+msgstr "High speed and refined service in a simple interface"
+
+#: bustime/templates/services.html:75
+msgid "Открытость"
+msgstr "Open source"
+
+#: bustime/templates/services.html:76
+msgid "Доступ к"
+msgstr "Access to"
+
+#: bustime/templates/services.html:76
+msgid "исходным кодам"
+msgstr "the source code"
+
+#: bustime/templates/services.html:76
+msgid "под свободной лицензией MIT"
+msgstr "under the MIT free license"
+
+#: bustime/templates/services.html:77
+msgid "Форкайте и изменяйте согласно вашим нуждам самостоятельно"
+msgstr "Fork and modify sources according to your needs"
+
+#: bustime/templates/services.html:78
+msgid "Располагайте сервера на свой площадке"
+msgstr "Self-host on your own site"
+
+#: bustime/templates/services.html:85
+msgid "Для перевозчиков"
+msgstr "For transport agencies"
+
+#: bustime/templates/services.html:88
+msgid ""
+"Публикуйте свои данные под открытой лицензией и добавьте их в Bustime "
+"бесплатно"
+msgstr ""
+"Publish your data under an open license and add it to Bustime for free"
+
+#: bustime/templates/services.html:91
+msgid ""
+"Ваши GPS-трекеры предоставляют данные пассажирам в какой момент нужно быть "
+"на остановке, чтобы сесть в ваш транспорт"
+msgstr ""
+"Your GPS trackers provide data to passengers at what point they need to be "
+"at the stop to board your vehicle"
+
+#: bustime/templates/services.html:94
+msgid ""
+"Предоставляем отчеты для транспорта, пассажиров, подсчет рейсов, километраж,"
+" трэки"
+msgstr ""
+"Provide reports for transport, passengers, trip counts, kilometers, tracks"
+
+#: bustime/templates/services.html:97
+msgid ""
+"Примем данные в форматах: Arnavi, Галилео, GPS101, SAT-LITE, Виалон IPS, "
+"Виалон NIS (SOAP / Олимпстрой), ЕГТС (ЭРА-ГЛОНАСС)"
+msgstr ""
+"We accept formats: Arnavi, Galileo, GPS101, SAT-LITE, Vialon IPS, Vialon NIS"
+" (SOAP / Olympstroy), EGTS (ERA-GLONASS)"
+
+#: bustime/templates/services.html:97
+msgid "приложение"
+msgstr "application"
+
+#: bustime/templates/services.html:103
+msgid "Для операторов информационных систем"
+msgstr "For information system operators"
+
+#: bustime/templates/services.html:106
+msgid "Расширяет спектр услуг для пассажиров без затрат и рисков"
+msgstr "Expands passenger services without cost or risk"
+
+#: bustime/templates/services.html:108
+msgid "Принимает данные, анализируеет и предоставляет пассажирам"
+msgstr "Receives data, analyzes it and provides it to passengers"
+
+#: bustime/templates/services.html:110
+msgid "Уменьшает стоимость поддержки информирования пассажиров"
+msgstr "Reduces the cost of passenger information support"
+
+#: bustime/templates/services.html:112
+msgid "Уменьшает расходы на инфраструктуру и разработку ПО"
+msgstr "Reduces infrastructure and software development costs"
+
+#: bustime/templates/services.html:122
+msgid "Для водителей"
+msgstr "For drivers"
+
+#: bustime/templates/services.html:126
+msgid "Android-приложение помогает соответствовать расписанию и быть на связи"
+msgstr "Android app helps you fit your schedule and stay connected"
+
+#: bustime/templates/services.html:128
+msgid ""
+"Терминал сбора данных на основе планшета является недорогим устройством, "
+"которое объединяет в себе множество функций"
+msgstr ""
+"A tablet-based data collection terminal is a low-cost device that combines "
+"many features"
+
+#: bustime/templates/services.html:130
+msgid ""
+"Водитель в реальном времени оценивает положение на схеме маршрута, "
+"телеметрию и другой транспорт, что позволяет ему оперативно принимать "
+"решения"
+msgstr ""
+"The driver evaluates the position on the route diagram, telemetry and other "
+"traffic in real time, allowing him to make decisions quickly"
+
+#: bustime/templates/services.html:132
+msgid "Отправка координат, голосовая связь, прием сообщений от диспетчера"
+msgstr ""
+"Self-location transmission, voice communications, messages from dispatcher"
+
+#: bustime/templates/services.html:139
+msgid "Для пассажиров"
+msgstr "For passengers"
+
+#: bustime/templates/services.html:141
+msgid ""
+"Удобный и быстрый информационный сервис для пассажиров общественного "
+"транспорта"
+msgstr ""
+"Friendly and convenient information service for public transport passengers"
+
+#: bustime/templates/services.html:144
+msgid "Websocket обновления на основе спутниковых GPS данных"
+msgstr "Websocket real-time updates based in GPS data"
+
+#: bustime/templates/services.html:145
+msgid "сжатый протокол для минимизации потребления Интернет"
+msgstr "compressed protocol for small traffic consumption"
+
+#: bustime/templates/services.html:146
+msgid "настраиваемый пользовательский интерфейс"
+msgstr "customized user interrface"
+
+#: bustime/templates/services.html:147
+msgid "поддержка Talkback и функций для слабовидящих"
+msgstr "Talkback support for visually impaired"
+
+#: bustime/templates/services.html:148
+msgid "звуковые оповещения"
+msgstr "sound notifications"
+
+#: bustime/templates/services.html:149
+msgid "адаптивная верстка и планшетный режим в приложении"
+msgstr "adaptive layout and tablet mode in the application"
+
+#: bustime/templates/services.html:150
+msgid "ретрансляция"
+msgstr "retransmission"
+
+#: bustime/templates/services.html:151
+msgid "предупреждение обрывов связи"
+msgstr "data quality warning"
+
+#: bustime/templates/services.html:152
+msgid "цветовые схемы"
+msgstr "color schemes"
+
+#: bustime/templates/services.html:153
+msgid "встроенный чат"
+msgstr "public transport chat"
+
+#: bustime/templates/services.html:154
+msgid "отзывы о транспорте"
+msgstr "Transport reviews"
+
+#: bustime/templates/services.html:155
+msgid "ночной режим"
+msgstr "night mode"
+
+#: bustime/templates/services.html:156
+msgid "низкопольность, аппарели, логотипы"
+msgstr "low-floor, ramp, logotypes"
+
+#: bustime/templates/services.html:157
+msgid "пассажиры на остановках"
+msgstr "passengers on stops"
+
+#: bustime/templates/services.html:158
+msgid "отключаемая анимация"
+msgstr "customizable animation"
+
+#: bustime/templates/services.html:159
+msgid "конфигурация стартового экрана"
+msgstr "start screen configuration"
+
+#: bustime/templates/services.html:160
+msgid "мультиязычность"
+msgstr "multi-lingual"
+
+#: bustime/templates/services.html:161
+msgid "журнал и трэки"
+msgstr "track history"
+
+#: bustime/templates/settings.html:4
+msgid ""
+"Настройки позволяют отключить звук, управлять различными оповещения и делать"
+" другие изменения"
+msgstr ""
+"Settings allow to disable sound, control various notifications and make "
+"other changes"
+
+#: bustime/templates/settings.html:114
+#: bustime/templates/settings_profile.html:105
+msgid "Управление"
+msgstr "Controls"
+
+#: bustime/templates/settings.html:115
+#: bustime/templates/settings_profile.html:106
+msgid "Запрет на редактирование номеров до"
+msgstr "License plate editing is prohibited until"
+
+#: bustime/templates/settings.html:118
+#: bustime/templates/settings_profile.html:108
+msgid "Бан номеров на сутки"
+msgstr "Ban data entry for 24 hours"
+
+#: bustime/templates/settings.html:127
+msgid "Кол-во избранных"
+msgstr "Number of favorites"
+
+#: bustime/templates/settings.html:143 bustime/templates/settings.html:144
+msgid "Звук"
+msgstr "Sound"
+
+#: bustime/templates/settings.html:145
+msgid "Включает звук приближения автобуса"
+msgstr "Turns on the sound of an approaching bus"
+
+#: bustime/templates/settings.html:149 bustime/templates/settings.html:150
+msgid "Расширенный режим"
+msgstr "Expert Mode"
+
+#: bustime/templates/settings.html:151
+msgid "Добавляет кнопки скрытия маршрутов, быстрого доступа и радио."
+msgstr "Adds buttons to hide routes, shortcuts, and radio."
+
+#: bustime/templates/settings.html:155 bustime/templates/settings.html:156
+msgid "Голосовое сопровождение"
+msgstr "Voice notification"
+
+#: bustime/templates/settings.html:157
+msgid "Чтение информации для слабовидящих"
+msgstr "Reading information for the visually impaired"
+
+#: bustime/templates/settings.html:161 bustime/templates/settings.html:162
+msgid "Использовать шрифт PT Sans"
+msgstr "Use PT Sans shrift"
+
+#: bustime/templates/settings.html:163
+msgid ""
+"На некоторых устройствах может выглядеть красивее, дополнительно загружает "
+"около 200Kb данных"
+msgstr "May look better on some devices, takes up additional 200Kb of data"
+
+#: bustime/templates/settings.html:167
+msgid "Удерживать любимые"
+msgstr "Hold favorites"
+
+#: bustime/templates/settings.html:168
+msgid "Зафиксировать избранные"
+msgstr "Capture favorites"
+
+#: bustime/templates/settings.html:169
+msgid ""
+"Любимые маршруты перестают изменяться в зависимости от частоты просмотра и "
+"удаление из любимых блокируется"
+msgstr ""
+"Favorite routes stop changing the more you access them, and they don't get "
+"removed from the favorites"
+
+#: bustime/templates/settings.html:174
+msgid "Номер ТК"
+msgstr " Transport card number"
+
+#: bustime/templates/settings.html:176
+msgid "№ транспортной карты"
+msgstr " № transport card"
+
+#: bustime/templates/settings.html:176
+msgid " Номер транспортной карты "
+msgstr " Transport card number"
+
+#: bustime/templates/settings.html:187
+#: bustime/templates/settings_profile.html:212
+msgid "не установлен"
+msgstr "Not defined"
+
+#: bustime/templates/settings.html:188
+msgid "Лаундж"
+msgstr "Lounge"
+
+#: bustime/templates/settings.html:189
+msgid "Рок"
+msgstr "Rock"
+
+#: bustime/templates/settings.html:190
+msgid "Шансон"
+msgstr "Chanson"
+
+#: bustime/templates/settings.html:191
+msgid "Электронная"
+msgstr "Electronic"
+
+#: bustime/templates/settings.html:192
+msgid "Поп"
+msgstr "Pop"
+
+#: bustime/templates/settings.html:197
+msgid "Выключить поиск остановок"
+msgstr "Enable bus-stop search"
+
+#: bustime/templates/settings.html:198
+msgid "Отключить поиск ближайшей остановки"
+msgstr "Disable nearest stop search"
+
+#: bustime/templates/settings.html:199
+msgid "Прекращает искать ближайшую остановку в поиске маршрута"
+msgstr "Stops searching for the nearest stop in the route search"
+
+#: bustime/templates/settings.html:209 bustime/templates/settings.html:210
+msgid "Отображение индикатора соединения"
+msgstr "Connection indicator display"
+
+#: bustime/templates/settings.html:211
+msgid "Отображение индикатора соединения в нижней части экрана"
+msgstr "Displaying the connection indicator at the bottom of the screen"
+
+#: bustime/templates/settings.html:215
+msgid "Изменение количества ТС на маршруте"
+msgstr "Change in the number of vehicles on the route"
+
+#: bustime/templates/settings.html:216
+msgid ""
+"Отображение событий изменения количества транспортных средств на маршруте"
+msgstr "Display of events of change in the number of vehicles on the route"
+
+#: bustime/templates/settings.html:217
+msgid ""
+"Отображение изменений количества активных транспортных средств на маршруте в"
+" пямом и обратном направлении"
+msgstr ""
+"Display changes in the number of active vehicles on the route in the fifth "
+"and reverse directions"
+
+#: bustime/templates/settings.html:222 bustime/templates/settings.html:223
+msgid "Звук для события плюс один на маршруте"
+msgstr "Sound for an event plus one on the route"
+
+#: bustime/templates/settings.html:224
+msgid ""
+"При изменении количества активных транспортных средств воспроизводит звук"
+msgstr "When the number of active vehicles changes, it plays a sound"
+
+#: bustime/templates/settings.html:236
+msgid "Большие наклейки для ТС"
+msgstr "Large stickers for the TC"
+
+#: bustime/templates/settings.html:237
+msgid "Большие наклейки"
+msgstr "Large stickers"
+
+#: bustime/templates/settings.html:238
+msgid ""
+"Если на ТС установлен стикер, то он отображается в большем размере слева от "
+"символа ТС"
+msgstr ""
+"If a sticker is installed on the vehicle, it is displayed in a larger size "
+"to the left of the vehicle symbol"
+
+#: bustime/templates/settings.html:242 bustime/templates/settings.html:243
+msgid "Включить редактирование"
+msgstr "Enable editing"
+
+#: bustime/templates/settings.html:244
+msgid "Включить интерфейс редактора"
+msgstr "Turn on the editor interface"
+
+#: bustime/templates/settings.html:253
+msgid "Все любимые маршруты будут сброшены. Вы уверены? "
+msgstr "All your favorite routes will be reset. Are you sure?"
+
+#: bustime/templates/settings_profile.html:4
+#: bustime/templates/settings_profile.html:97
+msgid "Настройки профиля"
+msgstr "Profile settings"
+
+#: bustime/templates/settings_profile.html:116
+msgid "ID"
+msgstr "ID"
+
+#: bustime/templates/settings_profile.html:122
+msgid "Создан"
+msgstr "Created by"
+
+#: bustime/templates/settings_profile.html:127
+msgid "Телефон или логин"
+msgstr "Phone or login"
+
+#: bustime/templates/settings_profile.html:134
+msgid "Ник"
+msgstr "Nick"
+
+#: bustime/templates/settings_profile.html:139
+msgid "Аватар"
+msgstr "Avatar"
+
+#: bustime/templates/settings_profile.html:140
+msgid "Выбрать аватарку"
+msgstr "Choose an avatar"
+
+#: bustime/templates/settings_profile.html:150
+#: bustime/templates/settings_profile.html:151
+msgid "Я хочу подвозить людей"
+msgstr "I want to give people rides."
+
+#: bustime/templates/settings_profile.html:169
+msgid "ФИО"
+msgstr "Full name"
+
+#: bustime/templates/settings_profile.html:172
+msgid "Номер телефона водителя"
+msgstr "Phone number of the driver/vehicle"
+
+#: bustime/templates/settings_profile.html:175
+#: taxi/templates/taxi/profile.html:50
+msgid "Пол"
+msgstr "Sex"
+
+#: bustime/templates/settings_profile.html:177
+msgid "не выбран"
+msgstr "not selected"
+
+#: bustime/templates/settings_profile.html:178 taxi/models.py:80
+#: taxi/templates/taxi/profile.html:54
+msgid "Мужчина"
+msgstr "Man"
+
+#: bustime/templates/settings_profile.html:179 taxi/models.py:81
+#: taxi/templates/taxi/profile.html:60
+msgid "Женщина"
+msgstr "Woman"
+
+#: bustime/templates/settings_profile.html:199
+#: taxi/templates/taxi/setcar.html:36 taxi/templates/taxi/setcar.html:115
+msgid "Добавить автомобиль"
+msgstr "Add car"
+
+#: bustime/templates/settings_profile.html:205
+#: bustime/templates/settings_profile.html:206
+msgid "Я водитель автобуса"
+msgstr "I'm a bus driver"
+
+#: bustime/templates/settings_profile.html:220
+msgid "Гос номер автобуса"
+msgstr "Bus registration number"
+
+#: bustime/templates/settings_profile.html:222
+#: taxi/templates/taxi/setcar.html:58
+msgid "x 000 xx 00"
+msgstr "x 000 xx 00"
+
+#: bustime/templates/settings_profile.html:226
+msgid "id оригинала"
+msgstr "Original ID"
+
+#: bustime/templates/settings_profile.html:228
+msgid "айди оригинала"
+msgstr "Original ID"
+
+#: bustime/templates/settings_profile.html:234
+#: bustime/templates/settings_profile.html:235
+msgid "Отправлять координаты"
+msgstr "To send coordinates"
+
+#: bustime/templates/settings_profile.html:239
+#: bustime/templates/settings_profile.html:240
+msgid "Аппарель"
+msgstr "Ramp"
+
+#: bustime/templates/settings_profile.html:249
+msgid "Спидометр с предупреждением"
+msgstr "Speedometer with alarm"
+
+#: bustime/templates/settings_profile.html:250
+msgid "Показывать скорость"
+msgstr "Show speed"
+
+#: bustime/templates/settings_profile.html:254
+#: bustime/templates/settings_profile.html:255
+#: bustime/templates/settings_profile.html:258
+msgid "Наклейка"
+msgstr "Sticky"
+
+#: bustime/templates/settings_profile.html:265
+msgid "Подтип"
+msgstr "Subtype"
+
+#: bustime/templates/settings_profile.html:284
+#: taxi/templates/taxi/setcar.html:62 taxi/templates/taxi/setcar.html:64
+msgid "Цвет"
+msgstr "Colour"
+
+#: bustime/templates/settings_profile.html:287
+msgid "выбрать"
+msgstr "Select"
+
+#: bustime/templates/settings_profile.html:288
+msgid "сбросить"
+msgstr "resume"
+
+#: bustime/templates/status-data.html:8 bustime/templates/transport.html:6
+msgid "Диспетчерский журнал на"
+msgstr "Dispatcher log on"
+
+#: bustime/templates/status-data.html:8
+msgid "Трэки и события общественного транспорта"
+msgstr "Public transport tracks and events"
+
+#: bustime/templates/status-data.html:110 bustime/templates/transport.html:151
+msgid "Внимание"
+msgstr "Attention"
+
+#: bustime/templates/status-data.html:112 bustime/templates/transport.html:153
+msgid "Данные доступны только до"
+msgstr "Data is only available until"
+
+#: bustime/templates/status-data.html:156
+#: bustime/templates/status-data.html:158
+msgid "Интервал"
+msgstr "Interval"
+
+#: bustime/templates/status-data.html:156
+#: bustime/templates/status-data.html:343
+msgid "Данных нет"
+msgstr "No data available"
+
+#: bustime/templates/status-data.html:158
+msgid "Отключений"
+msgstr "Offs"
+
+#: bustime/templates/status-data.html:161
+msgid "Приходов на конечную"
+msgstr "Transfers to the final destination"
+
+#: bustime/templates/status-data.html:164
+msgid "Сходов с маршрута"
+msgstr "Departures from the route"
+
+#: bustime/templates/status-data.html:249
+msgid "Все маршруты"
+msgstr "All route"
+
+#: bustime/templates/status-data.html:259
+msgid "Поиск..."
+msgstr "Search..."
+
+#: bustime/templates/status-data.html:261
+msgid "Гос. №"
+msgstr "Gos. №"
+
+#: bustime/templates/status-data.html:262
+msgid "Борт. №"
+msgstr "Bort. №"
+
+#: bustime/templates/status-data.html:345
+msgid "На данный период времени данные отсутствуют"
+msgstr "No data available at this time"
+
+#: bustime/templates/status-sheet.html:6
+#: bustime/templates/status-sheet.html:40
+msgid "Ведомость"
+msgstr "Sheet"
+
+#: bustime/templates/status-sheet.html:7
+msgid "Диспетчерская ведомость. Отслеживание выполнения расписаний."
+msgstr "Dispatch log and timetable audit."
+
+#: bustime/templates/status.html:7 bustime/templates/status.html:29
+msgid "Состояние системы"
+msgstr "System status"
+
+#: bustime/templates/status.html:8
+msgid ""
+"Показывает статистику системы мониторинга онлайн и активность пассажиров, "
+"наблюдающих за общественным транспортом в г."
+msgstr ""
+"Shows the statistics of the online monitoring system and the activity of "
+"passengers monitoring public transportation in the city."
+
+#: bustime/templates/status.html:36
+msgid "Пассажиров с GPS за последнюю минуту"
+msgstr "Passengers with GPS within last minute"
+
+#: bustime/templates/status.html:39
+msgid "все пассажиры на"
+msgstr "all passengers at"
+
+#: bustime/templates/status.html:49
+msgid "Транспортный журнал"
+msgstr "Track history"
+
+#: bustime/templates/status.html:60 bustime/templates/tests_rpc.html:55
+msgid "ТС"
+msgstr "Vehicle"
+
+#: bustime/templates/status.html:68
+msgid "ТС на маршруте"
+msgstr "Vehicle is en route"
+
+#: bustime/templates/status.html:76
+msgid "ТС вне маршрута"
+msgstr "Vehicles is outside of route boundaries"
+
+#: bustime/templates/status.html:87
+msgid "ТС на конечных"
+msgstr "Vehicle is at the route final stop"
+
+#: bustime/templates/status.html:95
+msgid "ТС зомби"
+msgstr "Vehicle is a zombie"
+
+#: bustime/templates/status.html:103
+msgid "пассажиров"
+msgstr "passengers"
+
+#: bustime/templates/status.html:113
+msgid "время ответа"
+msgstr "response time"
+
+#: bustime/templates/status.html:121
+msgid "время обработки"
+msgstr "processing time"
+
+#: bustime/templates/status.html:129
+msgid ""
+"Транспортное средство приобретает статус зомби если случилось хоть одно из "
+"перечисленного"
+msgstr ""
+"Vehicles obtains zombie status if at least one of the following happens"
+
+#: bustime/templates/status.html:131
+msgid "за последние 5 минут координаты местоположения не передавались"
+msgstr "location data has not been sent within the last 5 minutes"
+
+#: bustime/templates/status.html:132
+msgid "за последние 5 минут передаваемые координаты не изменились"
+msgstr "location data has not changed within the last 5 minutes"
+
+#: bustime/templates/status.html:133
+msgid "остановочный пункт не изменялся в течении 15 минут"
+msgstr "stopping point has not changed within the last 15 minutes"
+
+#: bustime/templates/status.html:201
+msgid "Процессор"
+msgstr "Processor"
+
+#: bustime/templates/status.html:209
+msgid "Память"
+msgstr "Memory"
+
+#: bustime/templates/status.html:217
+msgid "Диск"
+msgstr "Disk"
+
+#: bustime/templates/status.html:227
+msgid "Процессов"
+msgstr "Processes"
+
+#: bustime/templates/status.html:235
+msgid "Аптайм"
+msgstr "Alltime"
+
+#: bustime/templates/status.html:241
+msgid "городов"
+msgstr "cities"
+
+#: bustime/templates/status.html:252
+msgid "подкл. сайт"
+msgstr "enable website"
+
+#: bustime/templates/status.html:260
+msgid "подкл. приложений"
+msgstr "enable applications"
+
+#: bustime/templates/status.html:331
+msgid "посещений"
+msgstr "visits"
+
+#: bustime/templates/status.html:340
+msgid "установок приложений"
+msgstr "app installations"
+
+#: bustime/templates/status.html:380 bustime/templates/status.html:416
+msgid "Активных городов"
+msgstr "Active cities"
+
+#: bustime/templates/status.html:428
+msgid "Уникальных пользователей (Web)"
+msgstr "Unique users (Web)"
+
+#: bustime/templates/status.html:436
+msgid "Уникальных пользователей (Mobile)"
+msgstr "Unique users (Mobile)"
+
+#: bustime/templates/status.html:515 bustime/templates/status.html:636
+msgid "Средняя задержка передачи координат (сек)"
+msgstr "Average data delay in seconds"
+
+#: bustime/templates/status.html:523 bustime/templates/status.html:644
+msgid "Количество транспорта по данным GPS (шт)"
+msgstr "Transport amount"
+
+#: bustime/templates/status.html:535
+msgid "Статистика за предшествующие 30 дней"
+msgstr "Statistics for the previous 30 days"
+
+#: bustime/templates/status.html:656
+msgid "Статистика за"
+msgstr "Statistics for"
+
+#: bustime/templates/status_offline.html:7
+msgid "Офлайн в"
+msgstr "Offline in"
+
+#: bustime/templates/status_offline.html:8
+msgid "Список отключенных устройств"
+msgstr "List of disabled devices"
+
+#: bustime/templates/status_offline.html:49
+msgid "Офлайн"
+msgstr "Offline"
+
+#: bustime/templates/status_offline.html:55
+msgid "Оффлайн"
+msgstr "Offline"
+
+#: bustime/templates/status_offline.html:55
+msgid ""
+"список устройств за последние 3 часа, которые не отправляли данные больше 15"
+" минут"
+msgstr ""
+"List of devices that haven't been sending data for more than 15 minutes "
+"within the last 3 hours"
+
+#: bustime/templates/status_offline.html:56
+msgid "всего"
+msgstr "total"
+
+#: bustime/templates/status_offline.html:60
+msgid "дата"
+msgstr "date"
+
+#: bustime/templates/status_offline.html:62
+msgid "детали"
+msgstr "details"
+
+#: bustime/templates/status_offline.html:78
+msgid "госномер"
+msgstr "license plate"
+
+#: bustime/templates/status_offline.html:79
+msgid "гаражный номер"
+msgstr "vehicle number"
+
+#: bustime/templates/status_offline.html:80
+msgid "скорость"
+msgstr "speed"
+
+#: bustime/templates/stop.html:3
+msgid "Остановка"
+msgstr "Bus-stop"
+
+#: bustime/templates/stop.html:4
+msgid "Остановка общественного транспорта "
+msgstr "Public transportation stop "
+
+#: bustime/templates/stop.html:4
+msgid "в городе "
+msgstr "in the city "
+
+#: bustime/templates/stop.html:4
+msgid ". Маршруты онлайн, проходящие через остановку "
+msgstr ". Routes online that pass through the stop"
+
+#: bustime/templates/stop.html:18
+msgid "в сторону"
+msgstr "in direction"
+
+#: bustime/templates/stop.html:117
+msgid "остановка трамвая"
+msgstr "Tramway stop"
+
+#: bustime/templates/stop.html:119
+msgid "остановка автобуса"
+msgstr "Bus-stop"
+
+#: bustime/templates/stop.html:128
+msgid "табло"
+msgstr "board"
+
+#: bustime/templates/stop.html:139 bustime/templates/transport.html:141
+msgid "время"
+msgstr "time"
+
+#: bustime/templates/stop_info.html:7 bustime/templates/stop_info.html:8
+#: bustime/templates/stop_info_black.html:7
+#: bustime/templates/stop_info_black.html:8
+#: bustime/templates/turbo_stop_info.html:7
+#: bustime/templates/turbo_stop_info.html:8
+msgid "Остановочное табло"
+msgstr "Bus-stop terminal"
+
+#: bustime/templates/stop_info.html:100
+#: bustime/templates/turbo_stop_info.html:99
+msgid "черное небо"
+msgstr "black sky"
+
+#: bustime/templates/stops.html:2
+msgid "все остановки"
+msgstr "all stops"
+
+#: bustime/templates/stops.html:3
+msgid "Все остановочные пункты общественного транспорта в"
+msgstr "All public transit stops in"
+
+#: bustime/templates/terms.html:6 bustime/templates/terms.html:31
+#: bustime/templates/terms.html:35
+msgid "Условия использования"
+msgstr "Use conditions"
+
+#: bustime/templates/terms.html:7
+msgid "Условия предоставления услуг"
+msgstr "Terms of service"
+
+#: bustime/templates/terms.html:36
+msgid "редакция"
+msgstr "editorial"
+
+#: bustime/templates/terms.html:39
+msgid ""
+"Используя услуги сайта и приложений Время Автобуса (в дальнейшем именуемые "
+"Сервис) вы безоговорочно соглашаетесь с перечисленными условиями."
+msgstr ""
+"By using the services of the Bustime website and applications (hereinafter "
+"referred to as the Service) you unconditionally agree to the terms and "
+"conditions listed."
+
+#: bustime/templates/terms.html:41
+msgid ""
+"Услуга предоставляется как есть, без ответственности связанной с "
+"использованием."
+msgstr "The service is provided as is, without liability associated with use."
+
+#: bustime/templates/terms.html:42
+msgid ""
+"Информация, генерируемая пользователями переходит в собственность Сервиса "
+"без ограничений использования, в том числе правом публикации под открытой "
+"лицензией."
+msgstr ""
+"Information generated by users becomes the property of the Service without "
+"restrictions on use, including the right to publish under an open license."
+
+#: bustime/templates/terms.html:43
+msgid "Пользователям запрещено публиковать информацию, запрещенную законом."
+msgstr "Users are prohibited from posting information prohibited by law."
+
+#: bustime/templates/terms.html:44
+msgid ""
+"Запрещено использовать ненормативную лексику, а также проявлять неуважение к"
+" другим участникам Сервиса."
+msgstr ""
+"It is forbidden to use profanity, as well as to show disrespect to other "
+"participants of the Service."
+
+#: bustime/templates/terms.html:45
+msgid ""
+"Мы оставляем за собой право блокировать или ограничивать доступ на своё "
+"усмотрение."
+msgstr ""
+"We reserve the right to block or restrict access in our sole discretion."
+
+#: bustime/templates/terms.html:46
+msgid "Сервис использует cookie для распознавания ваших настроек."
+msgstr "The service uses cookies to recognize your settings."
+
+#: bustime/templates/terms.html:47
+msgid ""
+"Условия использования Сервиса могут быть изменены в будущем в одностороннем "
+"порядке без предупреждения и доступны по адресу "
+msgstr ""
+"The terms of use of the Service may be unilaterally changed in the future "
+"without notice and are available at "
+
+#: bustime/templates/tests_rpc.html:45
+msgid "Провайдер"
+msgstr "Provider"
+
+#: bustime/templates/top.html:6 bustime/templates/top.html:35
+msgid "Лучший транспорт города"
+msgstr "Top transport of the city"
+
+#: bustime/templates/top.html:7
+msgid "Рейтинг транспорта в г."
+msgstr "Transport rating in"
+
+#: bustime/templates/top.html:7
+msgid ""
+"Поставьте оценку и комментарий после поездки и повлияйте на ежемесячный "
+"рейтинг"
+msgstr "Rate your trip and influence the monthly rating"
+
+#: bustime/templates/top.html:29
+msgid "Страница"
+msgstr "Page"
+
+#: bustime/templates/top.html:75 bustime/templates/top.html:88
+msgid "место"
+msgstr "place"
+
+#: bustime/templates/top.html:76
+msgid "гос. номер транспорта"
+msgstr "vehicle license plate number"
+
+#: bustime/templates/top.html:77
+msgid "комментарии"
+msgstr "comments"
+
+#: bustime/templates/transport.html:93
+msgid "Диспетчерский журнал"
+msgstr "Dispatcher log"
+
+#: bustime/templates/transport.html:111
+msgid "пробег, км."
+msgstr "mileage, km."
+
+#: bustime/templates/transport.html:120
+msgid "гео-событий"
+msgstr " geo-events"
+
+#: bustime/templates/transport.html:128
+msgid "состояний"
+msgstr "conditions"
+
+#: bustime/templates/transport.html:136
+msgid "рейсов"
+msgstr "flights"
+
+#: bustime/templates/transport.html:193
+msgid "Выпуск"
+msgstr "Release"
+
+#: bustime/templates/transport.html:199
+msgid "Все машины маршрута"
+msgstr "All cars on the route"
+
+#: bustime/templates/transport.html:206
+msgid "Перемещать карту"
+msgstr "Move the map"
+
+#: bustime/templates/transport.html:213
+msgid "Трек"
+msgstr "Track"
+
+#: bustime/templates/transport.html:256
+msgid "перерыв"
+msgstr "break"
+
+#: bustime/templates/transport.html:259
+msgid "сошел с маршрута"
+msgstr "got off the route"
+
+#: bustime/templates/transport.html:262
+msgid "прямая передача"
+msgstr "direct transmission"
+
+#: bustime/templates/turbo_index.html:193
+#: bustime/templates/turbo_index.html:823
+#| msgid "иконка транспорта"
+msgid "Уведомления о транспорте"
+msgstr "Transport Notifications"
+
+#: bustime/templates/turbo_index.html:826
+msgid "начало"
+msgstr "commencement"
+
+#: bustime/templates/turbo_index.html:826
+msgid "конец"
+msgstr "end"
+
+#: bustime/templates/turbo_select.html:6
+msgid "общественный транспорт онлайн"
+msgstr "public transport online"
+
+#: bustime/templates/turbo_select.html:36
+#| msgid "Интеграция с другими видами транспорта"
+msgid "Будь в курсе с актуальными данными о транспорте "
+msgstr "Stay informed with up-to-date transport data"
+
+#: bustime/templates/turbo_select.html:37
+msgid ""
+"Получай мгновенную и точную информацию о городском транспорте, чтобы "
+"планировать свои поездки легко и уверенно"
+msgstr ""
+"Get instant and accurate public transport information to plan your trips "
+"easily and confidently"
+
+#: bustime/templates/turbo_select.html:43
+msgid "Название населённого пункта"
+msgstr "Place name"
+
+#: bustime/views.py:1432 bustime/views.py:2768 bustime/views.py:3224
+#: bustime/views.py:4711 bustime/views.py:6118 bustime/views.py:6520
+#: bustime/views.py:6551
+msgid "нет прав доступа"
+msgstr "no access rights"
+
+#: bustime/views.py:1911
+msgid "Ошибка, неправильный формат изображения"
+msgstr "Error, incorrect image format"
+
+#: bustime/views.py:2929
+msgid "Ошибка, неправильный формат номера телефона!"
+msgstr "Error, incorrect phone number format"
+
+#: bustime/views.py:4255
+msgid "Неверный пин код"
+msgstr "Incorrect pin"
+
+#: bustime/views.py:4260
+msgid "Пин код уже был активирован"
+msgstr "Pin has already been activated"
+
+#: bustime/views.py:4414 taxi/views.py:121
+msgid "Необходимо добавить машину"
+msgstr "Need to add a car"
+
+#: bustime/views.py:7848 bustime/views.py:8067 bustime/views.py:8290
+msgid "Отсутствует начало маршрута"
+msgstr "There is no start of the route"
+
+#: bustime/views.py:7850 bustime/views.py:8069 bustime/views.py:8292
+msgid "Отсутствует конец маршрута"
+msgstr "The end of the route is missing"
+
+#: bustime/views.py:7853 bustime/views.py:7856 bustime/views.py:8073
+#: bustime/views.py:8076 bustime/views.py:8297 bustime/views.py:8302
+#, python-format
+msgid "Остановка \"%s\" не найдена"
+msgstr "Stop \"%s\" not found"
+
+#: bustime/views.py:7875 bustime/views.py:8095
+msgid "Маршрут не найден"
+msgstr "Маршрут не найден"
+
+#: bustime/views.py:7877 bustime/views.py:8097 bustime/views.py:8331
+#: bustime/views.py:8397
+msgid "Маршрут <b>{} - {}</b> не найден"
+msgstr "Route <b>{} - {}</b> not found"
+
+#: bustime/views.py:8087 bustime/views.py:8314
+#, python-format
+msgid "Нет графа маршрутов города %s"
+msgstr "No graph of routes of the city %s"
+
+#: bustime/views.py:8090 bustime/views.py:8316
+msgid "Выполните"
+msgstr "Run"
+
+#: bustime/views.py:8090
+msgid "для расчета графов"
+msgstr "to calculate graphs"
+
+#: bustime/views.py:8316
+msgid "для рассчета графов"
+msgstr "to calculate graphs"
+
+#: bustime/views.py:8333
+msgid "Остановка не найдена"
+msgstr "Stop not found"
+
+#: taxi/api.py:133
+msgid "Не заполнены данные (Имя)."
+msgstr "The data is incomplete (name)."
+
+#: taxi/api.py:133
+msgid "Заполнить"
+msgstr "Fill"
+
+#: taxi/api.py:139
+msgid "Не указана машина."
+msgstr "No machine specified."
+
+#: taxi/api.py:146 taxi/api.py:261
+msgid "Не указано количество пассажиров"
+msgstr "The number of passengers is not specified"
+
+#: taxi/api.py:148 taxi/api.py:263
+msgid "Не указана стоимость"
+msgstr "No price specified"
+
+#: taxi/api.py:150 taxi/api.py:265
+msgid "Не указан начальный пункт"
+msgstr "There is no starting point"
+
+#: taxi/api.py:152 taxi/api.py:267
+msgid "Не указан конечный пункт"
+msgstr "No end point specified"
+
+#: taxi/api.py:220 taxi/api.py:316 taxi/api.py:414 taxi/api.py:534
+#: taxi/api.py:729
+msgid "Вы не зарегистрированы в сервисе \"Попутчик\""
+msgstr "You are not registered in the Hitchhiker service"
+
+#: taxi/api.py:220 taxi/api.py:316 taxi/api.py:414 taxi/api.py:534
+#: taxi/api.py:729
+msgid "Зарегистрироваться"
+msgstr "Sign up"
+
+#: taxi/api.py:244
+msgid "Войдите или зарегистрируйтесь"
+msgstr "Login or register now"
+
+#: taxi/api.py:244 taxi/templates/taxi/order_inputs.html:79
+msgid "чтобы голосовать"
+msgstr "For hitchhiking"
+
+#: taxi/api.py:343
+msgid "Не указан заказ"
+msgstr "Order not specified"
+
+#: taxi/api.py:443
+msgid "Не найден заказ"
+msgstr "No order found"
+
+#: taxi/api.py:445
+msgid "Не указан статус пользователя"
+msgstr "User status is not listed"
+
+#: taxi/api.py:627
+msgid "Нет заказа"
+msgstr "No order"
+
+#: taxi/api.py:654
+msgid "Указан отсутствующий пассажир"
+msgstr "Missing passenger is indicated"
+
+#: taxi/api.py:656
+msgid "Указан отсутствующий водитель"
+msgstr "Absent driver is listed"
+
+#: taxi/api.py:658 taxi/api.py:731
+msgid "Указан отсутствующий заказ"
+msgstr "Missing order listed"
+
+#: taxi/api.py:773
+msgid "Нет отправителя"
+msgstr "No sender"
+
+#: taxi/api.py:775
+msgid "Нет получателя"
+msgstr "No recipient"
+
+#: taxi/api.py:777
+msgid "Нет сообщения"
+msgstr "No message"
+
+#: taxi/models.py:60
+msgid "Грузовое такси"
+msgstr "Truck taxi"
+
+#: taxi/models.py:61
+msgid "Микроавтобус"
+msgstr "Minibus"
+
+#: taxi/models.py:66
+msgid "Эконом"
+msgstr "Economy"
+
+#: taxi/models.py:67
+msgid "Стандарт"
+msgstr "Standard"
+
+#: taxi/models.py:68
+msgid "Бизнес"
+msgstr "Business"
+
+#: taxi/models.py:69
+msgid "VIP"
+msgstr "VIP"
+
+#: taxi/models.py:73
+msgid "Новая"
+msgstr "New"
+
+#: taxi/models.py:74
+msgid "Хорошее"
+msgstr "Good"
+
+#: taxi/models.py:75
+msgid "Среднее"
+msgstr "Average"
+
+#: taxi/models.py:76
+msgid "Ещё ездит"
+msgstr "It's still going."
+
+#: taxi/models.py:86
+msgid "Такси выехало к пассажиру"
+msgstr "The cab left for the passenger"
+
+#: taxi/models.py:87
+msgid "Такси подано, ожидает пассажира"
+msgstr "Cab is here, waiting for a passenger"
+
+#: taxi/models.py:88
+msgid "Поездка началась"
+msgstr "The journey has begun"
+
+#: taxi/models.py:89
+msgid "Поездка окончена"
+msgstr "The trip is over"
+
+#: taxi/models.py:90
+msgid "Отказ водителя"
+msgstr "Driver's refusal"
+
+#: taxi/models.py:91
+msgid "Отказ пассажира"
+msgstr "Passenger refusal"
+
+#: taxi/models.py:126
+msgid "Пользователь сервиса"
+msgstr "Service user"
+
+#: taxi/models.py:127
+msgid "Пользователи сервиса"
+msgstr "Service users"
+
+#: taxi/models.py:254
+msgid "Модель автомобиля"
+msgstr "Car model"
+
+#: taxi/models.py:255
+msgid "Модели автомобилей"
+msgstr "Car models"
+
+#: taxi/models.py:267
+msgid "Цвет автомобиля"
+msgstr "Car color"
+
+#: taxi/models.py:268
+msgid "Цвета автомобилей"
+msgstr "Car colours"
+
+#: taxi/models.py:290
+msgid "Машина такси"
+msgstr "Taxi car"
+
+#: taxi/models.py:291
+msgid "Машины такси"
+msgstr "Taxi cars"
+
+#: taxi/models.py:362
+msgid "Заказ такси"
+msgstr "Taxi order"
+
+#: taxi/models.py:363
+msgid "Заказы такси"
+msgstr "Taxi orders"
+
+#: taxi/models.py:472
+msgid "Предложение водителя"
+msgstr "Driver's Suggestion"
+
+#: taxi/models.py:473
+msgid "Предложения водителей"
+msgstr "Suggestions from drivers"
+
+#: taxi/models.py:578
+msgid "Улица"
+msgstr "Street"
+
+#: taxi/models.py:579
+msgid "Улицы"
+msgstr "Streets"
+
+#: taxi/models.py:602
+msgid "GPS отметка"
+msgstr "GPS mark"
+
+#: taxi/models.py:603
+msgid "GPS отметки"
+msgstr "GPS markers"
+
+#: taxi/templates/taxi/agreement.html:6 taxi/templates/taxi/agreement.html:24
+msgid "Пользовательское соглашение использования сервиса bustime-такси"
+msgstr "Terms of use of the bustime-hitchhiker service"
+
+#: taxi/templates/taxi/agreement.html:28 taxi/templates/taxi/agreement1.html:8
+msgid ""
+"busti.me не является интегратором такси, не имеет в штате водителей и парка "
+"машин"
+msgstr ""
+"busti.me is not a cab integrator, does not have drivers or a fleet of cars"
+
+#: taxi/templates/taxi/agreement.html:29
+msgid ""
+"Мы только связываем пассажира и водителя такси. Все остальные вопросы, "
+"касающиеся поездки пассажир и водитель такси должны решать по обоюдному "
+"согласию"
+msgstr ""
+"We only bind the passenger and the cab driver. All other issues concerning "
+"the trip should be mutually agreed upon by the passenger and the cab driver"
+
+#: taxi/templates/taxi/agreement.html:31
+msgid ""
+"Для использования сервиса bustime-такси Вы должны согласиться со следующим:"
+msgstr "To use the bustime-taxi service, you must agree to the following:"
+
+#: taxi/templates/taxi/agreement.html:41
+msgid ""
+"Используйте сервис bustime-такси только если Вы согласны с условиями выше"
+msgstr ""
+"Use the bustime-hitchhiker service only if you agree with the conditions "
+"above"
+
+#: taxi/templates/taxi/agreement.html:47
+msgid "Установив этот флажок, Вы даёте согласие на условия, описанные выше"
+msgstr "By checking this box, you agree to the terms described above"
+
+#: taxi/templates/taxi/agreement.html:52
+msgid "Я прочитал условия"
+msgstr "I read the terms and conditions."
+
+#: taxi/templates/taxi/agreement1.html:4
+msgid "Пользовательское соглашение использования сервиса bustime-попутчик"
+msgstr "Terms of Use of the bustime-traveler service"
+
+#: taxi/templates/taxi/agreement1.html:9
+msgid ""
+"Мы только связываем пассажира и водителя. Все остальные вопросы, касающиеся "
+"поездки пассажир и водитель должны решать по обоюдному согласию"
+msgstr ""
+"We only bind the passenger and the driver. All other issues concerning the "
+"trip should be resolved by mutual consent of the passenger and the driver"
+
+#: taxi/templates/taxi/agreement1.html:11
+msgid ""
+"Для использования сервиса bustime-попутчик Вы должны согласиться со "
+"следующим:"
+msgstr "To use the bustime-carpool service, you must agree to the following:"
+
+#: taxi/templates/taxi/agreement1.html:21
+msgid ""
+"Используйте сервис bustime-попутчик только если Вы согласны с условиями выше"
+msgstr ""
+"Use the bustime-carpool service only if you agree with the conditions above"
+
+#: taxi/templates/taxi/agreement1.html:39
+msgid "Я прочитал условия и согласен с ними"
+msgstr "I have read the terms and conditions and I agree"
+
+#: taxi/templates/taxi/car_info.html:12
+#: taxi/templates/taxi/order_inputs.html:24
+#: taxi/templates/taxi/order_item.html:45 taxi/templates/taxi/profile.html:107
+#: taxi/templates/taxi/selcar.html:43
+msgid "Пассажиров"
+msgstr "Passengers"
+
+#: taxi/templates/taxi/car_info.html:13 taxi/templates/taxi/profile.html:108
+#: taxi/templates/taxi/selcar.html:44 taxi/templates/taxi/setcar.html:75
+msgid "Детских кресел"
+msgstr "Child seats"
+
+#: taxi/templates/taxi/car_info.html:17
+msgid "Машина не указана, выбор заказа невозможен"
+msgstr "Car is not specified, order selection is not possible"
+
+#: taxi/templates/taxi/offer_item.html:52
+msgid "Выбрать"
+msgstr "Select"
+
+#: taxi/templates/taxi/order_inputs.html:37
+#: taxi/templates/taxi/trip_item_pass.html:62
+msgid "Стоимость"
+msgstr "Price"
+
+#: taxi/templates/taxi/order_inputs.html:53
+msgid "Пожелания"
+msgstr "Wishes"
+
+#: taxi/templates/taxi/order_inputs.html:71
+msgid "Прекратить голосовать"
+msgstr "Stop hitchhiking"
+
+#: taxi/templates/taxi/order_inputs.html:73
+msgid "Голосовать"
+msgstr "Start hitchhiking"
+
+#: taxi/templates/taxi/order_inputs.html:84
+msgid "Хотят подвезти"
+msgstr "They want a ride"
+
+#: taxi/templates/taxi/order_inputs.html:93
+msgid "Ожидаем предложений от водителей..."
+msgstr "Waiting for driver's suggestions"
+
+#: taxi/templates/taxi/order_item.html:48
+msgid "Цена"
+msgstr "Price"
+
+#: taxi/templates/taxi/order_item.html:91
+msgid "Отказать"
+msgstr "Refuse"
+
+#: taxi/templates/taxi/order_item.html:91
+msgid "Предложить"
+msgstr "Suggest"
+
+#: taxi/templates/taxi/order_item.html:106
+msgid "Завершить"
+msgstr "End"
+
+#: taxi/templates/taxi/order_item.html:113
+msgid "Ваша оценка поездки"
+msgstr "Review the trip"
+
+#: taxi/templates/taxi/order_item.html:123
+#: taxi/templates/taxi/trip_item_pass.html:113
+msgid "Оставить отзыв"
+msgstr "Leave a review"
+
+#: taxi/templates/taxi/order_item.html:132
+#: taxi/templates/taxi/trip_item_pass.html:122
+msgid "Оценить поездку"
+msgstr "Evaluate the trip"
+
+#: taxi/templates/taxi/orders.html:7
+msgid "bustime-попутчик: Голосующие"
+msgstr "Voters"
+
+#: taxi/templates/taxi/orders.html:23
+msgid "Голосующие"
+msgstr "Hitchhikers"
+
+#: taxi/templates/taxi/orders.html:36
+msgid "Прекратить подвозить"
+msgstr "Stop giving hitchhikers a ride"
+
+#: taxi/templates/taxi/orders.html:38
+msgid "Начать подвозить"
+msgstr "Giving hitchhikers a ride"
+
+#: taxi/templates/taxi/orders.html:45
+msgid "Пассажиров поблизости"
+msgstr "Passengers around"
+
+#: taxi/templates/taxi/orders.html:49
+msgid "Голосуют"
+msgstr "Hitchhiking"
+
+#: taxi/templates/taxi/profile.html:6
+msgid "bustime-попутчик, профиль пользователя"
+msgstr "bustime-traveler, user profile"
+
+#: taxi/templates/taxi/profile.html:23 taxi/templates/taxi/profile.html:28
+msgid "Профиль пользователя"
+msgstr "User profile"
+
+#: taxi/templates/taxi/profile.html:42
+msgid "Водитель"
+msgstr "Driver"
+
+#: taxi/templates/taxi/profile.html:74
+msgid "Закончить"
+msgstr "Finish"
+
+#: taxi/templates/taxi/profile.html:89
+msgid "Автомобиль"
+msgstr "Car"
+
+#: taxi/templates/taxi/selcar.html:6
+msgid "bustime-такси: Выбор машины такси"
+msgstr "bustime-taxi: Choosing a cab car"
+
+#: taxi/templates/taxi/selcar.html:22 taxi/templates/taxi/selcar.html:27
+msgid "Выбор машины"
+msgstr "Car select"
+
+#: taxi/templates/taxi/setcar.html:6
+msgid "bustime-такси: редактирование машины"
+msgstr "bustime-taxi: editing the car"
+
+#: taxi/templates/taxi/setcar.html:36
+msgid "Редактирование автомобиля"
+msgstr "Editing the vehicle"
+
+#: taxi/templates/taxi/setcar.html:56
+msgid "Гос номер"
+msgstr "license plate"
+
+#: taxi/templates/taxi/setcar.html:69
+msgid "Кол-во пассажиров"
+msgstr "Number of passengers"
+
+#: taxi/templates/taxi/setcar.html:79
+msgid "Тип такси"
+msgstr "Type of cab"
+
+#: taxi/templates/taxi/setcar.html:87
+msgid "Класс такси"
+msgstr "Cab class"
+
+#: taxi/templates/taxi/setcar.html:95
+msgid "Состояние машины"
+msgstr "State of the vehicle"
+
+#: taxi/templates/taxi/setcar.html:104
+msgid "Фотография автомобиля"
+msgstr "Vehicle photo"
+
+#: taxi/templates/taxi/setcar.html:116
+#: taxi/templates/taxi/trip_item_pass.html:89
+msgid "Отменить"
+msgstr "Cancel"
+
+#: taxi/templates/taxi/trip_item_pass.html:8
+msgid "Ожидайте"
+msgstr "Expect"
+
+#: taxi/templates/taxi/trip_item_pass.html:76
+#: taxi/templates/taxi/trip_item_pass.html:77
+msgid "Вижу автомобиль"
+msgstr "I see a car."
+
+#: taxi/templates/taxi/trip_item_pass.html:83
+msgid "Поездка начата"
+msgstr "The journey has begun"
+
+#: taxi/templates/taxi/trip_item_pass.html:98
+msgid "Завершить поездку"
+msgstr "Complete the trip"
+
+#: taxi/templates/taxi/trip_item_pass.html:104
+msgid "Оцените поездку"
+msgstr "Rate the trip"
+
+#: taxi/views.py:105
+msgid "Такой № телефона уже используется"
+msgstr "This phone number is already in use"
+
+#: taxi/views.py:109 taxi/views.py:211
+msgid "Поля должны быть заполнены"
+msgstr "The fields must be filled in"
+
+#: taxi/views.py:203
+msgid "Разрешены только JPG и PNG файлы"
+msgstr "Only JPG and PNG files are allowed"
+
+#: taxi/views.py:214
+#, python-format
+msgid "Гос.№ %s уже существует"
+msgstr "State No. %s already exists"
+
+#: utils/ttable2bus.py:102 zbusd/rpc_server.py:1496
+#, python-format
+msgid "Обновлено начало движения с конечной %s маршрут\n"
+msgstr "Updated the start of movement from the end %s route\n"
+
+#: utils/ttable2bus.py:135 zbusd/rpc_server.py:1504
+#, python-format
+msgid "Обновлено начало движения в выходные %s маршрут\n"
+msgstr "Updated start of weekend traffic %s route\n"
+
+#: zbusd/rpc_server.py:72 zbusd/rpc_server.py:577 zbusd/rpc_server.py:588
+msgid "Аноним"
+msgstr "Anonymous"
+
+#: zbusd/rpc_server.py:543
+msgid "Ошибка: необходима регистрация"
+msgstr "Error: registration required"
+
+#: zbusd/rpc_server.py:556
+msgid "Ошибка: нецензурная лексика"
+msgstr "Error: obscene language"
+
+#: zbusd/rpc_server.py:613
+msgid "позитивно"
+msgstr "Positively"
+
+#: zbusd/rpc_server.py:615
+msgid "негативно"
+msgstr "Negatively"
+
+#: zbusd/rpc_server.py:710
+msgid "Ваш аккаунт заблокирован в чате за нарушение правил до:"
+msgstr "You account is blocked for violation of terms and conditions until:"
+
+#: zbusd/rpc_server.py:913 zbusd/rpc_server.py:1053
+msgid "Изменен перевозчик: "
+msgstr "The carrier has been changed:"
+
+#: zbusd/rpc_server.py:957
+msgid "Добавлен перевозчик: "
+msgstr "A carrier has been added:"
+
+#: zbusd/rpc_server.py:1047
+msgid "Удален маршрут: "
+msgstr "Deleted route:"
+
+#: zbusd/rpc_server.py:1064
+msgid "Изменен маршрут: "
+msgstr "Changed route:"
+
+#: zbusd/rpc_server.py:1187
+msgid "Изменен Гос№ ({} -> {})"
+msgstr "Changed Goss# ({} -> {})"
+
+#: zbusd/rpc_server.py:1192
+msgid "Изменен Борт№ ({} -> {})"
+msgstr "Board No. changed ({} -> {})"
+
+#: zbusd/rpc_server.py:1196
+msgid "Изменена низкопольность: {}"
+msgstr "Changed low-floor: {}"
+
+#: zbusd/rpc_server.py:1200
+msgid "Изменена модель: ({} -> {})"
+msgstr "Changed model: ({} -> {})"
+
+#: zbusd/rpc_server.py:1204
+msgid "Изменен регион: ({} -> {})"
+msgstr "Changed region: ({} -> {})"

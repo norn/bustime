@@ -1,0 +1,102 @@
+{% extends "base.html" %}{% load cache %}
+{%block extra_head%}
+<script src="https://cdn.bustime.loc/static/js/plan.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var city_id = {{city.id}};
+</script>
+{% endblock %}
+
+{% block nav_city_admin %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/admin/">Диспетчер</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/admin/plan/">План-наряд</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{{org}}</div>
+</div>
+<div class="ui divider"></div>
+
+<h3 class="ui header">План-наряд {{org}} на {{now.date}}<div class="sub header">{{vehicles|length}} единиц транспорта</div></h3>
+
+{% if msg %}
+<div class="ui big success message">
+  {{msg}}
+</div>
+{% endif %}
+
+<div class="ui two column grid">
+
+{% for cplan in cplans %}
+<div class="column">
+<table class="ui table"><thead><tr>
+        <th>маршрут</th>
+        <th>график</th>
+        <th>номер</th>
+        <th></th>
+    </tr></thead>
+{% for plan in cplan %}
+<tr name={{plan.id}}>
+  <td>
+    <a href="{{plan.bus.get_absolute_url}}">{{plan.bus.ttype_name}} {{plan.bus.name}}</a></td>
+  <td> <select name="gra_{{plan.id}}">
+      <option value="">график</option>
+        {% for gra in gra_range %}
+        <option value="{{gra}}" {% if plan.gra == gra %}selected="selected"{%endif%}>{{gra}}</option>
+        {% endfor %}
+    </select></td>
+  <td>
+    <select name="gnum_{{plan.id}}">
+      <option value="">номер</option>
+        {% for v in vehicles %}
+        <option value="{{v.1}}" {% if plan.xeno_id == v.1 %}selected="selected"{%endif%}>{{v.1}}</option>
+        {% endfor %}
+    </select>
+  </td>
+    <td><a class="mini ui icon red button" href="./?del={{plan.id}}"><i class="times icon"></i></a></td>
+</tr>
+{% endfor %}</table>
+</div>
+{% endfor %}
+</div>
+
+<br/>
+
+<form action="" method="post">{% csrf_token %}
+  <div class="ui input">
+    <input type="text" name="gra_range" value="1" maxlength="2" placeholder="кол-во">
+  </div>
+
+<div class="ui search selection dropdown">
+  <input type="hidden" name="bus_id">
+  <i class="dropdown icon"></i>
+  <div class="default text">Маршрут</div>
+  <div class="menu">
+    {% for b in buses %}
+    <div class="item" data-value="{{b.id}}">{{b}}</div>
+{% endfor %}
+  </div>
+</div>
+
+<button class="ui icon labeled green button" type="submit" name="add" value="1"><i class="plus icon"></i>Добавить</button>
+<br/><br/>
+
+<div class="ui two column grid">
+    <div class="column">
+<!-- <button class="ui icon labeled button" type="submit" name="download" value="1"><i class="download icon"></i>Скачать</button> -->
+<a class="ui icon labeled button" href="https://cdn.bustime.loc/static/other/plan/plan.odt"><i class="download icon"></i>Скачать</a>
+</div>
+
+<div class="right aligned column">
+<button class="ui icon labeled button" type="submit" name="send" value="1"><i class="send icon"></i>Отправить в ЦУПП</button></div>
+</div>
+</form>
+
+
+<br/><br/><br/>
+
+{% endblock %}

@@ -1,14 +1,14 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load i18n %}
 
 {% block extra_head %}
 {% endblock %}
 
 {% block content %}
-<h1 class="ui header">Ошибка 500
-<div class="sub header">ошибка приложения</div></h1>
+<h1 class="ui header">{% trans "Ошибка 500" %}
+<div class="sub header">{% trans "ошибка приложения" %}</div></h1>
 
 <center>
-<div class="ui huge warning message">Сервер не может успешно выполнить операцию. Пожалуйста повторите позднее.</div>
-<img src="http://www.zkarta.ru/m/totoro.png" />
+<div class="ui huge warning message">{% trans "Сервер не может успешно выполнить операцию" %}.<br/>{% trans "Скорее всего ошибка будет исправлена в течение 5 минут" %}.</div>
+<img src="https://cdn.bustime.loc/static/img/totoro.png" />
 </center>
 {% endblock %}

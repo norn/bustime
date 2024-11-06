@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load l10n %}
 
 {% block content %}
-<script src="http://api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU&coordorder=longlat"
+<script src="//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU&coordorder=longlat"
             type="text/javascript"></script>
 
 <h2>Редактирование Автобусных остановок <a href="">ОБНОВИТЬ</a></h2>
@@ -30,7 +30,7 @@
     ymaps.ready(init);
     function init () {
             var layerGoogle = function() {
-                return new ymaps.Layer('http://mt0.google.com/vt/lyrs=m@176000000&hl=ru&%c', {
+                return new ymaps.Layer('//mt0.google.com/vt/lyrs=m@176000000&hl=ru&%c', {
                     projection: ymaps.projection.sphericalMercator
                 });
             };
@@ -86,7 +86,7 @@
                          <br/>куда едет?<input type="text" size="30" value="{{e.moveto}}" name="busstop_moveto"/> \
                          <div align="center"><input type="button" value="Сохранить" onclick="save_busstop({{e.id}});" /></div>\
                          </div>';
-            placemarks[{{e.id}}]=new ymaps.Placemark([{{e.point.x}},  {{e.point.y}}], {balloonContent:menuContent, iconContent: "{{e.id}}", id: {{e.id}} }, {draggable: false, preset: "{%if e.moveto%}twirl#darkblueIcon{%else%}twirl#redIcon{%endif%}"});
+            placemarks[{{e.id}}]=new ymaps.Placemark([{{e.point.x|unlocalize}},  {{e.point.y|unlocalize}}], {balloonContent:menuContent, iconContent: "{{e.id}}", id: {{e.id}} }, {draggable: false, preset: "{%if e.moveto%}twirl#darkblueIcon{%else%}twirl#redIcon{%endif%}"});
             myMap.geoObjects.add(placemarks[{{e.id}}]);
         {%endfor%}
     }

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Перевозчики" %}{% endblock %}
+{% block meta_descr %}{% trans "Реестр транспортных организаций города" %} {{place.name}}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url|default:'/'}}company/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url|default:'/'}}company/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url|default:'/'}}company/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block nav_company %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Перевозчики" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">{% trans "Организации осуществляющие перевозки на маршрутах города" %} {{place.name}}</h1>
+
+<table class="ui celled table">
+  <thead>
+    <tr><th>{% trans "Название" %}</th>
+    <th>{% trans "Телефон" %}</th>
+    <th>{% trans "Маршрутов" %}</th>
+    <!-- <th>Рейтинг</th> -->
+  </tr></thead>
+  <tbody>
+    {% for p in providers %}
+    <tr>
+      <td data-label="Name"><a href="/{{place.slug}}{{ p.get_absolute_url }}" aria-label="{% trans 'Имя перевозчика' %} {{p.name}}">{{ p.name }}</a></td>
+      <td data-label="Phone" aria-label="{% trans 'Телефон перевозчика' %} {% if p.phone %}{{ p.phone }}{%endif%}">{% if p.phone %}{{ p.phone }}{%endif%}</td>
+      <td data-label="Amount" aria-label="{% trans 'Количество маршрутов перевозчика' %} {{p.cnt}}">{{ p.cnt }}</td>
+      <!-- <td data-label="Amount">{{ p.rating }}</td> -->
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

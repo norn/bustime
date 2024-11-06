@@ -1,0 +1,22 @@
+/*******************************
+             Card
+*******************************/
+
+/* -------------------
+         View
+-------------------- */
+
+@borderBoxShadow: none;
+@shadowBoxShadow: none;
+@boxShadow: none;
+
+@internalBorderColor: #ededee;
+@border: 1px solid #ededee;
+
+@contentPadding: 14px 20px;
+
+@metaColor: #a5a7aa;
+
+@linkHoverRaiseDistance: 0;
+@linkHoverBoxShadow: none;
+@linkHoverBorder: 1px solid #d0d0d8;

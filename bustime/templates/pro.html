@@ -1,96 +1,181 @@
 {% extends "base.html" %}
-{% block titlee %}Премиум{% endblock %}
-{% block meta_descr %}Здесь вы можете приобрести профессиональную подписку для сайта Время Автобуса. Поддержите проект и наслаждайтесь дополнительным функционалом и отключенной рекламой.{% endblock %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Купить подписку" %}{% endblock %}
+{% block meta_descr %}{% trans "Здесь вы можете приобрести профессиональную подписку для сайта" %} {% trans "Время Автобуса" %}. {% trans "Поддержите проект и наслаждайтесь дополнительным функционалом и отключенной рекламой" %}.{% endblock %}
 
 {% block nav_pro %}active{%endblock%}
 {% block content %}
 
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">Премиум</div>
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Подписка" %}</div>
 </div>
 <div class="ui divider"></div>
 
-<h1 class="ui header">Преимущества премиум подписки</h1>
+<table class="ui celled unstackable table">
+    <thead>
+      <tr><th></th>
+      <th>{% trans "без подписки" %}</th>
+      <th>П</th>
+      <th>П+</th>
+    </tr></thead>
+    <tbody>
+          <tr>
+        <td>
+          <h4 class="ui image header">
+            <i class="fa-clock-o icon"></i>
+            <div class="content">
+              {% trans "Использование" %}
+              <div class="sub header">
+            </div>
+          </div>
+        </h4></td>
+        <td>
+          {% trans "менее 2 ч. в день" %}
+        </td>
+        <td class="warning">
+          {% trans "менее 6 ч. в день" %}
+        </td>
+        <td class="positive">
+          {% trans "24 ч. в день" %}
+        </td>
+      </tr>
 
-<div class="ui large list">
-  <div class="item">
-  	<i class="fa fa-diamond icon"></i>
-    <div class="content">
-      <div class="header">Отключение всех рекламных блоков</div>
-    </div>
-  </div>
-  <div class="item">
-  	<i class="fa fa-diamond icon"></i>
-    <div class="content">
-      <div class="header">Круглосуточный доступ без ограничений</div>
-    </div>
-  </div>
-  <div class="item">
-  	<i class="fa fa-diamond icon"></i>
-    <div class="content">
-      <div class="header">Отображение регистрационных номеров</div>
-    </div>
-  </div>
-  <div class="item">
-  	<i class="fa fa-diamond icon"></i>
-    <div class="content">
-      <div class="header">До 30 любимых маршрутов</div>
-    </div>
-  </div>
 
-  <div class="item">
-  	<i class="fa fa-diamond icon"></i>
-    <div class="content">
-      <div class="header">Оформление автобуса на выбор</div>
-    </div>
-  </div>
+      <tr>
+        <td>
+          <h4 class="ui image header">
+            <i class="fa-bolt icon"></i>
+            <div class="content">
+              {% trans "Отключение рекламы" %}
+              <div class="sub header">{% trans "сайт работает и загружается быстрее" %}
+            </div>
+          </div>
+        </h4></td>
+        <td>
+        </td>
+        <td class="positive">
+          <i class="fa-check icon"></i>
+        </td>
+        <td class="positive">
+          <i class="fa-check icon"></i>
+        </td>
+      </tr>
 
-  <div class="item">
-  	<i class="fa fa-diamond icon"></i>
-    <div class="content">
-      <div class="header">Выбор аватарок для водителя и кондуктора</div>
-    </div>
-  </div>
-</div>
 
-	<table class="ui unstackable table">
-	<thead>
+
+      <tr>
+        <td>
+          <h4 class="ui image header">
+            <i class="fa-flag-o icon"></i>
+            <div class="content">
+              {% trans "Гос. номера на главном интерфейсе" %}
+          </div>
+        </h4></td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td class="positive">
+          <i class="fa-check icon"></i>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <h4 class="ui image header">
+            <i class="fa-paint-brush icon"></i>
+            <div class="content">
+              {% trans "Персональная наклейка" %}<div class="sub header">{% trans "позволяет сделать наклейку с вашей картинкой на транспорт с определенным номером, наклейки видят все пассажиры" %}</div>
+          </div>
+        </h4></td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td class="positive">
+          <i class="fa-check icon"></i>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <h4 class="ui image header">
+            <i class="fa-video-camera icon"></i>
+            <div class="content">
+              {% trans "Видеосвязь" %}
+              <div class="sub header">{% trans "требуется поддержка браузера" %}
+            </div>
+          </div>
+        </h4></td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td class="positive">
+          <i class="fa-check icon"></i>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+
+<form method="post" action="" class="ui form">{% csrf_token %}
+
+  <table class="ui unstackable table">
+  <thead>
         <tr>
-            <th>цена</th>
-            <th>срок действия</th>
-            <th>стоимость в день</th>
+            <th></th>
+            <th>{% trans "срок действия" %}</th>
+            <th>{% trans "стоимость" %}</th>
         </tr>
     </thead>
-	<tr>
-		<td>100 руб.</td>
-		<td>5 дней</td>
-		<td>20 руб./день</td>
-	</tr>
-	<tr>
-		<td>300 руб.</td>
-		<td>30 дней + 1 бесплатно</td>
-		<td>10 руб./день</td>
-	</tr>
-	<tr class="positive">
-		<td>500 руб.</td>
-		<td>60 дней + 3 бесплатно</td>
-    <td>8.33 руб./день</td>
-	</tr>
-	</table>
 
+<tr>
+    <td>
+      <div class="ui radio checkbox">
+      <input type="radio" name="st" value="s100" tabindex="1"  checked="checked">
+      <label>П</label>
+      </div>
+    </td>
+    <td>6 {% trans "месяцев" %}</td>
+    <td>{% if domain == "bustime.loc" %}100 <i class="fa-rub icon"></i>{%else%}€ 1.33{%endif%}</td>
+  </tr>
 
+  <tr>
+    <td>
+      <div class="ui radio checkbox">
+      <input type="radio" name="st" value="p500" tabindex="2">
+      <label>П+</label>
+      </div>
+    </td>
+    <td>2 {% trans "месяца" %}</td>
+    <td>{% if domain == "bustime.loc" %}500 <i class="fa-rub icon"></i>{%else%}€ 6.70{%endif%}</td>
+  </tr>
 
-<h2 class="ui header">Всего пара простых шагов для активации!
-	<div class="sub header">запрос будет обработан в течении 4 часов после получения SMS</div>
-</h2>
+  </table>
 
-<div class="ui large positive message">
-<div class="ui ordered list">
-  <div class="item">Пополните счет телефона Билайн <b>+7-903-921-4337</b> (время для звонков: 13:00 - 19:00)</div>
-  <div class="item">Отправьте SMS с временем платежа и идентификатором <b>{{us.id}}</b></div>
+<div class="ui center aligned grid">
+  <div class="column">
+  <img src="https://cdn.bustime.loc/static/img/qiwi.png" /><br/>
+  {% trans "Номер телефона" %}:<br/>
+  <div class="ui labeled action big input">
+    <div class="ui label">+7</div>
+    <input type="text" name="phone" placeholder="{% trans "введите номер" %}" value="{% if us.phone %}{{us.phone_dash|slice:"3:"}}{%endif%}" maxlength="12" style="width:13rem">
+    <button class="ui blue button">{% trans "оплатить" %}</button>
+  </div>
+  <br/>{% trans "Если у вас нет QIWI кошелька, он создастся автоматически" %}.<br/><br/>
+  </div>
 </div>
-</div>
 
+
+<br/><br/>
+<br/><br/>
+
+</form>
 {% endblock %}

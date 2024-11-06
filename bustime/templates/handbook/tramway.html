@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Трамвай" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/tramway.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Трамвай — это рельсовое транспортное средство, предназначенное для перевозки пассажиров по городским маршрутам. Трамваи движутся по рельсам, встроенным в дорожное полотно, и получают питание от электрической контактной сети. Они экологичны и способны перевозить большое количество пассажиров, что делает их важной частью общественного транспорта в городах." %}</p>
+</div>
+
+
+</div>
+<br/>
+{% endblock %}

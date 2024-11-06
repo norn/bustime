@@ -1,0 +1,60 @@
+{# см. admin_load_gtfs.html #}{% load i18n %}
+    <div class="ui form">
+        <div class="fields">
+            <div class="nine wide field">
+                <label>
+                    <a href="/wiki/bustime/gtfscatalog/" target="_blank">GtfsCatalog</a>
+                    &nbsp;
+                    <a id="link_catalog_edit2"
+                        href="/wiki/bustime/gtfscatalog/{% if catalog_id %}{{catalog_id}}/change/{% endif %}"
+                        target="_blank">edit</a>
+                </label>
+
+                <select id="select_feed2" class="ui dropdown" onchange="select_feed2_change()" autocomplete="off">
+                    {% for x in feeds %}
+                    <option data-label="{{x.url_schedule}}" value="{{x.id}}" {% if catalog_id == x.id %}selected{% endif %}>
+                        {{x.id}} {{x.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <span id="import_url" class="ui small grey text"></span>
+            </div>
+
+            <div class="five wide field">
+                <label>{% trans "Маршрут" %}</label>
+
+                <select id="select_import_route" class="ui dropdown">
+                    <option value="" selected="selected">&nbsp;</option>
+                    {% for x in routes %}
+                    <option value="{{x.route_short_name|safe|default:x.route_long_name|safe}}">{{x.route_short_name|safe|default:x.route_long_name|safe}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>&nbsp;</label>
+                <button class="ui button" id="button_import" name="button_import" onclick="import_schedule()">
+                    {% trans "Импортировать" %}
+                </button>
+            </div>
+        </div>
+
+        <div class="inline fields">
+            <div class="nine wide field">
+                <label>Options</label>
+                <input type="text" id="opt_import" name="opt_import" value="--upd --reset " defaultValue="--upd --reset">
+            </div>
+        </div>
+
+        <div class="ui small text">
+            <b>--upd</b> Обновлять БД сайта и приложений
+            <br><b>--reset</b> Выполнять сброс кэшей после импорта маршрута для обновления сайта
+            <br><b>--noshape</b> Не использовать shapes фидов, строить путь по остановкам
+            <br><b>--dedup</b> Удалять дубликаты маршрутов
+            <br><b>--reroute</b> Пересчитывать Route/RouteLine/Places даже если не изменились
+        </div>
+
+        <h4 class="ui dividing header">Result: <span id="test_result_header2"></span></h4>
+        <div class="ui segment" id="import_result" style="overflow: auto;"></div>
+    </div><!--ui form-->

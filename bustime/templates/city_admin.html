@@ -1,0 +1,1019 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% load timetags %}
+{% load set_template_var %}
+
+{% block extra_head %}
+<script src="/static/js/particles.min.js"></script>
+<script>
+var kitchen_sound=0;
+var timerId = null;
+var noDataCounter = 0;
+var eps_rhythm = 0;
+
+function add_kitchen(data) {
+ // what event?
+ let action = data['action'];
+ // block template
+ let html = "";
+ if (action == "eps")  {
+   html='<a class="ui button busnumber double bt_1 coloramount2 '+data['eps_total']+'"><div class="bheader">BH</div>TXT<br><span class="busamount">BA</span></a>';
+ } else {
+   html='<a class="ui button busnumber triple bt_0 coloramount2 '+data['uuid']+'"><div class="bheader">BH</div>TXT<br><span class="busamount">BA</span></a>';
+ }
+
+
+ html = html.replace("BH", action);
+ if (action == 'settings_language') {
+   html = html.replace("TXT", data['place'].slice(0, 20)+" "+data['prev']+">"+data['language']);
+   html = html.replace("BA", "#"+data['uuid']+", "+data['version']+" "+data['ctime']);
+ } else if (action == 'app_install') {
+   html = html.replace("TXT", data['place'].slice(0, 23)+" "+data['language']);
+   html = html.replace("BA", "#"+data['uuid']+", "+data['version']+"("+data['os']+", "+data['os_version']+")");
+ } else if (action == 'eps') {
+   html = html.replace("TXT", data['eps_total']);
+   html = html.replace("BA", data['pids_total']+" places / "+data['duration']+"s");
+ } else {
+   html = html.replace("TXT", data['place'].slice(0, 23)+" "+data['language']);
+   html = html.replace("BA", "#"+data['uuid']+", "+data['version']);
+ }
+
+ if (action == 'language_auto') {
+  html = html.replace("bt_0", "bt_2");
+ } else if (action == 'settings_language') {
+  html = html.replace("bt_0", "bt_3");
+ }
+
+ $('._kitchen').append(html);
+
+ // animation
+ if (action == 'app_install') {
+   $("."+data['uuid']).addClass('happy_scale');
+      setTimeout(function() {
+        $("."+data['uuid']).removeClass('happy_scale');
+   }, 1200);
+  if (kitchen_sound) {
+    let fileNumber =  Math.floor(Math.random()*8);
+    let fileName = `/static/js/snd/_kitchen/app_install_${fileNumber.toString()}.mp3`;
+    let audio = new Audio(fileName);
+    audio.volume = 0.13;
+    audio.play();
+  }
+ }
+
+ // sound
+ if (kitchen_sound && action == 'eps') {
+    eps_rhythm = eps_rhythm+1;
+    if (eps_rhythm % 4 == 0) {
+     fileNumber = 0;
+    } else {
+     fileNumber = 1;
+    }
+    let fileName = `/static/js/snd/_kitchen/eps_${fileNumber.toString()}.mp3`;
+    let audio = new Audio(fileName);
+    audio.volume = 0.40;
+    audio.play();
+  }
+
+
+  // limiter of max blocks
+  var container = $('._kitchen');
+  var maxItems = 5*8-2;
+  var excessItems = container.children().length - maxItems;
+  // remove old ones
+  if (excessItems > 0) {
+    container.children(':lt(' + excessItems + ')').remove();
+  }
+}
+
+function ksound_on() {
+  kitchen_sound=1;
+  $(".ksound_button").remove();
+}
+
+function soconnect() {
+    socket = io();
+
+    // http://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-handler
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+
+    socket.on('connect', function() {
+        var d = new Date();
+        console.log(d + ": Socket connected");
+        socket.emit('authentication', {username: us_id, password: "", os:"web"});
+        socket.emit('join', "_kitchen");
+    });
+
+    socket.on("*",function(event,data) {
+        //console.log(event);
+        //console.log(data);
+        add_kitchen(data);
+    });
+}
+
+function js_page_extra() {
+  $('.ui.dropdown').dropdown();
+  //setTimeout(ajax_get_gosnums_admin, 250, {{place.id}});
+  ajax_get_gosnums_admin({{place.id}});
+
+  particlesJS('particles-js',
+    {"particles":{"number":{"value":{%if ecnt.6 < 1000%}{{ecnt.6}}{%else%}1000{%endif%},"density":{"enable":false,"value_area":800}},
+"color":{"value":"#ffe216"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},
+"polygon":{"nb_sides":6},"image":{"src":"img/github.svg","width":100,"height":100}},
+"opacity":{"value":0.5,"random":false,"anim":{"enable":true,"speed":1,"opacity_min":0.1,"sync":false}},
+"size":{"value":2,"random":true,"anim":{"enable":false,"speed":30,"size_min":0.1,"sync":false}},
+"line_linked":{"enable":true,"distance":30,"color":"#ffe216","opacity":0.4,"width":1},
+"move":{"enable":true,"speed":6,"direction":"right","random":true,"straight":true,"out_mode":"out","bounce":false,
+"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},
+"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"bubble"},
+"onclick":{"enable":true,"mode":"repulse"},"resize":true},
+"modes":{"grab":{"distance":100,"line_linked":{"opacity":1}},"bubble":{"distance":60,"size":1,"duration":2,"opacity":8,"speed":3},
+"repulse":{"distance":50,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},
+"retina_detect":true}
+  );
+  soconnect();
+}
+
+function ajax_get_supervisor_status(city_id)
+{
+    if( $("#super_status").is(":hidden") ){
+        $("#super_status").html("Ждите, запрос выполняется");
+        $("#super_status").show();
+        $.ajax({
+            url: "/ajax/ajax_get_supervisor_status/",
+            type: "post",
+            data: {
+                city_id: city_id,
+            },
+            cache: false,
+            success: function(data){
+                $("#super_status").html(data);
+            },
+            error: function(jqXHR, sStatus, sErrorText){
+                $("#super_status").html(sErrorText);
+            }
+        });
+    }
+    else {
+        $("#super_status").hide();
+    }
+}   // function ajax_get_gosnums_admin
+
+function ajax_get_gosnums_admin(city_id)
+{
+    $.ajax({
+        url: "/ajax/ajax_get_gosnums_admin/",
+        type: "post",
+        data: {
+            city_id: city_id,
+        },
+        cache: false,
+        success: function(data){
+            show_gosnums_admin(data);  // обработчик ответа
+        },
+        error: function(jqXHR, sStatus, sErrorText){
+            console.log('ajax_get_gosnums_admin: ', sErrorText);
+        }
+    });
+}   // function ajax_get_gosnums_admin
+
+function show_gosnums_admin(data)
+{
+    data = JSON.parse(data);
+    // Госномера
+    let tmp=data.gosnums.length;
+    $("#gosnums_length").html(`${tmp} номеров/сегодня`);
+
+    let g, row, tbody = $("#gosnums_table").find('tbody');
+    let classs, prev_gosnom = '';
+    let r, gosnum, bortnum, model, bus_name, user, last_point_update;
+    for(r = 0; r < tmp; r++) {
+        g = data.gosnums[r];
+        classs = (g.gosnum !== null && g.gosnum == prev_gosnom ? 'class="red"' : '');
+        bortnum = (g.bortnum === null ? '&nbsp;' : g.bortnum);
+        model = (g.model === null ? '&nbsp;' : g.model);
+        bus_name = (g.bus === null ? `&nbsp;` : `<div class="ui label">${g.bus.name}</div>`);
+        user = (g.user === null ? '&nbsp;' : `<a href="https://bustime.loc/wiki/auth/user/{{ g.user }}/change/" target="_blank">{{ g.user }}</a>`);
+        last_point_update = (g.last_point_update === null ? '&nbsp;' : `${g.last_point_update}`);
+        row = `<tr>`;
+        {% if user.is_superuser %}
+        row += `<td><a href="/admin/vehicle/?uniqueid=${g.uniqueid}">${g.uniqueid}</a></td>`;
+        gosnum = (g.gosnum === null ? '&nbsp;' : `<a href="/admin/vehicle/?gosnum=${g.gosnum}" ${classs}>${g.gosnum}</a>`);
+        {% else %}
+        row += `<td>${g.uniqueid}</td>`;
+        gosnum = (g.gosnum === null ? '&nbsp;' : `${g.gosnum}`);
+        {% endif %}
+        row += `<td>${gosnum}</td>`;
+        row += `<td>${bortnum}</td>`;
+        row += `<td>${model}</td>`;
+        row += `<td>${g.created_date}</td>`;
+        row += `<td>${bus_name}</td>`;
+        row += `<td>${user}</td>`;
+        row += `<td>${last_point_update}</td>`;
+        row += `</tr>`;
+        tbody.append(row);
+        prev_gosnom = g.gosnum;
+    }
+
+    // Госномера (авто)
+    tmp = data.gosnums_auto.length;
+    $("#gosnums_auto_length").html(`${tmp} номеров/сегодня`);
+    tbody = $("#gosnums_auto_table").find('tbody');
+    prev_gosnom = '';
+    let id, provuder;
+    for(r = 0; r < tmp; r++) {
+        g = data.gosnums_auto[r];
+        id = new Date(g.created_date).getTime()/1000 + '.0000';
+        classs = (g.gosnum !== null && g.gosnum == prev_gosnom ? 'class="red"' : '');
+        bortnum = (g.bortnum === null ? '&nbsp;' : g.bortnum);
+        model = (g.model === null ? '&nbsp;' : g.model);
+        bus_name = (g.bus === null ? `&nbsp;` : `<div class="ui label">${g.bus.name}</div>`);
+        provider = (g.provider_name === null ? '&nbsp;' : g.provider_name);
+        last_point_update = (g.last_point_update === null ? '&nbsp;' : `${g.last_point_update}`);
+        row = `<tr id="${id}">`;
+        {% if user.is_superuser %}
+        row += `<td><a href="/admin/vehicle/?uniqueid=${g.uniqueid}">${g.uniqueid}</a></td>`;
+        gosnum = (g.gosnum === null ? '&nbsp;' : `<a href="/admin/vehicle/?gosnum=${g.gosnum}" ${classs}>${g.gosnum}</a>`);
+        {% else %}
+        row += `<td>${g.uniqueid}</td>`;
+        gosnum = (g.gosnum === null ? '&nbsp;' : `${g.gosnum}`);
+        {% endif %}
+        row += `<td>${gosnum}</td>`;
+        row += `<td>${bortnum}</td>`;
+        row += `<td>${model}</td>`;
+        row += `<td>${g.created_date}</td>`;
+        row += `<td>${bus_name}</td>`;
+        row += `<td>${provider}</td>`;
+        row += `<td>${last_point_update}</td>`;
+        row += `</tr>`;
+        tbody.append(row);
+        prev_gosnom = g.gosnum;
+    }
+}
+
+function toggler(v) {
+  $(v).toggleClass('hidden');
+}
+
+function stopTimeout()
+{
+    if( timerId ){
+        clearTimeout(timerId);
+        timerId = null;
+    }
+    noDataCounter = 0;
+}
+//
+function ajax_get_log_file(file, city_id, title)
+{
+    $.ajax({
+        url: "/ajax/ajax_get_log_file/",
+        type: "post",
+        data: {
+            filename: file,
+            city_id: city_id,
+        },
+        cache: false,
+        success: function(data){
+            response_show(data, title);  // обработчик ответа
+        },
+        error: function(jqXHR, sStatus, sErrorText){
+            console.log('ajax_get_log_file: ', sErrorText);
+        }
+    });
+}   // function ajax_get_log_file
+function ajax_start_job(job, city_id)
+{
+    title = 'Выполняется '+job+' '+city_id;
+
+    stopTimeout();
+
+    $.ajax({
+        url: "/ajax/ajax_start_job/",
+        type: "post",
+        data: {
+            job: job,
+            city_id: city_id,
+        },
+        cache: false,
+        success: function(data){
+            if(data.length){
+                updateJobStatus(data);
+            }
+        },
+        error: function(jqXHR, sStatus, sErrorText){
+            console.log('ajax_start_job: ', sErrorText);
+        }
+    });
+
+    timerId = setTimeout(getJobStatus, 1000, job);
+    response_show('', title);
+}   // function ajax_start_job
+//
+function getJobStatus(job)
+{
+    //console.log("getJobStatus: job:", job);
+    $.ajax({
+        url: "/ajax/ajax_status_job/",
+        type: "post",
+        data: {
+            job: job,
+        },
+        cache: false,
+        success: function(data){
+            if( data.length ){
+                timerId = setTimeout(getJobStatus, 500, job);
+                updateJobStatus(data);
+            }
+            else if( noDataCounter < 20 ) {
+                timerId = setTimeout(getJobStatus, 500, job);
+                noDataCounter++;
+            }
+            else
+                timerId = null;
+        },
+        error: function(jqXHR, sStatus, sErrorText){
+            console.log('getJobStatus: ', sErrorText);
+        }
+    });
+}   // function getJobStatus
+//
+function updateJobStatus(data)
+{
+    if( data.length ){
+        log = document.getElementById('modal-log');
+        log.innerHTML += data.replace("\n", "<br>");
+        log.scrollTop = log.scrollHeight;
+    }
+    else
+        stopTimeout();
+}   // function updateJobStatus
+//
+function response_show(data, title)
+{
+    // вставить ответ сервера
+    document.getElementById('modal-head').innerHTML = title ? title : 'Лог';
+    document.getElementById('modal-log').innerHTML = data;
+    // Показать диалог
+    document.getElementById('modal-dialog').style.display = "block";
+}   // function response_show
+
+function dev_refresh() {
+  var n = $("[name=dev_refresh]").val();
+  var sure = confirm("Данные на dev"+n+" будут безвозвратно потеряны! Вы уверены?");
+  if (sure) {
+    window.location.href = "./dev-refresh/?n="+n;
+  }
+}
+
+function routes_lines_calc(){
+    $("#span_lines_calc").html("Ждите...")
+    $.ajax({
+        type: "post",
+        url: "/ajax/route_lines_calc/",
+        data: {
+            bus_id: -1,
+            city_id: {{place.id}}
+        },
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if( data.result )
+                $("#span_lines_calc").html(`${data.result} маршрутов пересчитано`);
+            else if(data.error)
+                $("#span_lines_calc").html(data.error);
+            else
+                $("#span_lines_calc").html('Неизвестная ошибка');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            $("#span_lines_calc").html(`${errorThrown} ${textStatus}`);
+        }
+    });
+}
+
+function ajax_message_for_all(delete_message) {
+    var text_message = $('#text_message').val();
+    console.log(text_message.length);
+    if( text_message.length ){
+        $.ajax({
+            url: "/ajax/ajax_message_for_all/",
+            type: "post",
+            data: {text_message: text_message, delete_message: delete_message},
+            cache: false,
+            success: function(data){
+                if ( data == 'delete' ){
+                    $('#text_message').val('');
+                } else if ( data == 'posted' ){
+                    $('.button_posted').css('background', '#9ee601').html('Размещено').fadeIn(100);
+                    setTimeout(function(){
+                        $('.button_posted').css('background', '#e0e1e2').html('Разместить');
+                    }, 1000);
+                } else if ( data == 'error' ){
+                    $('.text_message').addClass('error');
+                }
+            },
+            error: function(jqXHR, sStatus, sErrorText){
+                console.log('ajax_message_for_all: ', sErrorText);
+            }
+        });
+    }
+}   // function ajax_message_for_all
+
+</script>
+<style>
+.blink_me {
+  animation: blinker 1s linear infinite;
+  color: #FF0000;
+}
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+.box_info {
+    margin: 0;
+    padding: 0;
+    font-size: 80%;
+}
+.red {
+  color: #FF0000;
+}
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 10000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  max-width: 100%;
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 1% auto; /* 5% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 90%; /* Could be more or less, depending on screen size */
+  max-width: 90%;
+  height: 96%;
+  max-height: 96%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+  font-size: 1.2em;
+}
+.modal-content #modal-head {
+    font-weight: bold;
+}
+.modal-content #modal-log {
+    width: 100%;
+    height: 94%;
+    overflow: scroll;
+    color: #CCCCCC;
+    background-color: #000000;
+    padding: 1px 3px;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#particles-js {
+ width: 100%;
+ height: 250px;
+ background-color: #333333;
+  background-image: url('/static/img/particles-bg.png');
+  background-size: cover; /* Это позволит изображению заполнить элемент, сохраняя соотношение сторон */
+  background-position: center; /* Это поможет центрировать изображение */
+  background-repeat: no-repeat; /* Это предотвратит повторение изображения */
+}
+.sepic {
+    max-width:300px;
+}
+</style>
+{% endblock %}
+
+{% block nav_city_admin %}active{%endblock%}
+{% block headbread %}<a href="/" class="bustime-logo-pro"></a>{% endblock %}
+{% block titlee %}{% trans "Администратор" %}{% endblock %}
+
+{% block content %}
+
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Администратор" %}</div>
+</div>
+<div class="ui divider"></div>
+
+{% if error_msg %}
+<div class="ui error big message">{{error_msg}}</div>
+{% endif %}
+
+<div class="ui two column stackable grid">
+<div class="column">
+<a class="ui button" href="/wiki/">{% trans "админ БД" %}</a>
+<a class="ui button" href="/static/other/app/bustime-fl-{{adt}}.apk"> {% trans "app build" %} {{adt}} <img src="/static/img/icon_60px.png" style="width: 18px;margin-bottom:-4px"></a>
+
+<div class="ui horizontal list" style="margin-top:4rem">
+  <div class="item">
+    <div class="content">
+      <a class="header">total events</a>
+      {{ecnt.5}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/place/">place events</a>
+      {{ecnt.6}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/uevents/">uevents</a>
+      {{ecnt.0}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/bustime/">bustime</a>
+      {{gps_send_raw_list|length}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/yproto/">{% trans "yproto" %}</a>
+      {{ecnt.1}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/nimbus/">nimbus</a>
+      {{ecnt.2}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/glonassd/">glonassd</a>
+      {{ecnt.3}}
+    </div>
+  </div>
+  <div class="item">
+    <div class="content">
+      <a class="header" href="/explorer/events/{{place.id}}/taxi/">taxi</a>
+      {{ecnt.4}}
+    </div>
+  </div>
+</div>
+
+<table class="ui single line compact small table">
+  <thead>
+    <tr><th>channel</th>
+    <th>src</th>
+    <th>events</th>
+  </tr></thead>
+  <tbody>
+{% for ch, src, evs in sources %}
+    <tr>
+      <td data-label="channel">{{ch}}</td>
+      <td data-label="src">{{src}}</td>
+      <td data-label="events">{{evs}}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+</div>
+
+<div class="column">
+  <div id="particles-js"></div>
+</div>
+</div>
+
+<div class="ui header">{% trans "Диспетчер" %}</div>
+<table class="ui very basic table"><tr><td>
+<table class="ui table">
+  <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/devices/">{% trans "Устройства" %}</a></td>
+    <td>{% trans "Список устройств для передачи данных" %}</td>
+  </tr>
+
+
+  <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/mapping-table/">{% trans "Таблица соответствия" %}</a></td>
+    <td>{% trans "Позволяет устанавливать соответствие между идентификатором, маршрутом и номером." %}</td>
+  </tr>
+
+  {% if place.id == 11 %}
+  <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/plan/">{% trans "План-наряд" %}</a></td>
+    <td>{% trans "План наряд, с выгрузкой на FTP в формате XML и PDF." %}</td>
+  </tr>
+  {% endif %}
+
+    <tr><td><a class="fluid ui button" href="/{{place.slug}}/status/offline/">{% trans "Офлайн отчет" %}</a></td>
+    <td>{% trans "Список устройств за последние 3 часа, которые не отправляли данные больше 15 минут" %}</td>
+  </tr>
+
+    <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/broadcast/">{% trans "МЧС оповещение" %}</a></td>
+    <td>{% trans "Позволяет отправить сообщение по громкой связи на все подключенные терминалы водителей" %}</td>
+  </tr>
+
+    <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/logs_on_map/">{% trans "Логи на карте" %}</a></td>
+    <td>{% trans "Отображение на карте всех ненайденных маршрутов" %}</td>
+  </tr>
+</table>
+</td><td><img src="/static/img/city-admin-disp.jpg" class="sepic"></td></tr></table>
+
+<div class="ui header">{% trans "Инженер" %}</div>
+<table class="ui very basic table"><tr><td>
+<table class="ui table">
+  <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/uevents-on-map/">{% trans "ТС на карте" %}</a></td>
+    <td>{% trans "Все ТС города на карте (необработанные)" %}</td>
+  </tr>
+  <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/load-bus/">{% trans "Загрузить маршрут" %}</a></td>
+    <td>{% trans "Добавить или перезаписать маршрут из JS" %}</td>
+  </tr>
+  <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/fill-inter-stops/">{% trans "Заполнить inter_stops" %}</a></td>
+    <td>{% trans "Заполнить (форсированно) максмальное межостановочное расстояние для всех маршрутов города" %}</td>
+  </tr>
+  {% if place.id == 11 or place.id == 167 and gtfs_py_file.exists %}
+  <tr>
+      <td><a class="fluid ui button" href="#" onclick="ajax_start_job('gtfs', {{place.id}});return false">{% trans "Выполнить gtfs-{{place.id}}" %}</a></td>
+      <td>
+        {% trans "Скрипт gtfs" %}-{{place.id}} {% trans "выполняется 2-3 минуты." %}
+          <div class="box_info">{% trans "Запустить gtfs" %}-{{place.id}}.py</div>
+      </td>
+  </tr>
+  {% endif %}
+  {% if place.id == 11 and route_auto_py_file.exists %}
+  <tr>
+      <td><a class="fluid ui button" href="#" onclick="ajax_start_job('route_auto', {{place.id}});return false">{% trans "Выполнить route_auto {{place.id}}" %}</a></td>
+      <td>
+        {% trans "Скрипт route_auto" %} {{place.id}} {% trans "выполняется около минуты." %}
+          <div class="box_info">{% trans "Запустить route_auto.py" %} {{place.id}}</div>
+      </td>
+  </tr>
+  {% endif %}
+  <tr>
+      <td>
+          <a class="fluid ui button" href="/{{place.slug}}/admin/update-v8/">
+                <span class="">{% trans "Обновить БД сайта" %}</span>
+          </a>
+      </td>
+      <td>
+        {% trans "Для обновления маршрутов на сайте. Автоматически выполняется каждую ночь." %}
+      </td>
+  </tr>
+  <tr>
+      <td>
+          <a class="fluid ui button" href="/{{place.slug}}/admin/update-mobile/">
+              <span class="{{city_mobile_file.class}}">{% trans "Обновить БД приложений" %}</span>
+          </a>
+      </td>
+      <td>
+        {% trans "Для обновления маршрутов. Автоматически выполняется каждую ночь." %}
+          <div class="box_info red">{{city_mobile_file.message}}</div>
+      </td>
+  </tr>
+
+    <tr><td><a class="fluid ui button" href="/{{place.slug}}/admin/windmill-restart/">{% trans "Перезапустить обработчик" %}</a></td>
+    <td>{% trans "Перезапуск системы обработки и анализа маршрутов" %}</td>
+  </tr>
+</table>
+</td><td><img src="/static/img/city-admin-engineer.jpg" class="sepic"></td></tr></table>
+
+{% if user.is_superuser %}
+<div class="ui header">{% trans "Системные" %}</div>
+<table class="ui very basic table"><tr><td>
+<table class="ui table">
+  <tr>
+      <td><a class="fluid ui button" href="/{{place.slug}}/admin/city-new/">{% trans "Обновить конфигурации" %}</a></td>
+      <td>{% trans "Генерирует конфигурационные файлы для supervisor: windmill и rainsys." %} <br/>{% trans "Перезапускает его и обновляет присутствие типа транспорта во всех городах." %}</td>
+  </tr>
+  {% if gtfs_log_file.exists %}
+  <tr>
+      <td><a class="fluid ui button" href="#" onclick="ajax_get_log_file('gtfs', {{place.id}}, 'Лог gtfs-{{place.id}}');return false">{% trans "Лог gtfs" %}-{{place.id}}</a></td>
+      <td>{% trans "Смотреть лог gtfs" %}-{{place.id}} {% trans "от" %} {{ gtfs_log_file.modified|print_timestamp }}</td>
+  </tr>
+  {% endif %}
+  {% if route_auto_log_file.exists %}
+  <tr>
+      <td><a class="fluid ui button" href="#" onclick="ajax_get_log_file('route_auto', {{place.id}}, 'Лог route_auto-{{place.id}}');return false">{% trans "Лог route_auto" %}-{{place.id}}</a></td>
+      <td>{% trans "Смотреть лог route_auto" %}-{{place.id}} от {{ route_auto_log_file.modified|print_timestamp }}</td>
+  </tr>
+  {% endif %}
+<!--
+  {% if update_js_log_file.exists %}
+  <tr>
+      <td><a class="fluid ui button" href="#" onclick="ajax_get_log_file('update_js', {{place.id}}, 'Лог update_js-{{place.id}}');return false">{% trans "Лог update_js" %}-{{place.id}}</a></td>
+      <td>{% trans "Смотреть лог update_js" %}-{{place.id}} {% trans "от" %} {{ update_js_log_file.modified|print_timestamp }}</td>
+  </tr>
+  {% endif %}
+-->
+  {% if update_mobile_log_file.exists %}
+  <tr>
+      <td><a class="fluid ui button" href="#" onclick="ajax_get_log_file('update_mobile', {{place.id}}, 'Лог update_mobile-{{place.id}}');return false">{% trans "Лог update_mobile" %}-{{place.id}}</a></td>
+      <td>{% trans "Смотреть лог update_mobile" %}-{{place.id}} {% trans "от" %} {{ update_mobile_log_file.modified|print_timestamp }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+      <td><a class="fluid ui button" href="/wiki/rosetta/">{% trans "Редактор переводов" %}</a></td>
+      <td>{% trans "Редактировать переводы на другие языки" %}</td>
+  </tr>
+  <tr>
+      <td><a class="fluid ui button" href="/{{place.slug}}/admin/censored/">{% trans "Цензура" %}</a></td>
+      <td>{% trans "Страница для просмотра всех фото на сервере" %}</td>
+  </tr>
+  <tr>
+      <td><a class="fluid ui button" href="javascript:void(0);" onclick="ajax_start_job('route_line_filler', {{place.id}});return false;">{% trans "Пересчитать нити маршрутов" %}</a></td>
+      <td>{% trans "Пересчитать нити всех маршрутов города" %} <span id="span_lines_calc" class="red"></span></td>
+  </tr>
+  <tr>
+      <td><a class="fluid ui button" href="/{{place.slug}}/admin/load-gtfs/">{% trans "Данные GTFS" %}</a></td>
+      <td>{% trans "Просмотр загруженных данных GTFS" %}</td>
+  </tr>
+</table>
+</td><td><img src="/static/img/city-admin-server.jpg" class="sepic"></td></tr></table>
+
+
+<!-- Modal Диалог -->
+<div id="modal-dialog" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close" id="modalCancel" onclick="modalCancel()">&times;</span>
+    <p id="modal-head">{% trans "Лог" %}</p>
+    <pre id="modal-log"></pre>
+  </div><!-- modal-content -->
+  <script>
+  function modalCancel(){
+      stopTimeout();
+      document.getElementById("modal-dialog").style.display = 'none';
+  }
+  </script>
+</div><!-- modal -->
+{% endif %}{# user.is_superuser #}
+
+<div class="ui header">{% trans "Мониторинг" %}</div>
+<div class="ui divider"></div>
+<div class="ui grid">
+    <div class="column">
+
+<div class="ui two column grid">
+<div class="column">
+<h4 class="ui header">{% trans "Госномера" %}
+<div id="gosnums_length" class="sub header">{{gosnums|length}} {% trans "номеров/сегодня" %}</div>
+</h4></div>
+<div class="column"><a class="ui button" onclick="toggler('.gosnums_table')">{% trans "Показать" %}</a></div></div>
+
+<table id="gosnums_table" class="ui table gosnums_table hidden" >
+<thead  class="ui sticky">
+    <tr>
+        <th>id</th>
+        <th>{% trans "Гос" %}.№</th>
+        <th>{% trans "Гар" %}.№</th>
+        <th>{% trans "Модель" %}</th>
+        <th>{% trans "Создано" %}</th>
+        <th>{% trans "Маршрут" %}</th>
+        <th>{% trans "Создал" %}</th>
+        <th>{% trans "Сигнал" %}</th>
+    </tr></thead>
+    <tbody>
+{% for g in gosnums %}
+<tr>
+{% if user.is_superuser %}
+<td><a href="/admin/vehicle/?uniqueid={{g.uniqueid}}">{{g.uniqueid}}</a></td>
+<td><a href="/admin/vehicle/?gosnum={{g.gosnum}}" {% if g.gosnum == prev_gosnom %}class="red"{% endif %}>{{g.gosnum}}</a></td>
+{% else %}
+<td>{{g.uniqueid}}</td>
+<td>{% if g.gosnum == prev_gosnom %}class="red"{% endif %}>{{g.gosnum}}</td>
+{% endif %}
+<td>{{g.bortnum}}</td>
+<td>{% if g.model %}{{g.model}}{% else %}&nbsp;{% endif %}</td>
+<td>{{g.created_date|date:'d.m.y H:i:s'}}</td>
+<td>{% if g.bus %}<div class="ui label">{{g.bus.name}}</div>{% else %}&nbsp;{% endif %}</td>
+<td>
+    {% if g.user %}
+    <a href="https://bustime.loc/wiki/auth/user/{{ g.user }}/change/" target="_blank">{{ g.user }}</a>
+    {% else %}
+    &nbsp;
+    {% endif %}
+</td>
+<td>{% if g.last_point_update %}{{g.last_point_update|date:'d.m.y H:i:s'}}{% else %}&nbsp;{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table><br/>
+
+
+
+<div class="ui two column grid">
+<div class="column">
+<h4 class="ui header">{% trans "Госномера (авто)" %}
+<div id="gosnums_auto_length" class="sub header">{{gosnums_auto|length}} {% trans "номеров/сегодня" %}</div>
+</h4></div>
+<div class="column"><a class="ui button" onclick="toggler('.gosnums_auto_table')">{% trans "Показать" %}</a></div></div>
+
+<table id="gosnums_auto_table" class="ui table gosnums_auto_table hidden" >
+<thead  class="ui sticky">
+    <tr>
+        <th>id</th>
+        <th>{% trans "Гос" %}.№</th>
+        <th>{% trans "Гар" %}.№</th>
+        <th>{% trans "Модель" %}</th>
+        <th>{% trans "Создано" %}</th>
+        <th>{% trans "Маршрут" %}</th>
+        <th>{% trans "Перевозчик" %}</th>
+        <th>{% trans "Сигнал" %}</th>
+    </tr>
+</thead>
+<tbody>
+{% set prev_gosnom = '' %}
+{% for g in gosnums_auto %}
+{% if g.created_auto %}
+<tr id="{{g.created_date|date:'U.u'}}">
+{% if user.is_superuser %}
+<td><a href="/admin/vehicle/?uniqueid={{g.uniqueid}}">{{g.uniqueid}}</a></td>
+<td><a href="/admin/vehicle/?gosnum={{g.gosnum}}" {% if g.gosnum == prev_gosnom %}class="red"{% endif %}>{{g.gosnum}}</a></td>
+{% else %}
+<td>{{g.uniqueid}}</td>
+<td>{% if g.gosnum == prev_gosnom %}class="red"{% endif %}>{{g.gosnum}}</td>
+{% endif %}
+<td>{{g.bortnum}}</td>
+<td>{% if g.model %}{{g.model}}{% else %}&nbsp;{% endif %}</td>
+<td>{{g.created_date|date:'d.m.y H:i:s'}}</td>
+<td>{% if g.bus %}<div class="ui label">{{g.bus.name}}</div>{% else %}&nbsp;{% endif %}</td>
+<td>{% if g.provider %}{{g.provider.name}}{% else %}&nbsp;{% endif %}</td>
+<td>{% if g.last_point_update %}{{g.last_point_update|date:'d.m.y H:i:s'}}{% else %}&nbsp;{% endif %}</td>
+</tr>
+{% endif %}
+{% set prev_gosnom = g.gosnum %}
+{% endfor %}
+</tbody>
+</table><br/>
+
+
+
+
+<div class="ui two column grid">
+<div class="column">
+<h4 class="ui header">{% trans "Прямая отправка GPS" %}
+<div class="sub header">{{ gps_send_raw_list | length }} {% trans "за последние 24 часа" %}</div>
+</h4></div>
+<div class="column"><a class="ui button" onclick="toggler('.gps_raw_table')">{% trans "Показать" %}</a></div></div>
+
+<table class="ui table gps_raw_table hidden" >
+<thead  class="ui sticky">
+    <tr>
+        <th>id</th>
+        <th>{% trans "точек/час, дата посл." %}</th>
+        <th>{% trans "водитель" %}</th>
+        <th>{% trans "маршрут / номер" %}</th>
+        <th>{% trans "скорость (точность) / остановка" %}</th>
+    </tr></thead>
+{% for v in gps_send_raw_list %}
+<tr>
+<td><a href="/settings/{{v.custom_src}}/">{{v.custom_src}}</a>{% if v.transaction.bonus %}<br/>
+<div class="ui {{v.transaction.bonus.color_code}} label">{{v.transaction.bonus.rname}}</div><br/>{% trans "бонус" %} id={{v.transaction.bonus.id}}{% endif %}
+</td>
+<td>{% if v.history >= 150 %}<div class="ui green label">{{v.history}}</div>{%else%}{{v.history}}{%endif%}
+<br/>{{v.timestamp}}
+</td><td>{% if v.us.driver_ava %}<img src="https://cdn.bustime.loc/static/img/ava/{{v.us.driver_ava}}_s.png" style="height:80px"><br/>{%endif%}
+{% if v.us.name %}{{v.us.name}}{%endif%}</td>
+<td>
+
+<img class="tcolor_example" src="https://cdn.bustime.loc/static/img/theme/modern/{% if v.us %}{% if v.us.tface %}{{v.us.tface}}{% else %}{{v.us.gps_send_bus.ttype_slug}}{%endif%}_{{v.us.tcolor|upper}}{% else %}{{v.bus.ttype_slug}}{%endif%}.png" default_src="https://cdn.bustime.loc/static/img/theme/modern/{% if v.us.tface %}{{v.us.tface}}{% else %}{{v.bus.ttype_slug}}{%endif%}.png" style="width:38px;height:38px;vertical-align:middle">
+
+
+  <a class="ui small button" href="{{v.bus.get_online_url}}">{{v.bus}}</a>
+  <br/>{{v.gosnum}}
+  {% if v.us.gps_send_of %}
+  <br/>id {% trans "ориг" %}: {{v.us.gps_send_of}}
+  {% endif %}
+  </td>
+<td>{{v.speed}} км/ч ({{v.accuracy}}м){% if v.x == 0 %}<br/><div class="ui red label">{% trans "GPS не определен" %}</div>{% endif %}
+{% if v.event %}<br/>{{v.event.busstop_nearest.busstop.name}}{%endif%}
+{% if v.odometer %}
+<br/>{% trans "пробег" %}: {{ v.odometer}} км
+{% endif %}
+</td>
+
+</tr>
+{% endfor %}
+</table><br/>
+
+
+</div></div>
+
+
+<div class="ui divider"></div>
+
+{% if user.is_superuser %}
+<a class="ui button" onclick="ajax_get_supervisor_status({{place.id}})">{% trans "supervisorctl status" %}</a>
+<br/><pre id="super_status" class="super_status hidden" ></pre><br/>
+
+<div class="ui header">{% trans "Для разработчиков" %}</div>
+<table class="ui very basic table"><tr><td>
+<table class="ui table">
+    <tr>
+        <td>
+            <div class="ui selection dropdown">
+            <input type="hidden" name="dev_refresh">
+            <i class="dropdown icon"></i>
+            <div class="default text">{% trans "choose one" %}</div>
+            <div class="menu">
+            <div class="item" data-value="1">dev1 (locman)</div>
+            <div class="item" data-value="2">dev2 (norn)</div>
+            <div class="item" data-value="3">dev3 (ekat)</div>
+            <div class="item" data-value="4">dev4 (skincat)</div>
+            <div class="item" data-value="5">dev5 (afontenla)</div>
+            </div>
+            </div>
+        </td>
+        <td>
+            {% trans "Reset developer's virtual machine state." %}<br/>
+            {% trans "All unsaved data will be lost forever!" %}<br/>
+            <button class="ui small button" onclick="dev_refresh()">{% trans "reset" %}</button>
+        </td>
+    </tr>
+    <tr>
+        <td><a class="fluid ui button" href="/{{place.slug}}/admin/tests_rpc/">{% trans "Тесты RPC" %}</a></td>
+        <td>{% trans "Страница для тестирования некоторых функций" %}</td>
+    </tr>
+    <tr>
+        <td><a class="fluid ui button" href="/{{place.slug}}/admin/turbine_inspector/">{% trans "Turbine inspector" %}</a></td>
+        <td>{% trans "Диагностика обработки данных в турбомельнице" %}</td>
+    </tr>
+
+    <tr>
+        <td><div class="ui input text_message" style="width: 100%;"><input type="text" id="text_message" placeholder="{% trans 'Текст сообщения' %}" value="{% if message_for_all %} {{message_for_all}} {% endif %}"></div></td>
+        <td>{% trans "Сообщение для всех городов" %}<br/>
+            <a class="ui button button_posted" onclick="ajax_message_for_all()">{% trans "Разместить" %}</a>
+            <a class="ui button" onclick="ajax_message_for_all('delete_message')">{% trans "Удалить" %}</a>
+        </td>
+    </tr>
+
+    <tr>
+        <form enctype="multipart/form-data" class="ui form" method="post">{% csrf_token %}
+            <td>
+                {{ form.ar.errors }}
+                <input id="ar" name="ar" type="file" style="width:50%" />
+            </td>
+            <td>
+                {% trans "Обновить тестовый билд приложения" %} #{{adt}}<br/>
+                <button class="ui button" type="submit">{% trans "обновить" %}</button>
+            </td>
+        </form>
+    </tr>
+
+</table>
+</td><td><img src="/static/img/city-admin-developer.jpg" class="sepic"></td></tr></table>
+
+
+<br/>
+<h3 class="ui dividing header">_kitchen <button class="ui labeled icon small button ksound_button"  onclick="ksound_on()">
+  <i class="volume up icon" aria-hidden="true"></i>sound on</button>
+<div class="_kitchen"></div></h3>
+
+<br/>
+<!--<table class="ui table revisions_table " >
+<thead  class="ui sticky">
+    <tr>
+        <th>дата</th>
+        <th>пользователь</th>
+        <th>изменение</th>
+    </tr></thead>
+{% for r in revisions %}
+<tr>
+  <td>{{ r.date_created }}</td>
+  <td>
+      {% if r.user %}
+      <a href="https://bustime.loc/wiki/auth/user/{{ r.user.id }}/change/" target="_blank">{{ r.user }}</a>
+      {% else %}
+      {{ r.user }}
+      {% endif %}
+  </td>
+  <td>{{ r }}</td>
+</tr>
+{% endfor %}
+</table>-->
+
+{% endif %}
+{% endblock %}

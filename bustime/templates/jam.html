@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load cache %}{% load i18n %}{% load l10n %}
+{% block titlee %}Пробки{% endblock %}
+{% block meta_descr %}Пробки{% endblock %}
+
+{% block nav_jam %}active{%endblock%}
+{% block extra_head %}
+<script src="https://cdn.bustime.loc/static/js/jamline-{{city.id}}-{{city.rev}}.js" type="text/javascript"></script>
+<style>
+#lmap {height: 550px;}
+.ui .feed .event .label img {
+    border-radius: unset;
+}
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/jam/">Пробки</a>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">Пробки</h1>
+<br>
+<div class="map"><div id="lmap"></div></div>
+<br/>
+
+
+<script>
+function js_page_extra() {
+    var osm = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 5,
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    var googleSat = L.tileLayer('//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        minZoom: 5,
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+
+    var baseMaps = {
+        "OSM": osm,
+        "Спутник": googleSat
+    };
+
+    map = L.map('lmap', {
+        scrollWheelZoom: true,
+        layers: [osm],
+        center: [{{city.point.y|unlocalize}}, {{city.point.x|unlocalize}}],
+        zoom: 13
+    });
+
+    request_jam({{city.id}});   // bustime-main.js
+}
+</script>
+{% endblock %}

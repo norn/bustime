@@ -1,0 +1,1 @@
+This file created only for collect static correctly work first time

@@ -1,10 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block titlee %}{{bus.ttype_name}} {{bus.name}}, {{bus.city.name}}{% endblock %}
 {% block meta_descr %}{% endblock %}
 
 {%block js%}{% endblock %}
 {%block extra_head%}
-<link rel="canonical" href="http://www.bustime.ru{{bus.get_absolute_url_classic}}">
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{bus.get_absolute_url_classic}}">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{bus.get_absolute_url_classic}}">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{bus.get_absolute_url_classic}}" />
+{% endfor %}
+
 <meta name="robots" content="noindex, follow"/>
 <meta http-equiv="refresh" content="60">
 <style>
@@ -21,15 +29,16 @@
 
 {% block nav_classic %}active{%endblock%}
 {%block content%}
-<div class="ui breadcrumb">
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
   <a class="section" href="/">Главная</a><div class="ui divider"> / </div>
 
-  <a class="section" href="http://www.bustime.ru/{{city.slug}}/">
-  Общественный транспорт в {{city.name_gde}}</a><div class="ui divider"> / </div>
+  <a class="section" href="/{{city.slug}}/">
+  {{city.name}}</a><div class="ui divider"> / </div>
 
-  <a class="section" href="http://www.bustime.ru/{{city.slug}}/classic/">
+  <a class="section" href="/{{city.slug}}/classic/">
   Классическая версия</a><div class="ui divider"> / </div>
-  <!--<a class="section" href="http://www.bustime.ru/{{city.slug}}/classic/#ttype{{bus.ttype}}">{{bus.ttype_names}}</a><div class="ui divider"> / </div>-->
   <div class="active section">{{bus.ttype_name}} {{bus.name}}</div>
 </div>
 <div class="ui divider"></div>
@@ -53,7 +62,8 @@
 <div class="ui two column stackable grid">
 <div class="column">
 
-<h2 class="ui header">{{bus.napr_a}}</h2>
+<h2 class="ui header">{{bus.napr_a}}
+<div class="sub header">{{bus.amount_a}} на линии</div></h2>
 <table class="ui table">
 {%for r in route0%}
 <tr><td>
@@ -62,9 +72,9 @@
 {% endfor %}
 </td><td>{%if r.id in bdata_mode0.0.stops %}{%endif%}{{r.busstop.name}}
 {%if r.id in bdata_mode0.0.stops %}<br/>
-{%if bus.ttype == 0 %}<img src="/static/img/bus_side.png" alt="Автобус">{%endif%}
- {%if bus.ttype == 1 %}<img src="/static/img/side_trolley.png" alt="Троллейбус">{%endif%}
- {%if bus.ttype == 2 %}<img src="/static/img/side_tram.png" alt="Трамвай">{%endif%}
+{%if bus.ttype == 0 %}<img src="https://cdn.bustime.loc/static/img/bus_side.png" alt="Автобус">{%endif%}
+ {%if bus.ttype == 1 %}<img src="https://cdn.bustime.loc/static/img/side_trolley.png" alt="Троллейбус">{%endif%}
+ {%if bus.ttype == 2 %}<img src="https://cdn.bustime.loc/static/img/side_tram.png" alt="Трамвай">{%endif%}
 {%endif%}
 </td></tr>
 {%endfor%}
@@ -73,7 +83,8 @@
 </div>
 
 <div class="column">
-<h2 class="ui header">{{bus.napr_b}}</h2>
+<h2 class="ui header">{{bus.napr_b}}
+<div class="sub header">{{bus.amount_b}} на линии</div></h2>
 <table class="ui table">
 {%for r in route1%}
 <tr><td>
@@ -82,9 +93,9 @@
 {% endfor %}
 </td><td>{%if r.id in bdata_mode0.1.stops %}{%endif%}{{r.busstop.name}}
 {%if r.id in bdata_mode0.1.stops %}<br/>
-{%if bus.ttype == 0 %}<img src="/static/img/bus_side.png" alt="Автобус">{%endif%}
- {%if bus.ttype == 1 %}<img src="/static/img/side_trolley.png" alt="Троллейбус">{%endif%}
- {%if bus.ttype == 2 %}<img src="/static/img/side_tram.png" alt="Трамвай">{%endif%}
+{%if bus.ttype == 0 %}<img src="https://cdn.bustime.loc/static/img/bus_side.png" alt="Автобус">{%endif%}
+ {%if bus.ttype == 1 %}<img src="https://cdn.bustime.loc/static/img/side_trolley.png" alt="Троллейбус">{%endif%}
+ {%if bus.ttype == 2 %}<img src="https://cdn.bustime.loc/static/img/side_tram.png" alt="Трамвай">{%endif%}
 {%endif%}
 </td></tr>
 {%endfor%}

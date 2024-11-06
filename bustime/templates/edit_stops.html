@@ -1,0 +1,58 @@
+{% extends "base.html" %}{% load cache %}
+
+{% block extra_head %}
+<script src="https://cdn.bustime.loc/static/js/Chart.min.js"></script>
+<script>
+function js_page_extra() {
+  //   {context: '#example1'}
+}
+
+function toggler(v) {
+  $(v).toggleClass('hidden');
+  restick();
+}
+function restick() {
+    $('.ui.sticky').sticky({silent:true});
+}
+</script>
+{% endblock %}
+
+{% block nav_reseller %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">Администратор</div>
+</div>
+<div class="ui divider"></div>
+
+
+<div class="ui grid">
+    <div class="column">
+<form action="./" method="post">{% csrf_token %}
+
+<table class="ui table">
+  <thead><tr>
+    <th>номер</th>
+    <th>id</th>
+    <th>название</th>
+  </tr></thead>
+  <tbody>
+  {% for vstop in vstops %}
+  <tr><td>{{ forloop.counter }}</td>
+  <td>{{vstop.id}}</td>
+      <td>{{vstop.name}}</td>
+    </tr>{% endfor %}
+  </tbody>
+  </table>
+</form>
+</div>
+</div>
+<br/><br/>
+
+<script>
+
+</script>
+
+
+{% endblock %}

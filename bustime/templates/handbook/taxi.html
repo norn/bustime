@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Такси" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/taxi.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Такси — это частное или коммерческое транспортное средство с водителем, которое предоставляет услуги по перевозке пассажиров по требованию за плату. Пассажиры могут вызвать такси для поездок в любое нужное им место, и оплата обычно зависит от расстояния и времени поездки." %}</p>
+</div>
+<br/><br/>
+{% endblock %}

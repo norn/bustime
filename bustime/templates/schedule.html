@@ -1,49 +1,45 @@
-{% extends "base.html" %}{% load cache %}
-{% block titlee %}Расписание общественного транспорта в {{city.name_gde}}{% endblock %}
-{% block meta_descr %}Все маршруты городского транспорта в {{city.name_gde}}. Подробная информация по остановкам.{% endblock %}
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{{place.name}} - {% trans "Расписание" %}{% endblock %}
+{% block meta_descr %}{% trans "Все маршруты городского транспорта в" %} {{place.name}}. {% trans "Подробная информация по остановкам" %}.{% endblock %}
 
 {% block nav_schedule %}active{%endblock%}
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url}}timetable/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url}}timetable/">
+{% get_available_languages as LANGUAGES %}
+{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url}}timetable/" />
+{% endfor %}
+{% endblock %}
+
 {% block content %}
 
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <a class="section"  href="http://www.bustime.ru/{{city.slug}}/">
-	Общественный транспорт в {{city.name_gde}}</a>
-	<div class="ui divider"> / </div>
-  <div class="active section">Расписание</div>
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section"  href="/{{place.slug}}/">
+	{{place.name}}</a>
+	 <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Расписание" %}</div>
 </div>
 <div class="ui divider"></div>
-
-<h1 class="ui header">
-	Расписание маршрутов общественного транспорта в Красноярске
-	<div class="sub header">Для просмотра местонахождения транспорта в реальном времени перейдите на <a href="{{us.city.get_absolute_url}}">страницу онлайн отслеживания</a></div>
-</h1>
-
-<!-- <div class="ui top attached tabular menu">
-  {%for b in buses%}
-  {% ifchanged b.ttype %}
-  <a class="item {%if forloop.counter == 1%}active{%endif%}">
-    {{b.ttype_name}}
-  </a>
-  {% endifchanged %}
-  {%endfor%}
-</div> -->
-
-<div class="ui segments">
 {%for b in buses%}
-	{% ifchanged b.ttype %}
-	{%if forloop.counter != 1%}</div>{%endif%}
-	<div class="ui segment type{{b.ttype}}">
-	<h2 class="ui header">{{b.ttype_names}}</h2>
-	{% endifchanged %}
 
-<a class="busnumber_s t{{b.ttype}}_coloramount1" bname="{{b}}" btype="{{b.ttype}}" bus_id="{{b.id}}" href="http://www.bustime.ru{{b.get_absolute_url_schedule}}" title="{{b.ttype_name}} {{b.name}}">{{b}}</a>
+{% ifchanged b.ttype %}
+<h2 class="ui header type{{b.ttype}}">{{b.ttype_names}}, <a href="{{place.get_absolute_url}}#{{b.ttype_slug}}">{{b.gcnt}} {% trans "онлайн" %}</a></h2>
+{% endifchanged %}
 
-
-
+<a class="busnumber_s t{{b.ttype}}_{% if b.ba_sum < 1 %}coloramount0{% elif b.ba_sum < 3 %}coloramount1{% else %}coloramount2{% endif %} {% if b.name|length > 17 %}triple{% elif b.name|length > 7%}double{%endif%}" href="/{{place.slug}}/{{b.slug}}/" title="{{b.ttype_name}} {{b.name}}">{{b.name|truncatechars:27}}</a>
 {%endfor%}
-</div></div>
-
+<br/><br/>
+    <script>
+    function js_page_extra() {
+        $('.ui.dropdown').dropdown();
+    }
+    </script>
 
 {% endblock %}

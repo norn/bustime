@@ -1,0 +1,37 @@
+{% extends "base.html" %}{% load l10n %}
+{% block titlee %}Все ТС {{bus.city.name_o}} на карте{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{%block extra_head%}
+<script>{% include "_js_init.html" %}</script>
+<script src="https://cdn.bustime.loc/static/js/city-{{city.id}}-{{city.rev}}.js"></script>
+<script src="https://cdn.bustime.loc/static/js/uevents-on-map.js?v=3" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 550px;
+}
+.vehicle_info td {
+    border-bottom:1px solid lightgray;
+}
+
+</style>
+{% endblock %}
+
+{% block nav_route %}active{%endblock%}
+{%block content%}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/">Главная</a><div class="ui divider"> / </div>
+
+  <a class="section" href="http://bustime.loc/{{city.slug}}/">
+  {{city.name}}</a><div class="ui divider"> / </div>
+  <div class="active section">Все uevents</div>
+</div>
+<div class="ui divider"></div>
+<div class="ui center aligned grid">
+   <div class="column"><div id="lmap"></div></div>
+</div>
+
+<script>uevents = {{uevents|safe}};</script>
+{% endblock %}

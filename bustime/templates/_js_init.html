@@ -1,18 +1,125 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+var language = "{{LANGUAGE_CODE}}";
+var trans_text_map = "{% trans "Карта" %}";
+var trans_text_stops = "{% trans "Остановки" %}";
+var trans_text_stop = "{% trans "Остановка" %}";
+var trans_text_transport = "{% trans "Транспорт" %}";
+var trans_text_jam = "{% trans "Пробки" %}";
+var trans_text_passenger = "{% trans "Пассажиры" %}";
+var trans_text_km = "{% trans "км" %}";
+var trans_text_sleep = "{% trans "на перерыве" %}";
+var trans_text_kmh = "{% trans "км/ч" %}";
+var trans_ttype_name = {
+  0: "{% trans "Автобус" %}",
+  1: "{% trans "Троллейбус" %}",
+  2: "{% trans "Трамвай" %}",
+  3: "{% trans "Маршрутное такси" %}",
+  4: "{% trans "Водный автобус" %}",
+  5: "{% trans "Междугородний" %}",
+  6: "{% trans "Поезд" %}",
+  7: "{% trans "Метро" %}",
+  8: "{% trans "Попутка" %}",
+};
+var trans_ttype_slug = {
+  0: "bus",
+  1: "trolleybus",
+  2: "tramway",
+  3: "bus-taxi",
+  4: "water",
+  5: "bus-intercity",
+  6: "train",
+  7: "metro",
+  8: "carpool",
+};
+var trans_text_js_nosync = "{% trans "Необходимо обновить базу JS в панеле администратора" %}";
+var trans_text_update_error = "{% trans "Ошибка обновления, сервер недоступен" %}";
+var trans_text_city_not_found = "{% trans "Город не найден" %}";
+var trans_text_recognition = "{% trans "Распознавание голоса работает только на Android и десктопах с Chrome" %}";
+var trans_text_call_get = "{% trans "Принять видео звонок?" %}";
+var trans_text_no_vote = "{% trans "Вы не можете голосовать в первый день" %}";
+var trans_text_gps_overwrite = "{% trans "Ваши данные будут перезаписывать этот автобус" %}";
+var trans_text_m1 = "{% trans "Оценка без сообщения не принимается" %}";
+var trans_text_m2 = "{% trans "Сообщение без оценки не принимается" %}";
+var trans_text_m3 = "{% trans "Напишите чтобы другие поняли причину оценки" %}";
+var trans_text_m4 = "{% trans "Извините, гос.номер не определен. Оценка не возможна." %}";
+var trans_text_m5 = "{% trans "Спасибо за отзыв!" %}";
+var trans_text_recog = "{% trans "Слушаю команду" %}<br/>{% trans "пример" %}:{% trans "автобус 11" %} <br/>{% trans "пример" %}:{% trans "трамвай номер пять" %}";
+var trans_text_recog_start = "{% trans "Слушаю, начинайте говорить..." %}";
+var trans_text_recog_fail = "{% trans "Не распознано" %}";
+var trans_text_not_found = "{% trans "не найден" %}";
+var trans_text_call = "{% trans "Введите идентификатор для звонка" %}";
+var trans_text_adblock = "{% trans "У вас установлена блокировка рекламы. Чтобы отключить рекламу приобретите подписку." %}";
+var trans_text_no_cam = "{% trans "Доступ к камере невозможен" %}";
+var trans_text_show_map = "{% trans "Показать карту" %}";
+var trans_text_hide_map = "{% trans "Скрыть карту" %}";
+var trans_text_online = "{% trans "Онлайн" %}";
+var trans_text_stops = "{% trans "Остановки" %}";
+var trans_text_rlines = "{% trans "Линии маршрута" %}";
+var trans_text_word_to_number = [
+"{% trans "ноль" %}",
+"{% trans "один" %}",
+"{% trans "два" %}",
+"{% trans "три" %}",
+"{% trans "четыре" %}",
+"{% trans "пять" %}",
+"{% trans "шесть" %}",
+"{% trans "семь" %}",
+"{% trans "восемь" %}",
+"{% trans "девять" %}"];
+var trans_text_dst_change = "{% trans "назначение изменено" %}";
+var trans_text_src_change = "{% trans "отправление изменено" %}";
+var trans_text_arriving = "{% trans "Ваш автобус приближается!" %}";
+var trans_text_one_plus = "{% trans "Плюс один на маршруте!" %}";
+var trans_text_one_minus = "{% trans "Минус один на маршруте..." %}";
+var trans_text_in_dir_forward = "{% trans "в прямом направлении маршрута" %}";
+var trans_text_in_dir_reverse = "{% trans "в обратном направлении маршрута" %}";
+
+var us_user = {% if us.user or user.is_authenticated %}1{%else%}0{%endif%};
 var us_sound = {% if us.sound %}1{%else%}0{%endif%};
 var us_sound_plusone = {% if us.sound_plusone %}1{%else%}0{%endif%};
-var us_mode = {{us.mode}};
+var us_plusone = {% if us.attrs.plusone or not 'plusone' in us.attrs %}1{%else%}0{%endif%};
+var us_live_indicator = {% if us.attrs.live_indicator or not 'live_indicator' in us.attrs %}1{%else%}0{%endif%};
+var us_bigsticker = {% if us.attrs.bigsticker %}1{%else%}0{%endif%};
+var us_mode = {{us.mode|default:1}};
+{% if template_name == "show.html" or template_name == "demo_show.html" %}us_mode=7;{% endif %}
+{% if us.city %}
 var us_city = {{us.city.id}};
-var us_gps_off = {% if us.gps_off %}1{%else%}0{%endif%};
-var us_premium = {% if us.premium %}1{%else%}0{%endif%};
-var us_device = "{% if device %}{{device}}{%endif%}";
-var us_theme_stripes = {% if us.theme_stripes %}1{%else%}0{%endif%};
+var us_city_slug = "{{us.city.slug}}";
+var us_city_rev = {{us.city.rev}};
+var us_city_taxi = {% if us.city.car_passing %}1{% else %}0{% endif %};
+var us_city_timediffk = {{us.city.timediffk}};
+var us_city_transport_count = {% if us.city.transport_count %}{{us.city.transport_count}}{% else %}0{% endif %};
 var US_CITY_POINT_X = {{us.city.point.x|stringformat:"f"}};
 var US_CITY_POINT_Y = {{us.city.point.y|stringformat:"f"}};
-var map, myCollection;
+{% elif us.place %}
+var us_city = {{us.place.id}};
+var us_city_slug = "{{us.place.slug}}";
+var us_city_rev = {{us.place.rev}};
+var us_city_taxi = 0;
+var us_city_timediffk = 0;
+var us_city_transport_count = {{us.place.buses_count|default:0}};
+var US_CITY_POINT_X = {{us.place.point.x|stringformat:"f"}};
+var US_CITY_POINT_Y = {{us.place.point.y|stringformat:"f"}};
+{% endif %}
+var mode_selected = {% if us.city.default_ttype %}{{us.city.default_ttype}}{%else%}0{%endif%};
+var matrix_show = {% if us.matrix_show %}1{%else%}0{%endif%};
+var us_gps_off = {% if us.gps_off %}1{%else%}0{%endif%};
+var us_voice = {% if us.voice %}1{%else%}0{%endif%};
+var us_gps_send = {% if us.gps_send %}1{%else%}0{%endif%};
+var us_premium = {% if us.premium %}1{%else%}0{%endif%};
+var transaction_key = "{{transaction.key}}";
+var transaction_vip = {% if transaction.vip or us.id == 18967379 %}1{%else%}0{%endif%};
+var us_edit_mode = {% if us.edit_mode %}1{% else %}0{%endif%};
+var us_device = "{% if device %}{{device}}{%endif%}";
+var us_theme_stripes = {% if us.theme_stripes %}1{%else%}0{%endif%};
+var us_gosnum = "{{ us.gosnum }}";
+var map, myCollection, busstop_collection, passenger_collection, jamcollection;
 var busfavor = [{%for b in busfavor%}{{b.id}}{% if not forloop.last %},{%endif%}{%endfor%}];
 var vk_like_pro = {% if vk_like_pro %}1{%else%}0{%endif%};
+var vk_show_like = 0;
 var us_theme = {{us.theme}};
 var radar_mode = 0;
+var ads_show = {% if ads_show %}1{%else%}0{%endif%};
 var city_monitor_mode = 0;
 var bus_design_map = {};
 var us_pro_demo = {% if us.pro_demo %}1{%else%}0{%endif%};
@@ -21,20 +128,48 @@ var us_id = {{us.id}};
 var us_multi_all = {% if us.multi_all %}1{%else%}0{%endif%};
 var us_map_show = {% if us.map_show %}1{%else%}0{%endif%};
 var us_speed_show = {% if us.speed_show %}1{%else%}0{%endif%};
+var us_radio = {% if transaction.vip %}1{%else%}0{%endif%};
+var us_dark_theme = "{{us.attrs.dark_theme}}";
 var lucky_day = {% if luck %}1{%else%}0{%endif%};
 var timer_countable = 1;
 var reg_today = {% if us.ctime.date == now.date %}1{%else%}0{%endif%};
+var today_date = "{{us.city.now|date:"Y-m-d"}}";
+var us_days_on = {{us.days_on}};
+var first_time = {% if first_time %}1{%else%}0{%endif%};
+var gps_send_enough = {% if gps_send_enough %}1{%else%}0{%endif%};
+var us_show_gosnum = 1; //{% if us.show_gosnum %}1{%else%}0{%endif%};
+var us_sound_plus_one = {% if us.sound_plus_one %}1{%else%}0{%endif%};
+var p2p_video = 0;
+var PEER;
+var io_port = {% if io_port %}{{ io_port }}{% else %}null{% endif %}
+
 if (!window.console) console = {log: function() {}};
 {% for i in specialicons %}bus_design_map['{{i.gosnum}}'] = '{{i.img}}';{% endfor %}
 {% if special_theme == "9may" %}
-bus_design_map['all'] = '/static/img/side_tank.png';
-bus_design_map['all_train'] = '/static/img/side_bronepoezd.png';
-bus_design_map['special'] = '/static/img/side_il2.png';
+bus_design_map['all'] = 'https://cdn.bustime.loc/static/img/side_tank.png';
+bus_design_map['all_train'] = 'https://cdn.bustime.loc/static/img/side_bronepoezd.png';
+bus_design_map['special'] = 'https://cdn.bustime.loc/static/img/side_il2.png';
 {% endif %}
+var holiday_flag = "{{holiday}}";
+
+var test_mode = {% if test %}true{% else %}false{% endif %};  {# см. bustime.views.arender() #}
+var taxiuser = {% if request.session.taxiuser %}JSON.parse("{{request.session.taxiuser|escapejs}}"){% else %}null{% endif %};
+var is_main_page = {{ main_page|yesno:"true,false"|safe }};
+var to_send = {};   // last sended position
+
 {% if us.theme != 0 %}
 function load_extra() {
-  {% if us.theme == 2 %}$.getScript("/static/js/theme-2.js");{% endif %}
-  {% if us.theme == 10 %}$.getScript("/static/js/theme-10.js");{% endif %}
-  {% if us.theme == 11 %}$.getScript("/static/js/theme-11.js");{% endif %}
+  {% if us.theme == 2 %}$.getScript("https://cdn.bustime.loc/static/js/theme-2.js");{% endif %}
+  {% if us.theme == 10 %}$.getScript("https://cdn.bustime.loc/static/js/theme-10.js");{% endif %}
+  {% if us.theme == 11 %}$.getScript("https://cdn.bustime.loc/static/js/theme-11.js");{% endif %}
 }
 {%else%}function load_extra() {}{% endif %}
+
+var trans_text_price = "{% trans "Цена проезда" %}";
+var trans_text_provider_edit = "{% trans "добавить информацию о перевозчике" %}";
+
+var trans_idle_message_load = "{% trans "Загрузка данных через" %}";
+var trans_update_message = "{% trans "Данные обновлены" %}";
+var trans_post_update_message_processing = "{% trans "Обработано событий:" %}";
+var trans_post_turbine_update_message_provid = "{% trans "Получено от поставщика:" %}";
+var trans_post_turbine_update_message_for = "{% trans "за" %}";

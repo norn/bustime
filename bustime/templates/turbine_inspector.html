@@ -1,0 +1,281 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}{% load l10n %}
+
+{% block extra_head %}
+<style>
+.json_container {
+    width:100%;
+    overflow:auto;
+    border:1px solid gray;
+    text-align: left;
+    height: 250px;
+}
+#lmap {
+    height: 550px;
+}
+.arrows-down {
+    text-align: center;
+    font-size: 2em;
+    margin: 10px 0 0 10px;
+    color: #644;
+}
+
+</style>
+{% endblock %}
+
+{% block nav_main %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/admin/">Администратор</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">Turbine inspector</div>
+</div>
+<div class="ui divider"></div>
+<div class="ui stackable menu">
+        <div class="ui item">
+            <div class="ui huge icon button playb" onclick="play_pause()">
+                <i class="fa fa-play"></i>
+            </div>
+        </div>
+        <div class="ui item center aligned grid">
+            <div>bus_id</div>
+            <select class="ui selection compact dropdown sel_lang_ftr" name="bus_id">
+                {% for b in bus_ids %}
+                <option value="{{b}}">{{b}}</option>
+                {% endfor %}
+            </select>    
+        </div>
+        <div class="ui item">
+            <div id="turbine_id"></div>
+        </div>
+        <div class="ui item">
+            <div id="search-field" class="ui input"><input type="text" placeholder="Search..."></div>
+        </div>
+</div>    
+
+
+<div class="ui grid" style="margin-top: 40px;">
+    <div class="sixteen wide column center aligned"><span id="turbo_xxx">turbo_XXX</span>
+        <div id="input" class="json_container" style=""></div>
+        <div class="arrows-down"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></div>
+    </div>
+        
+    <div class="sixteen wide column center aligned">turbine_results
+        <div id="results" class="json_container" style=""></div>
+        <div class="ui grid">
+            <div class="eight wide column">
+                <div class="arrows-down"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></div>
+            </div>
+            <div class="eight wide column">
+                <div class="arrows-down"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="eight wide column">
+        <div style="text-align: center;">REDIS</div>
+        <div id="redis" class="json_container" style=""></div>
+    </div>
+        
+    <div class="eight wide column">
+        <div style="text-align: center;">soket IO</div>
+        <div id="socket_io" class="json_container" style=""></div>
+        <div class="arrows-down"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></div>
+    </div>
+    <div class="sixteen wide column">
+        <div class="map"><div id="lmap"></div></div>
+    </div>
+</div>
+
+<div class="ui two column grid">
+    <div class="column">
+        <div class="column" style="height: 120px;"></div>
+        <div class="column">sync adapter
+            <div id="sync_adapter" class="json_container" style=""></div>
+            <div class="arrows-down"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></div>
+        </div>
+
+        <div class="column">clean_up
+            <div id="clean_up" class="json_container" style=""></div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="column">busamounts
+            <div id="busamounts" class="json_container" style=""></div>
+        </div>
+        <div class="column"> mode1
+            <div id="mode1" class="json_container" style=""></div>
+        </div>
+
+        <div class="column">mode3</div>
+            <div id="mode3" class="json_container" style=""></div>
+    </div>
+</div>
+
+<div class="column">inspector</div>
+<div id="inspector" class="json_container" style=""></div>
+
+<script>
+var bus_id_old, bus_id, socket;
+var place_id = {{place.id}};
+
+
+function play_pause() {
+    if (socket.connected) {
+        socket.disconnect();
+    } else {
+        socket = io();
+        websconnect_extra();
+    }
+}
+
+function filterContent() {
+    $('.json_container > p').show()
+    searchValue = $('#search-field input').val();
+    if (searchValue !== '' && searchValue !== undefined && searchValue !== null) {
+        $(`.json_container > p:not(:contains(${searchValue}))`).hide()
+    }
+}
+
+function refresh_play_pause() {
+    if (socket.connected) {
+        $('.playb').html('<i class="fa fa-pause"></i>')
+    } else {
+        $(".playb").html('<i class="fa fa-play"></i>');
+    }
+}
+
+function router_extra(data){
+
+    if (data['busamounts']) {
+        var busamounts = JSON.stringify(data['busamounts'], null, 4);
+        $("#busamounts").append('<pre>' + busamounts + '</pre>');
+    }
+
+    else if (data['bdata_mode11']) {
+        var mode1 = JSON.stringify(data['bdata_mode11'], null, 4).replace(/\[\s+/g, '[').replace(/\{\s+/g, '{').replace(/\s+\]/g, ']').replace(/\s+\}/g, '}').replace(/\n\s+"/g, ' "');;
+        $("#mode1").append('<pre>' + mode1 + '</pre>');
+    }
+    // заполняем приходящими данными соответствующие блоки на странице
+    else if (data['turbine_inspector']) {
+          let t = data['turbine_inspector'];
+          console.log('turbine_inspector', t.widget, t.text.substring(0, 30));
+          var now = new Date();
+          var hours = now.getHours();
+          var minutes = now.getMinutes();
+          var seconds = now.getSeconds();
+          var timeString = hours + ':' + minutes + ':' + seconds;
+
+          $("#" + t.widget).append('<p class="'+t.uid+'">'+t.text+'</p>');
+          var div = $("#" + t.widget);
+          div.scrollTop(div.prop("scrollHeight"));
+
+          // highlight new data
+          $("." + t.uid).addClass('bhlight')
+          setTimeout(function() {
+            $('.'+t.uid).removeClass('bhlight');
+          }, 400);
+    }
+    else {
+        console.log("router:", data);
+    }
+}
+
+function websconnect_extra() {
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+
+    socket.on('connect', function() {
+        var d = new Date();
+        console.log(d + ": Socket connected");
+        // socket.emit('authentication', {username: us_id, password: "", os:"web"});
+        socket.emit('join', "ru.bustime.us__" + us_id);
+        socket.emit('join', "bustime.turbine_inspector");
+        socket.emit('join', "ru.bustime.bus_amounts__{{place.id}}");
+        bus_id_old = $('[name="bus_id"]').val();
+        update_socket(bus_id_old); // при загрузке страницы вызываем ф-б обновления данных с выбранным по умолчанию ТС
+        refresh_play_pause();
+    });
+
+    socket.on("*", function(event, data) {
+        router_extra(data);
+        filterContent();
+    });
+
+    socket.on('disconnect', function() {
+        console.log("Disconnect");
+        refresh_play_pause();
+    });
+    refresh_play_pause();
+}
+
+function js_page_extra() {
+    socket = io();
+    websconnect_extra();
+    var osm = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 5,
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    var googleSat = L.tileLayer('//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        minZoom: 5,
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+
+    filterContent();
+
+    var baseMaps = {
+        "OSM": osm,
+        "Спутник": googleSat
+    };
+
+    map = L.map('lmap', {
+        scrollWheelZoom: true,
+        layers: [osm],
+        center: [{{place.point.y|unlocalize}}, {{place.point.x|unlocalize}}],
+        zoom: 13
+    });
+
+    $('.ui.dropdown').dropdown();
+    $('[name="bus_id"]').change(function(){ // если выбрали другое ТС
+        bus_id = $(this).prop("value");
+        update_socket(bus_id); // то вызываем ф-ю обновления для него
+    });
+}
+
+function update_socket(bus_id) { // ф-я обновления данных о конкретном ТС
+    console.log("bus_id_old", bus_id_old);
+    console.log("bus_id", bus_id);
+
+    $('.json_container').empty(); // очищаем страницу
+    $('#turbo_xxx').html("turbo_" +bus_id);
+    if (socket) {
+        if (bus_id_old) { // отписываемся от предыдущего ТС
+            socket.emit('leave', "ru.bustime.bus_mode10__" + bus_id_old);
+            socket.emit('leave', "ru.bustime.bus_mode11__" + bus_id_old);
+            socket.emit('leave', "bustime.turbine_inspector__" + bus_id_old);
+        }
+        // подписываемся на выбранное ТС
+        socket.emit('join', "ru.bustime.bus_mode10__" + bus_id);
+        socket.emit('join', "ru.bustime.bus_mode11__" + bus_id);
+        socket.emit('join', "bustime.turbine_inspector__" + bus_id);
+        {% if turbomill_count %}
+            $('#turbine_id').html(`Turbomill: ${bus_id % {{turbomill_count}}}`);
+        {% endif %}
+    }
+
+    bus_id_old = bus_id;
+}
+
+</script>
+{% endblock %}

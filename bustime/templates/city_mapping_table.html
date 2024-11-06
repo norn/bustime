@@ -1,0 +1,155 @@
+{% extends "base.html" %}{% load cache %}{% load timetags %}{% load index %}{% load i18n %}
+
+{% block nav_city_admin %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/admin/">{% trans "Диспетчер" %}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Таблица соответствия" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<script>
+var city_id = {{city.id}};
+var us_id={{us.id}};
+</script>
+<script src="https://cdn.bustime.loc/static/js/city_mapping_table.js"></script>
+<style type="text/css">
+.myselect {
+    background: transparent;
+    display: block;
+    width: 80%;
+    border: 1px solid #E0E1E2;
+    border-radius: 3px;
+    color: #32353a;
+    font-family: 16/Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: normal;
+    padding: 7px 10px 7px 10px;
+    height: 36px;
+    vertical-align: top;
+    outline: 0;
+    white-space: nowrap;
+}
+.myselect:disabled {
+    color: #CCCCCC;
+}
+.error, .error td {
+    background-color: #FF6666;
+}
+
+</style>
+
+<form action="" method="post" autocomplete="off">{% csrf_token %}
+<div class="ui two column grid">
+    <div class="left aligned column">
+        <button class="ui icon labeled red button clear" type="button"
+            {% if edit_level < 1 %} disabled="disabled"{% endif %}>
+            <i class="circle icon"></i>{% trans "очистить все" %}
+        </button>
+    </div>
+    <div class="right aligned column">
+        {% if edit_level > 0 %}
+        <a class="ui button" href="/wiki/logout/?next=/{{city.slug}}/admin/mapping-table/">{% trans "Выход" %}</a>
+        {% else %}
+        <a class="ui button" href="/wiki/login/?next=/{{city.slug}}/admin/mapping-table/">{% trans "Вход" %}</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="ui grid">
+    <div class="column">
+        <table class="ui sortable small celled table" id="mapping_table">
+        <thead>
+            <tr>
+                <th>{% trans "№ п/п" %}</th>
+                <th>{% trans "идентификатор" %}</th>
+                <th>{% trans "гос. номер" %}</th>
+                <th>{% trans "маршрут" %}</th>
+                <th>{% trans "последняя активность" %}</th>
+                <th>{% trans "управление" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for m in mapping %}
+        <tr id="{{m.id}}_row">
+            <td id="{{m.id}}_col" data-sort-value="{{forloop.counter}}">{{forloop.counter}}</td>
+            <td data-sort-value="{{m.xeno_id}}">
+                <div class="ui input"> <!--id машины-->
+                    <input type="text"
+                        id="{{m.id}}-xeno_id" name="{{m.id}}-xeno_id"
+                        value="{{m.xeno_id}}" maxlength="16"
+                        {% if edit_level < 2 %}readonly{% endif %}>
+                </div>
+            </td>
+            <td data-sort-value="{{m.gosnum}}">
+                <div class="ui input"> <!--Гос№ машины-->
+                    <input type="text"
+                        id="{{m.id}}-gosnum" name="{{m.id}}-gosnum"
+                        value="{{m.gosnum}}" maxlength="12"
+                        style="text-transform: uppercase;"
+                        {% if edit_level < 2 %}readonly{% endif %}>
+                </div>
+
+            </td>
+            <td> <!-- маршрут -->
+                <!--class="ui search dropdown"--><!--перестаёт реагировать на enabled/disabled, настроен class="myselect"-->
+                <select id="{{m.id}}-bus_id" name="{{m.id}}-bus_id" class="ui search dropdown"
+                    {% if edit_level < 1 %} disabled="disabled"{% endif %}>
+                  <option value="0" {% if m.bus == None %}selected="selected"{% endif %}>{% trans "Не установлен" %}</option>
+                  {% for b in buses %}
+                  <option value="{{b.id}}" {% if b == m.bus %}selected="selected"{% endif %}>{{b}}</option>
+                  {% endfor %}
+                </select>
+            </td>
+            <td data-sort-value="{{m.mtime}}">
+                {% if m.mtime %}
+                <div class="ui label single line">
+                    <i class="time icon"></i> {{ m.mtime|date:"Y-m-d H:i:s" }}
+                </div>
+                {% endif %}
+            </td>
+            <td style="text-align:right">
+                <button class="ui icon button" id="{{m.id}}-delete" type="button" data-tooltip="Удалить"
+                    {% if edit_level < 2 %} disabled="disabled"{% endif %}>
+                    <i class="trash icon"></i>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div> {# column #}
+</div> {# grid #}
+
+<div class="ui two column grid">
+    <div class="left aligned column">
+        <button class="ui icon labeled button" type="button" name="add" value="1"
+            {% if edit_level < 2 %} disabled="disabled"{% endif %}>
+            <i class="plus icon"></i>{% trans "Добавить" %}
+        </button>
+    </div>
+    <div class="right aligned column">
+        <!--
+        <button class="ui icon labeled red button" type="submit" name="save" value="1">
+            <i class="save icon"></i>Сохранить
+        </button>
+        -->
+    </div>
+</div>
+</form>
+{% endblock %}
+
+{% block js_extra %}
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://semantic-ui.com/javascript/library/tablesort.js"></script>
+<script>
+    $('table').tablesort()
+</script>
+{% endblock %}
+

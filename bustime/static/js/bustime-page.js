@@ -1,25 +1,26 @@
 document_ready = function() {
-    var FastClick = require('fastclick');
-    FastClick.attach(document.body);
+    if (window.screen.width > us_city_transport_count * 100) {
+        for(var i=0;i<10; i++) {
+            // возвращает размер шрифта в норму если экран широкий
+            let t = $(".modec_"+i);
+            if(t){
+                t.removeClass("xsfont");
+            }
+        }
+    }
 
-    //$(".launch").click(function() {
-    //    $('.ui.sidebar').sidebar('toggle');
-    //});
+    if (typeof(js_page_extra) === 'function') {
+      js_page_extra();
+    }
 
-    VK.init({
-        apiId: 3767256,
-        onlyWidgets: true
-    });
+    var cp = Cookies.get('cookie_policy');
+    if (cp === undefined) {
+        $(".cookie_policy").removeClass("hidden");
+    }
+};   // document_ready = function()
 
-    VK.Widgets.Like("vk_like", {
-        type: "button",
-        pageUrl: "http://www.bustime.ru"
-    });
 
-    // VK.Widgets.Like("vk_like_tablet", {
-    //     type: "button",
-    //     pageUrl: "http://www.bustime.ru"
-    // });
+function cookie_policy_agree() {
+    Cookies.set('cookie_policy', "1", { expires: 3650 });
+    $(".cookie_policy").addClass("hidden");
 }
-
-

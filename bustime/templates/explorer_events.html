@@ -1,0 +1,61 @@
+{% extends "base.html" %}{% load l10n %}{% load i18n %}
+
+{% block extra_head %}
+<script src="https://cdn.bustime.loc/static/js/status_offline.js" type="text/javascript"></script>
+ <script type="text/javascript">
+var uevents = {
+{% for k,e in events.items %}
+ "{{k}}": {id: "{{k}}", bid:"{{e.bus.id}}", gosnum:"{% if e.gosnum %}{{e.gosnum}}{%endif%}", x:{{e.x|stringformat:"f"}}, y:{{e.y|stringformat:"f"}} },
+{% endfor %} };
+
+function show_glonassd(id) {
+    let fid = 'glonassd_' + id;
+    $("#" + fid).toggle();
+}
+</script>
+  <style>
+  .lmap {
+    width:300px;
+    height:300px;
+  } .bname {
+    font-size:32px;
+    /*font-weight: bold;*/
+  }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/admin/">Администратор</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">Интроспекция {{ttype}}</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui header">События <div class="ui sub header">{{events|length}}</div></div>
+
+{% for k,v in events.items %}
+<div class="ui compact message">
+  <div class="header">
+      <table style="width: 100%; border-size: 0px; border-collapse: collapse">
+          <tr>
+              <td>{{k}} / {{v.bus_.ttype_name}} {{v.bus_.name}}</td>
+              <td style="text-align: right">{%if v.glonassd %}<a href="javascript:show_glonassd('{{k}}')">Glonassd</a>{% endif %}</td>
+          </tr>
+      </table>
+  </div>
+  {%if v.glonassd %}
+  <div id="glonassd_{{k}}" class="glonassd hidden">
+    <pre>{{v.glonassd}}</pre>
+  </div>
+  {% endif %}
+  <p><pre>{{v.json}}</pre></p>
+  <div id="lmap_{{k}}" class="lmap hidden"></div><a href="javascript:draw_minimap('{{k}}')">Карта</a>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,96 @@
+/*******************************
+             Item
+*******************************/
+
+/* -------------------
+         View
+-------------------- */
+
+/* Item */
+@background: #fff;
+@borderRadius: 0.325rem;
+@display: block;
+@float: left;
+@margin: 0 @horizontalSpacing @rowSpacing;
+@minHeight: 0;
+@padding: 0;
+@width: 300px;
+@boxShadow:
+    0 0 0 1px @borderColor,
+    0 3px 0 0 @borderColor;
+@border: none;
+@zIndex: "";
+
+/* Item Group */
+@horizontalSpacing: 0.5em;
+@rowSpacing: 2.5em;
+@groupMargin: 1em -@horizontalSpacing;
+
+/* -------------------
+       Content
+-------------------- */
+
+/* Image */
+@imageBackground: @transparentBlack;
+@imagePadding: 0;
+@imageBorderRadius: @borderRadius @borderRadius 0 0;
+@imageBoxShadow: none;
+@imageBorder: none;
+
+/* Content */
+@contentMargin: 0;
+@contentPadding: 0.75em 1em;
+@contentFontSize: 1em;
+@contentBorder: none;
+@contentBorderRadius: 0;
+@contentBoxShadow: none;
+
+/* Title */
+@titleMargin: 0;
+@titleFont: @headerFont;
+@titleFontWeight: bold;
+@titleFontSize: 1.25em;
+@titleColor: @darkTextColor;
+
+/* Metadata */
+@metaColor: @lightTextColor;
+
+/* Description */
+@descriptionDistance: 0.75em;
+@descriptionColor: @lightTextColor;
+
+/* Image */
+@imageSpacing: 0.25em;
+@contentImageWidth: 2em;
+@contentImageVerticalAlign: middle;
+
+/* Paragraph */
+@paragraphDistance: 0.1em;
+
+/* Additional Content */
+@extraDisplay: absolute;
+@extraTop: 100%;
+@extraLeft: 0;
+@extraWidth: 100%;
+
+@extraPadding: 0.5em 0.75em;
+@extraColor: @lightTextColor;
+@extraTransition: color @defaultDuration @defaultEasing;
+
+/* -------------------
+       States
+-------------------- */
+
+@hoverCursor: pointer;
+@hoverZIndex: 5;
+@hoverBorder: none;
+@hoverBoxShadow:
+    0 0 0 1px @selectedBorderColor,
+    0 3px 0 0 @selectedBorderColor;
+
+/* -------------------
+      Variations
+-------------------- */
+
+/* Sizes */
+@medium: 1em;

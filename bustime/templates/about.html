@@ -1,116 +1,135 @@
-
 {% extends "base.html" %}
-{% block titlee %}О проекте{% endblock %}
-{% block meta_descr %}Описание проекта Время Автобуса{% endblock %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "О проекте" %}{% endblock %}
+{% block meta_descr %}{% trans "Подробное описание проекта Время Автобуса. История, философия, ключевые возможности" %}.{% endblock %}
 
 {% block nav_about %}active{%endblock%}
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/about/">
+<link rel="canonical" href="https://{{LANGUAGE_CODE}}.bustime.loc/about/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/about/" />
+{% endfor %}
+
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
 {% block content %}
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">О проекте</div>
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "О проекте" %}</div>
 </div>
 <div class="ui divider"></div>
 
+<img src="https://cdn.bustime.loc/static/img/bustime_bus_stop.png" style="max-width:100%">
+<br/><br/>
 
-<h1 class="ui header" >www.bustime.ru
-<div class="sub header">Анализ и визуализация общественного транспорта по данным датчиков Глонасс/GPS</div>
-</h1>
-<img src="/static/img/bustime-logo-huge.png">
-<div class="ui big message">
-<p>Bustime.ru создан в 2012 году с целью предоставлять информацию для пассажиров о текущем местонахождении общественного  транспорта в реальном времени.<br/><br/>  Предоставляемая информация основана на данных спутниковой навигации Глонасс/GPS. <br/><br/>Используя сервис пассажиры меньше проводят времени на остановках в ожидании, что особенно актуально в неблагоприятные погодные условия.</p>
+<h1 class="ui header" >Bustime
+<div class="sub header">{% trans "анализ и визуализация общественного транспорта по данным датчиков ГЛОНАСС/GPS" %}</div></h1>
+
+
+<p>{% trans "Сайт Bustime создан в 2012 году с целью предоставлять информацию для пассажиров о текущем местонахождении общественного  транспорта в реальном времени. Предоставляемая информация основана на данных спутниковой навигации ГЛОНАСС/GPS. Используя сервис пассажиры меньше проводят времени на остановках в ожидании, что особенно актуально в неблагоприятные погодные условия" %}. {% trans "Философия проекта" %}: <div class="ui list">
+<div class="item">1. {% trans "Предоставить пассажирам достоверную информацию наиболее оперативно с минимальными затратами энергии" %}</div>
+<div class="item">2. {% trans "Повысить удобство использования общественным транспортом" %}</div>
+<div class="item">3. {% trans "Не преумножать сущности" %} <a target="_blank" href="https://ru.wikipedia.org/wiki/%D0%91%D1%80%D0%B8%D1%82%D0%B2%D0%B0_%D0%9E%D0%BA%D0%BA%D0%B0%D0%BC%D0%B0">{% trans "свыше необходимого" %}</a></div>
 </div>
+</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uaIMiqE6jwk?rel=0" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
 
 
-<h2 class="ui header">Философия</h2>
-<div class="ui vertical basic segment">
-<p>Первое - предоставить пассажирам максимально точную и достоверную информацию. Наиболее оперативно, с минимальными затратами энергии с их стороны.</p>
-<p>Второе - постараться обеспечить людям хорошее настроение и минимизировать негативное отношение к общественному транспорту и стресс от поездки. </p>
-<p>Третье - не преумножать сущности свыше необходимого, <a target="_blank" href="https://ru.wikipedia.org/wiki/%D0%91%D1%80%D0%B8%D1%82%D0%B2%D0%B0_%D0%9E%D0%BA%D0%BA%D0%B0%D0%BC%D0%B0">лезвие Оккамы</a>.</p>
-</div>
-
-
-
-
-<div class="ui divider"></div><h2 class="ui header">Возможности</h2>
+<h3 class="ui header">{% trans "Возможности" %}</h3>
 <div class="ui list">
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-      Высокая оптимизация компонентов. Обратите внимание как всё молниеносно быстро открывается и обновляется.
+      {% trans "Высокая оптимизация компонентов. Обратите внимание как всё молниеносно быстро открывается и обновляется" %}
     </div>
   </div>
 
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-     Под капотом мощнейшая система распределения данных по технологии <b>рассылка по инициативе источника.</b>
+     {% trans "Под капотом система распределения данных по технологии" %} <b>{% trans "соединение по инициативе сервера" %}</b>
     </div>
   </div>
 
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-      Соответствие современным стандартам <a href="//en.wikipedia.org/wiki/HTML5" target="_blank">HTML5</a> и <a href="//en.wikipedia.org/wiki/WebSocket" target="_blank">Websocket</a>, c упрощенной классической версией для старых устройств и браузеров.
+      {% trans "Соответствие" %} <a href="//en.wikipedia.org/wiki/HTML5" target="_blank">HTML5</a> и <a href="//en.wikipedia.org/wiki/WebSocket" target="_blank">Websocket</a>, {% trans "c упрощенной" %} AJAX {% trans "и классической версией для совместимости" %} (<a href="https://en.wikipedia.org/wiki/Progressive_enhancement" target="_blank">Progressive Enhancement</a>)
     </div>
   </div>
 
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-      Пользовательский интерфейс обеспечивает непревзойдённо быстрый доступ к информациии о транспорте.
+      {% trans "Пользовательский интерфейс обеспечивает непревзойдённо быстрый доступ к информации о транспорте" %}
     </div>
   </div>
 
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-      Фирменная технология "Дождь" позволяет непрерывно, в параллельном режиме, принимать данные с нескольких источников и распределять их по пассажирам-подписчикам.
+      {% trans "Система <b>Дождь</b> позволяет непрерывно принимать данные из нескольких источников и распределять их по пассажирам-подписчикам" %}
     </div>
   </div>
 
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-		Фирменная технология "Мульти-автобус" позволяет видеть все маршруты передвигающийся по видимым остановкам.
+		{% trans "Фирменная технология <b>Мульти-автобус</b> позволяет видеть весь транспорт передвигающийся по остановкам" %}
     </div>
   </div>
 
   <div class="item">
     <i class="check icon"></i>
     <div class="content">
-		Более 10 000 пользователей ежедневно.
+		{% trans "Более" %} 20 000 {% trans "посетителей ежедневно" %}
     </div>
   </div>
 
 </div>
 
+<h3 class="ui header">{% trans "Открытые исходные коды" %}</h3>
+<a rel="noopener" target="_blank" href="https://github.com/norn/bustime">{% trans "Исходные коды проекта Время Автобуса" %}</a> {% trans "открыты под свободной" %} <a target="_blank" href="https://ru.wikipedia.org/wiki/Лицензия_MIT">MIT {% trans "лицензией" %}</a>. 
+{% trans "Вы можете бесплатно использовать их в своих целях или принять участие в доработке продукта" %}
+<br/><br/><a href="mailto:andrey.perliev@gmail.com">{% trans "Консультируем и дорабатываем" %}</a> {% trans "под ваши нужды" %}.
 
-<div class="ui divider"></div><h2 class="ui header">История в видео</h2>
-<h3 class="ui header">2012, Декабрь</h3>
-Запись сделана в первые дни создания сайта. Основная работа приходилась на определение координат остановок и регистрации маршрутов по этим остановкам. Хорошее настроение и оптимизм обязательны для такой кропотливой и однообразной задачи. Здесь мы можем увидеть первые наброски интерфейса и жёлтые квадратики маршрутов, которые появились с самого первого дня и сохранились до сих пор.
+
+<div class="ui divider"></div><h3 class="ui header">{% trans "История" %}</h3>
+
+<h3 class="ui header">2015, {% trans "Октябрь" %}</h3>
+{% trans "Большое количество изменений и улучшений интерфейса. Безопасный протокол HTTPS, быстрый доступ к маршрутам, рейтинг, расписание, голосовой набор" %}.
 <br/><br/>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/8fGy4YsiMF8" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/Xt2RQU8Hj3I" frameborder="0" allowfullscreen></iframe>
 
 <div class="ui divider"></div>
-<h3 class="ui header">2013, Ноябрь</h3>
-Здесь уже сформирована основа пользовательского интерфейса и демонстрируется работа сайта и онлайн обновления в реальном времени.
-<br/><br/>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/AVQRGhBHtWE" frameborder="0" allowfullscreen></iframe>
-
-
-<div class="ui divider"></div>
-<h3 class="ui header">2014, Ноябрь</h3>
-Еще одно видео с демонстрацией работы. Здесь интерфейс принимает более проработанный вид, применяется responsive верстка для удобного отображения на мобильных устройствах с небольшими экранами.
+<h3 class="ui header">2014, {% trans "Ноябрь" %}</h3>
+{% trans "Еще одно видео с демонстрацией работы. Здесь интерфейс принимает более проработанный вид, применяется responsive верстка для удобного отображения на мобильных устройствах с небольшими экранами" %}.
 <br/><br/>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/hv70ggDibBc" frameborder="0" allowfullscreen></iframe>
 
+<div class="ui divider"></div>
+<h3 class="ui header">2013, {% trans "Ноябрь" %}</h3>
+{% trans "Здесь уже сформирована основа пользовательского интерфейса и демонстрируется работа сайта и онлайн обновления в реальном времени" %}. 
+<br/><br/>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/AVQRGhBHtWE" frameborder="0" allowfullscreen></iframe>
 
 <div class="ui divider"></div>
-<h3 class="ui header">2015, Октябрь</h3>
-Большое количество изменений и улучшений интерфейса. Безопасный протокол HTTPS, быстрый доступ к маршрутам, рейтинг, расписание, голосовой набор.
+<h3 class="ui header">2012, {% trans "Декабрь" %}</h3>
+{% trans "Запись сделана в первые дни создания сайта. Основная работа приходилась на определение координат остановок и регистрации маршрутов по этим остановкам. Хорошее настроение и оптимизм обязательны для такой кропотливой и однообразной задачи. Здесь мы можем увидеть первые наброски интерфейса и жёлтые квадратики маршрутов, которые появились с самого первого дня и сохранились до сих пор." %}
 <br/><br/>
-<iframe width="420" height="315" src="https://www.youtube.com/embed/Xt2RQU8Hj3I" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="https://www.youtube.com/embed/8fGy4YsiMF8" frameborder="0" allowfullscreen></iframe>
+<br/><br/>
+
+
+
 
 
 {% endblock %}
