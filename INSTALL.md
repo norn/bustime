@@ -78,7 +78,7 @@ sudo -u postgres psql -d bustime -c "CREATE EXTENSION postgis;"
 ```
 sudo mkdir /bustime
 cd /bustime
-git clone https://github.com/norn/bustime.git
+git clone https://github.com/bustime-org/bustime.git
 cd /bustime
 ```
 
