@@ -199,6 +199,13 @@ sudo nginx -t
 sudo nginx -s reload
 ```
 
+## Prepare cdistance
+```
+cd bustime
+python setup.py build
+cp build/lib.linux-x86_64-cpython-310/_cdistance.cpython-310-x86_64-linux-gnu.so ./
+```
+
 # Run application
 Run:
 ```
@@ -211,11 +218,6 @@ Run:
 ./4collect_static.sh
 ./1restart
 ```
-
-# Prepare cdistance
-cd bustime
-python setup.py build
-cp build/lib.linux-x86_64-cpython-310/_cdistance.cpython-310-x86_64-linux-gnu.so ./
 
 ## At the moment, the application is fully ready to work, and the site can be seen by http://site_ip
 
