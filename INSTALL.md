@@ -148,6 +148,7 @@ sudo mkdir -p static/logs
 sudo mkdir -p bustime/static/other/db/v5/current
 sudo mkdir -p bustime/static/other/db/v7/current
 sudo mkdir -p bustime/static/other/db/v8/current
+sudo mkdir -p utils/automato
 sudo chown -R www-data:www-data /bustime
 sudo chmod -R g+w /bustime
 sudo mkdir -p /var/log/bustime
@@ -210,6 +211,11 @@ Run:
 ./4collect_static.sh
 ./1restart
 ```
+
+# Prepare cdistance
+cd bustime
+python setup.py build
+cp build/lib.linux-x86_64-cpython-310/_cdistance.cpython-310-x86_64-linux-gnu.so ./
 
 ## At the moment, the application is fully ready to work, and the site can be seen by http://site_ip
 
