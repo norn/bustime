@@ -1,4 +1,4 @@
-# Bustime - public trasport online
+# Bustime - public transport online
 
 **Live Demo Available at:** [busti.me](https://busti.me/)
 
