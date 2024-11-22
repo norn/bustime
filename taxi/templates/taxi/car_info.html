@@ -1,0 +1,20 @@
+{% load i18n %}{% load order_extras %}
+<div class="ui stackable two column grid">
+    {% if car %}
+    <div class="column">
+      <div class="ui basic label">{{car.gos_num}}</div>
+      &nbsp;<b>{{car.model}}</b>
+    </div>
+    <div class="column">
+      {% if car.color %}<div class="ui basic label">{{ car.color }}</div>{% endif %}
+      <!--<div class="ui teal label">{{ taxi_type|get_item:car.taxi_type }}</div>
+      <div class="ui grey label">{{ car_class|get_item:car.car_class }}</div>-->
+      <div class="ui label" title="{% trans 'Пассажиров' %}"><i class="users icon"></i>{{car.passengers}}</div>
+      <div class="ui label" title="{% trans 'Детских кресел' %}"><i class="child icon"></i>{{car.baby_seat}}</div>
+    </div>
+    {% else %}
+    <div class="column">
+      <div class="ui basic red label">{% trans 'Машина не указана, выбор заказа невозможен' %}</div>
+    </div>
+    {% endif %}
+</div>

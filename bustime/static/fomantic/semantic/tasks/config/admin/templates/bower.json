@@ -1,0 +1,30 @@
+{
+  "name"        : "Component",
+  "description" : "Component distribution",
+  "homepage"    : "https://www.fomantic-ui.com",
+  "author": {
+    "name" : "Jack Lukic",
+    "web"  : "http://www.jacklukic.com"
+  },
+  "ignore": [
+    "./index.js"
+  ],
+  "keywords": [
+    "fomantic",
+    "semantic",
+    "ui",
+    "css3",
+    "framework"
+  ],
+  "license" : [
+    "https://github.com/fomantic/Fomantic-UI/blob/master/LICENSE.md"
+  ],
+  "ignore": [
+    "docs",
+    "node",
+    "server",
+    "spec",
+    "src",
+    "test"
+  ]
+}

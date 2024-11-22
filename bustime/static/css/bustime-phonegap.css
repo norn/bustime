@@ -1,0 +1,216 @@
+html, body {
+ background-image:url(static/img/bg-pattern.png);
+ font-size:12px;
+}
+
+.container {
+ width:100%;
+ margin:0 auto;
+ background-color:white;
+ border-radius: 8px;
+ -moz-border-radius:8px;
+ -webkit-border-radius:8px;
+}
+
+td {
+ padding:4px;
+}
+
+.busnumber {
+ z-index: 4;
+ float:left;
+ background:yellow;
+ width:80px;
+ height:34px;
+ padding: 30px 0px 30px 0px;
+ margin: 5px;
+ line-height:1.8em;
+ border: 1px solid #aaa;
+ text-decoration:none;
+ text-align:center;
+ font-size:18px;
+ color:#444;
+ font-weight:bold;
+ border-radius: 6px;
+ -moz-border-radius:6px;
+ -webkit-border-radius:6px;
+
+}
+
+
+.busnumber_container {
+ margin: 40px 0px 40px 0px;
+}
+
+.bus_selected {
+ background:#ff0000;
+ color:#ffffff;
+ transform: rotateY(360deg) scale(1.2);
+ -webkit-transform: rotateY(360deg) scale(1.2);
+ -moz-transform: rotateY(360deg) scale(1.2);
+
+ transform-style: preserve-3d;
+ -webkit-transform-style: preserve-3d;
+ -moz-transform-style: preserve-3d;
+
+  transition: 0.5s ease;
+  -webkit-transition: 0.5s ease;
+  -moz--transition: 0.5s ease;
+
+}
+
+.busnumber:hover {
+ background:#ff0000;
+ color:yellow;
+}
+
+
+
+#the-sticky-div.sticky {
+ position: fixed;
+ top: 20px;
+}
+
+#navmenu {
+ text-align:center;
+ margin:auto;
+ margin-top:20px;
+ width:300px;
+ padding-left:20px;
+ background-image:url(/static/img/nav-bg.png);
+ background-position: 50% 107%;
+ background-repeat: repeat-x;
+ margin-bottom:10px;
+}
+
+#navmenu td {
+ text-align:center;
+}
+
+#navmenu h1 {
+ text-align:center;
+ font-size:1.2em;
+ font-weight:bold;
+}
+
+table {
+ margin:0px;
+ padding:0px;
+}
+
+.widget {
+width:140px;
+color:#eee;
+background-color:#666;
+position:fixed;
+text-align:center;
+bottom:0px;
+margin:0 auto;
+font-size:12px;
+display: none;
+font-size:14px;
+ -moz-border-radius:3px;
+ -webkit-border-radius:3px;
+ border-radius: 3px;
+ padding:3px;
+}
+
+
+.ajaxerror {
+ background-color:#c84618;
+}
+
+.busamount {
+ font-size:14px;
+ margin-top:-6px;
+ margin-bottom:-6px;
+ color:#cfcf00;
+}
+
+.busamoun {
+}
+
+.separ {
+ width:100%;
+ color:#fff;
+ background-color:#666;
+ text-align:center;
+ padding:4px;
+}
+
+.bus_panel {
+ width:50%;
+ float:left;
+ font-size:16px;
+ font-weight:bold;
+ color:#333;
+}
+
+#adsense_a, #adsense_b {
+ margin-top:40px;
+}
+
+#hint {
+text-align:left;
+font-size:14px;
+color:#fb5d32;
+background-color:#ffff92;
+padding:6px;
+border: 1px dashed #aaa;
+border-style:dashed none dashed none;
+font-weight:bold;
+}
+	@-webkit-keyframes spin {
+			from {
+				-webkit-transform: rotate(0deg);
+			}
+			to {
+				-webkit-transform: rotate(360deg);
+			}
+		}
+		
+		@-moz-keyframes spin {
+			from {
+				-moz-transform: rotate(0deg);
+			}
+			to {
+				-moz-transform: rotate(360deg);
+			}
+		}
+		
+		@-ms-keyframes spin {
+			from {
+				-ms-transform: rotate(0deg);
+			}
+			to {
+				-ms-transform: rotate(360deg);
+			}
+		}
+		
+
+		#rays	{
+			z-index: 3;
+			background: url(/static/img/rays-main2.png) 0 0 no-repeat;
+			position: absolute; 
+			top: -34px; 
+			right: 60px; 
+			width: 260px; 
+			height: 260px; 
+			-webkit-animation-name: spin; 
+			-webkit-animation-duration: 40000ms; /* 40 seconds */
+			-webkit-animation-iteration-count: infinite; 
+			-webkit-animation-timing-function: linear;
+			
+			-moz-animation-name: spin; 
+			-moz-animation-duration: 40000ms; /* 40 seconds */
+			-moz-animation-iteration-count: infinite; 
+			-moz-animation-timing-function: linear;
+			
+			-ms-animation-name: spin; 
+			-ms-animation-duration: 40000ms; /* 40 seconds */
+			-ms-animation-iteration-count: infinite; 
+			-ms-animation-timing-function: linear;
+			
+			/* boooo opera */
+			-o-transition: rotate(3600deg); /* works */
+		}

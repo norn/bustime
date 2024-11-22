@@ -1,0 +1,35 @@
+{# см. admin_load_gtfs.html #}{% load i18n %}
+    <div class="ui form">
+        <div class="fields">
+            <div class="fourteen wide field">
+                <label><a href="/wiki/bustime/gtfscatalog/" target="_blank">GtfsCatalog</a></label>
+
+                <select id="select_feed1" class="ui dropdown" onchange="select_feed1_change()" autocomplete="off">
+                    {% for x in feeds %}
+                    <option data-label="{{x.url_schedule}}" value="{{x.id}}" {% if catalog_id == x.id %}selected{% endif %}>
+                        {{x.id}} {{x.name}}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <span id="load_url" class="ui small grey text"></span>
+            </div>
+
+            <div class="field">
+                <label>&nbsp;</label>
+                <a id="link_catalog_edit1"
+                    href="/wiki/bustime/gtfscatalog/{% if catalog_id %}{{catalog_id}}/change/{% endif %}"
+                    target="_blank">edit</a>
+            </div>
+
+            <div class="field">
+                <label>&nbsp;</label>
+                <button class="ui button" id="button_load" name="button_load" onclick="load_schedule()">
+                    {% trans "Загрузить" %}
+                </button>
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">Result: <span id="test_result_header1"></span></h4>
+        <div class="ui segment" id="load_result" style="overflow: auto;"></div>
+    </div><!--ui form-->

@@ -1,0 +1,67 @@
+{% extends "base.html" %}{% load l10n %}
+
+{% block extra_head %}
+<script src="https://cdn.bustime.loc/static/js/stop_new.js" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 400px;
+    max-height: 100%;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<br/><br/>
+
+
+<div class="ui header">MobileSettings {{ms.id}}</div>
+{% if ps %}
+<b>Положение на {{ps.ctime}}</b>
+<div id="lmap"></div>
+<b>Маршрут: {{ps.bus_name}}, Остановка: {{ps.nb_name}}</b>
+<input type="hidden" name="point_x" value="{{ps.lon}}">
+<input type="hidden" name="point_y" value="{{ps.lat}}">
+<br/><br/>
+<script>
+function js_page_extra() {
+    console.log("Explorer");
+
+    var osm = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 10,
+        maxZoom: 20
+    });
+    var googleSat = L.tileLayer('//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+
+    var baseMaps = {
+        "OSM": osm,
+        "Спутник": googleSat
+    };
+
+    map = L.map('lmap', {
+        scrollWheelZoom: true,
+        layers: [osm],
+        center: [{{ps.lat|unlocalize}}, {{ps.lon|unlocalize}}],
+        zoom: 17
+    });
+    L.control.layers(baseMaps).addTo(map);
+}
+</script>
+{% endif %}
+<table class="ui table">
+  <tbody>
+    {% for k,v in fields.items %}
+    <tr>
+        <td>{{k}}</td>
+        <td {% if k == 'ban' and v %}class='warning'{%endif%}>{{v}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a class="ui small orange button" href="./gban/">Бан на 90 дней</a>
+
+<br/><br/>
+{% endblock %}

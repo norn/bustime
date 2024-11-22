@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Блог" %}</span>
+</div>
+
+<div class="ui container">
+        <div class="ui stackable grid">
+            <div class="eleven wide column">
+                <!--<h2 class="ui header">{% trans "Последние статьи" %}</h2>-->
+                <br/>
+                <div class="ui divided items">
+                    <div class="item">
+                        <div class="content">
+                            <a class="header" href="/blog/10-tips-for-comfortable-public-transport/">{% trans "10 советов для комфортного путешествия на общественном транспорте" %}</a>
+                            <div class="meta">
+                                <span>{% trans "Дата" %}: 2024-05-09</span>
+                            </div>
+                            <div class="description">
+                                <p>{% trans "Эта статья предлагает десять практических советов для тех, кто регулярно пользуется общественным транспортом" %}</p>
+                            </div>
+                            <div class="extra">
+                                <a button class="ui button" href="/blog/10-tips-for-comfortable-public-transport/">{% trans "Читать далее" %}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="five wide column">
+                <div class="ui segment">
+                    <h3>{% trans "О проекте" %}</h3>
+                    <p>{% trans "Bustime — это современное решение для пользователей общественного транспорта, предоставляющее актуальную информацию о местоположении транспорта в реальном времени с использованием данных GPS. Этот сервис позволяет пассажирам сократить время ожидания на остановках, предоставляя точные сведения о времени прибытия автобусов, троллейбусов и трамваев. Проект направлен на улучшение городской мобильности и повышение комфорта путешествий, делая использование общественного транспорта более предсказуемым и удобным." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
+    "node-gyp": "^9.0.0",
+    "redis": "^2.8.0",
+    "socket.io": "^1.7.4",
+    "socket.io-redis": "^4.0.1",
+    "zerorpc": "^0.9.8"
+  },
+  "devDependencies": {
+    "grunt": "^1.5.3",
+    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-jshint": "^3.2.0",
+    "grunt-contrib-uglify": "^5.2.2"
+  }
+}

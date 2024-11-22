@@ -1,0 +1,136 @@
+{% extends "base.html" %}{% load i18n %}{% load order_extras %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Такси" %}{% endblock %}
+
+{% block meta_descr %}
+{% trans "bustime-попутчик, профиль пользователя" %}.
+{% endblock meta_descr %}
+
+{% block nav_help %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="/static/{{request.resolver_match.app_name}}/css/taxi.css">
+<script src="/static/js/howler.min.js"></script>
+{% endblock extra_head %}
+
+{% block content %}
+
+<div class="ui breadcrumb">
+    <a class="section" href="/{{request.session.city.slug}}/">{{request.session.city.name}}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{request.session.city.slug}}/#carpool">{% trans "Попутчик" %}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Профиль пользователя" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header" >
+    {% trans "Профиль пользователя" %}
+    <div class="sub header"></div>
+</h1>
+
+{% if messages %}
+<div id="messages" class="ui container">
+{% for message in messages %}<div class="ui {{ message.tags }} message">{{ message|safe }}</div>{% endfor %}
+</div>
+<br>
+{% endif %}
+
+<p>
+    <form class="ui form" method="POST">{% csrf_token %}
+        <div class="ui segment">
+            <h3>{% if taxiuser.driver %}{% trans "Водитель" %}{% else %}{% trans "Пользователь" %}{% endif %}</h3>
+            <div class="ui form">
+                <div class="three inline fields">
+                    <div class="field">
+                        <label>{% trans "Имя" %}</label>
+                        <input type="text" id="user_name" name="user_name" value="{{taxiuser.name|default:''}}">
+                    </div>
+                    <div class="inline fields">
+                        <label class="required">{% trans "Пол" %}</label>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="user_gender" class="hidden" value=0 {% if taxiuser.gender == 0 %}checked="checked"{% endif %}>
+                                <label>{% trans "Мужчина" %}</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="user_gender" class="hidden" value=1 {% if taxiuser.gender == 1 %}checked="checked"{% endif %}>
+                                <label>{% trans "Женщина" %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>{% trans "Телефон" %}</label>
+                        <input type="text" id="user_phone" name="user_phone" value="{{taxiuser.phone|default:''}}">
+                    </div>
+                </div><!--three inline fields-->
+
+                <table style="width: 100%; border-collapse: collapse">
+                    <tr>
+                        <td>
+                            {% if taxiuser.name %}
+                            <a href="/carpool/usage/{% if taxiuser.driver %}driver{% else %}passenger{% endif %}/" class="ui button">{% trans "Закончить" %}</a>
+                            {% else %}
+                            &nbsp;
+                            {% endif %}
+                        </td>
+                        <td style="text-align: right;">
+                            <input type="submit" class="ui blue button" name="save" value="{% trans 'Сохранить' %}">
+                        </td>
+                    </tr>
+                </table>
+            </div><!--ui form-->
+        </div><!--segment-->
+
+        <div class="ui segment">
+            <h3>
+                {% trans "Автомобиль" %}
+                <a class="ui basic icon button" href="/carpool/setcar/">
+                  <i class="plus icon"></i>
+                </a>
+            </h3>
+            <div class="ui items">
+                {% for car in cars %}
+                  <div class="item" style="border-bottom:1px solid lightgrey;">
+                    <div class="image">
+                      <img src="/static/{{car.photo}}" style="max-width:100%;">
+                    </div>
+                    <div class="content">
+                      <a class="header">{{car.gos_num}}</a>
+                      <div class="meta">
+                        <span>{{ car.color }} {{car.model}}</span>
+                      </div>
+                      <div class="description">
+                        <p>
+                          <div class="ui label" title="{% trans 'Пассажиров' %}"><i class="users icon"></i>{{car.passengers}}</div>
+                          <div class="ui label" title="{% trans 'Детских кресел' %}"><i class="child icon"></i>{{car.baby_seat}}</div>
+                        </p>
+                      </div>
+                      <div class="extra">
+                        <a class="ui basic icon button" href="/carpool/setcar/{{car.id}}/">
+                          <i class="edit icon"></i>
+                        </a>
+                      </div>
+                    </div><!--content-->
+                  </div><!--item-->
+                {% endfor %}
+            </div><!--items-->
+        </div><!--segment-->
+    </form>
+</p>
+{% endblock content %}
+
+{% block body_end %}
+<script src="/static/{{request.resolver_match.app_name}}/js/taxi.js"
+        id="taxi.js"
+        data-city_id="{{request.session.city.id|default:0}}"
+        data-user_id="{{request.user.id|default:0}}"
+        data-taxiuser_id="{{request.session.taxiuser.id|default:taxiuser.id|default:0}}"></script>
+<script>
+function js_page_extra() {
+    $('.ui.radio.checkbox')  .checkbox();
+};
+</script>
+{% endblock %}

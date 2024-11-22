@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Общественный транспорт онлайн в городах России" %}{% endblock %}
+{% block meta_descr %}{% trans "Вы можете выбрать город для отображения маршрутов общественного транспорта онлайн в реальном времени" %}.{% endblock %}
+
+{% block nav_help %}active{%endblock%}
+
+{% block extra_head %}
+<script>us_id={{us.id}};</script>
+<script src="https://cdn.bustime.loc/static/js/select.js?v=1" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/select/">Select</a>
+</div>
+<div class="ui divider"></div>
+
+<!-- <div class="ui statistics">
+  <div class="statistic">
+    <div class="value">
+      {{us_online}}
+    </div>
+    <div class="label">
+      сайт онлайн
+    </div>
+  </div>
+  <div class="statistic">
+    <div class="value">
+      {{ms_online}}
+    </div>
+    <div class="label">
+      приложения онлайн
+    </div>
+  </div>
+</div> -->
+
+<div class="ui statistic">
+  <div class="value">
+    {{mob_active}}
+  </div>
+  <div class="label">
+    apps active total
+  </div>
+</div>
+
+<table class="ui sortable celled table">
+  <thead>
+    <tr>
+      <th>{% trans "Данные" %}</th>
+      <th>{% trans "Город" %}</th>
+      <th>{% trans "Население" %}</th>
+      <th>{% trans "Страна" %}</th>
+      <th>{% trans "Часовой пояс" %}</th>
+      <th>t˚</th>
+      <th class="sorted descending">{% trans "Всего ТС" %}</th>
+      <th>{% trans "вне маршрута" %}</th>
+<!--      <th>{% trans "Автобусы" %}</th>
+      <th>{% trans "Троллейбусы" %}</th>
+      <th>{% trans "Трамваи" %}</th>
+      <th>{% trans "Маршрутные" %}</th>-->
+      <!-- <th rowspan="2">Посетителей позавчера</th> -->
+      {% if user.is_staff or transaction and transaction.vip %}
+      <th>{% trans "Сайт вчера" %}</th>
+      <th>{% trans "Приложений" %}<br/>{% trans "активных за 1 д" %}</th>
+      <th>{% trans "Установок" %}<br/>{% trans "приложений вчера" %}</th>
+      <th><i class="fa-heart-o icon"></i><i class="fa-desktop icon"></i></th>
+      <th><i class="fa-heart-o icon"></i><i class="fa-mobile icon"></i></th>
+      <th>{% trans "t ответа" %}<br/>{% trans "сервера" %}</th>
+      <th>{% trans "задержка" %}<br/>{% trans "устройств" %}</th>
+      <th>{% trans "Пробки" %}</th>
+      <!-- <th>{% trans "t обработки" %}</th> -->
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in cities %}
+    <tr class="{{c.id}}{% if c.real_error %} error{%endif%}{% if c.nearest >= 300 %} positive{%endif%}">
+      <td class="panic" data-sort-value={% if c.real_error %}0{%else%}1{%endif%}>{% if not c.real_error %}<i class="green checkmark icon">{% else %}<i class="red times icon">{%endif%}</td>
+      <td><a href="/{{c.slug}}/">{{c.name}}</a>{% if user.is_staff or transaction and transaction.vip %}<br/>{{c.id}}{%endif%}</td>
+      <td class="center aligned" data-sort-value="{{c.population}}">{{c.population}}</td>
+      <td class="center aligned" data-sort-value="{{c.country_code}}">{{c.country_code}}</td>
+      <td class="left aligned" data-sort-value="{{c.timezone}}">{{c.timezone}}<br/>{{c.now}}</td>
+      <td class="center aligned" data-sort-value="{{c.avg_temp}}">{% if c.avg_temp > 0 %}+{%endif%}{{c.avg_temp}}˚</td>
+      <td class="right aligned" data-sort-value="{{c.nearest}}"><a href="/{{c.slug}}/status/">{{c.nearest}}</a></td>
+      <td class="right aligned" data-sort-value="{{c.away}}">{{c.away}}</td>
+      <!--
+      <td class="center aligned">{% if c.bus %}<i class="green checkmark icon"></i>{{X.counters_by_type.0}}{% endif %}</td>
+      <td class="center aligned">{% if c.trolleybus %}<i class="green checkmark icon"></i>{{X.counters_by_type.1}}{% endif %}</td>
+      <td class="center aligned">{% if c.tramway %}<i class="green checkmark icon"></i>{{X.counters_by_type.2}}{% endif %}</td>
+      <td class="center aligned">{% if c.bus_taxi or bus_taxi_marged %}<i class="green checkmark icon"></i>{{X.counters_by_type.3}}{% endif %}</td>
+      -->
+      <!-- <td class="right aligned">{{c.counter_yyday}}</td> -->
+      {% if user.is_staff or transaction and transaction.vip %}
+      <td class="right aligned" data-sort-value="{{c.counter_yesterday}}">{{c.counter_yesterday}}</td>
+      <td class="right aligned" data-sort-value="{{c.mob}}">{{c.mob}}</td>
+      <td class="right aligned" data-sort-value="{{c.mob_installs}}">{{c.mob_installs}}</td>
+      <td class="right aligned" data-sort-value="{{c.love_web}}">{{c.love_web}}</td>
+      <td class="right aligned" data-sort-value="{{c.love_app}}">{{c.love_app}}</td>
+      <td class="right aligned zdur_{{c.id}}" data-sort-value="0">0</td>
+      <!-- <td class="right aligned zwind_{{c.id}}" data-sort-value="0">0</td> -->
+      <td class="right aligned delay_avg_{{c.id}}" data-sort-value="{{c.delay_avg}}">{{c.delay_avg}}</td>
+      <td class="right aligned" data-sort-value="{{c.avg_jam_ratio}}">{{c.avg_jam_ratio}}</td>
+      {% endif %}
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

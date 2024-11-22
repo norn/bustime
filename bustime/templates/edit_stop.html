@@ -1,0 +1,105 @@
+{% extends "base.html" %}{% load l10n %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}stop/id/{{stop.id}}/edit/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}stop/id/{{stop.id}}/edit/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}stop/id/{{stop.id}}/edit/" />
+{% endfor %}
+
+<script src="https://cdn.bustime.loc/static/js/edit_stop.js" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 300px;
+    width: 400px;
+}
+</style>
+{% endblock %}
+
+{% block nav_reseller %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/stop/">{% trans "Остановки" %}</a>
+   <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/stop/{{stop.slug}}/">{{stop.name}}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Редактирование" %}</div>
+</div>
+
+<div class="ui divider"></div>
+
+<div class="ui grid">
+    <div class="column">
+    {% if result == "ok" %}
+    <div class="ui big green segment">Изменено! Новое название вступит в силу в течении 24 часов</div>
+    {% endif %}
+<form action="./" method="post">{% csrf_token %}
+
+<h3>{{stop.city}}, {{stop.name}}</h3>
+      <div id="lmap"></div>
+<input type="hidden" name="point_x" value="">
+<input type="hidden" name="point_y" value="">
+<table class="ui table">
+  <thead><tr><th>ключ</th><th>значение</th></tr></thead>
+  <tbody>
+    <tr><td>id</td><td>{{stop.id}}</td></tr>
+    <tr><td>ustop.id</td><td>{{ustop.id}}</td></tr>
+    <tr><td>ссылка</td><td>{{stop.slug}}</td></tr>
+    <tr><td>город</td><td>{{place.name}}</td></tr>
+    <tr><td>название</td><td><div class="ui fluid input"><input type="text" name="name" value="{% if stop.name %}{{stop.name}}{%endif%}" /></div></td></tr>
+    <tr><td>название<br/>альтернативное</td><td><div class="ui fluid input"><input type="text" name="name_alt" value="{% if stop.name_alt %}{{stop.name_alt}}{%endif%}" /></div></td></tr>
+    <tr><td>координаты</td>
+      <td class="point">
+      {{stop.point.x|unlocalize}}; {{stop.point.y|unlocalize}}
+    </td></tr>
+    <tr><td>в сторону</td><td>{{stop.moveto}}</td></tr>
+    <tr><td>трамвай?</td><td>{% if stop.tram_only %}<i class="fa fa-check-square-o"></i>{% else %}нет{% endif %}</td></tr>
+    <tr><td>маршруты</td><td>
+    {% for bus in routes %}
+    <a class="ui small button" href="{{bus.get_absolute_url_schedule}}">{{bus}}</a>
+    {%endfor%}
+  </td></tr>
+    <!-- xeno_id, osm_id -->
+
+  </tbody>
+</table>
+
+<table class="ui center aligned table">
+  <tbody>
+    <tr>
+      <!-- <td><a class="ui labeled icon button" value="cancel"/><i class="fa-reply icon"></i> отменить</a></td> -->
+      <!-- <td><a class="ui red button" value="delete"/>удалить</a></td> -->
+      <td>
+        <input type="submit" class="ui icon pink button" value="Сохранить"/></td>
+    </tr>
+  </tbody>
+</table>
+
+</form>
+</div>
+</div>
+<br/><br/>
+
+<script>
+{% include "_js_init.html" %}
+var stop_x = {{stop.point.x|unlocalize}};
+var stop_y = {{stop.point.y|unlocalize}};
+var route1 = [
+  {%for r in route1%}
+  {{r.busstop.id}},
+  {%endfor%}
+];
+
+var busstops = {
+{% for b in busstops %}
+ {{b.id}}: {id: {{b.id}}, name:"{{b.name}}", moveto:"{% if b.moveto %}{{b.moveto}}{%endif%}", x:{{b.point.x|unlocalize}}, y:{{b.point.y|unlocalize}} },
+{% endfor %} };
+</script>
+
+
+{% endblock %}

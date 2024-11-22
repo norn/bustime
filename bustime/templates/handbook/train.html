@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Поезд" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/train.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Поезд — это железнодорожное транспортное средство, состоящее из локомотива и прицепленных к нему вагонов, предназначенное для перевозки пассажиров или грузов. Поезда движутся по рельсовым путям и могут быть различных типов: пассажирские, грузовые, скоростные и пригородные. Они являются эффективным средством для дальних перевозок и массового транспорта." %}</p>
+</div>
+<br/>
+
+{% endblock %}

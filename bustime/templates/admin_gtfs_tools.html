@@ -1,0 +1,78 @@
+{# см. admin_load_gtfs.html #}{% load i18n %}
+    <div class="ui form">
+
+        <h4 class="ui dividing header">Schedule</h4>
+        <div class="fields">
+            <div class="seven wide field">
+                <input type="text" id="url" name="url"
+                    placeholder="URL"
+                    onClick="this.setSelectionRange(0, this.value.length)"
+                    value="{{url_schedule|default:''}}">
+            </div>
+
+            <div class="field">{% trans "или" %}</div>
+
+            <div class="seven wide field">
+                <div class="ui file input">
+                    <input type="file" id="file" name="file" >
+                </div>
+            </div>
+
+            <div class="field">
+                <button class="ui button" id="button_test" name="button_test" onclick="test_fid()">
+                    {% trans "Тест" %}
+                </button>
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">Positions</h4>
+        <div class="fields">
+            <div class="seven wide field">
+                <input type="text" id="url_rt" name="url_rt"
+                    placeholder="URL"
+                    onClick="this.setSelectionRange(0, this.value.length)"
+                    value="{{url_rt_positions|default:''}}">
+            </div>
+
+            <div class="field">{% trans "или" %}</div>
+
+            <div class="seven wide field">
+                <div class="ui file input">
+                    <input type="file" id="file_rt" name="file_rt" >
+                </div>
+            </div>
+
+            <div class="field">
+                <button class="ui button" id="button_test_rt" name="button_test_rt" onclick="test_rt()">
+                    {% trans "Тест" %}
+                </button>
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">
+            <button class="ui button" id="button_append" name="button_append" onclick="append_catalog()">
+                {% trans "Добавить в каталог" %}
+            </button>
+        </h4>
+        <div class="fields">
+            <div class="inline field">
+                <div class="ui checkbox">
+                    <input type="checkbox" tabindex="0" class="hidden" id="factive" name="factive">
+                    <label>{% trans "Активен" %}</label>
+                </div>
+            </div>
+
+            <div class="seven wide field">
+                <label>{% trans "Имя" %}</label>
+                <input type="text" id="fname" name="fname">
+            </div>
+
+            <div class="eight wide field">
+                <label>{% trans "Примечание" %}</label>
+                <textarea rows="3" id="fdescription" name="fdescription"></textarea>
+            </div>
+        </div>
+
+        <h4 class="ui dividing header">Result: <span id="test_result_header"></span></h4>
+        <div class="ui segment" id="test_result" style="overflow: auto;"></div>
+    </div><!--ui form-->

@@ -1,0 +1,20 @@
+/*******************************
+             Menu
+*******************************/
+
+@menuBorderRadius: @borderRadius;
+@menuBorderColor: #dadada;
+@menuBoxShadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+@menuPadding: @relative8px 0;
+@itemVerticalPadding: 1em;
+@itemHorizontalPadding: 1.5em;
+
+@menuHeaderFontSize: @small;
+@menuHeaderFontWeight: bold;
+@menuHeaderTextTransform: none;
+
+@selectionBorderEmWidth: 0;
+@selectionItemDivider: none;
+
+@labelBoxShadow: none;

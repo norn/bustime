@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Ведомость" %}{%endblock%}
+{% block meta_descr %}{% trans "Диспетчерская ведомость. Отслеживание выполнения расписаний." %} {{city.name_gde}}.{% endblock %}
+{% block nav_status %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}data/sheet/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}data/sheet/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}data/sheet/" />
+{% endfor %}
+
+<style>
+.uptime-90-days-wrapper {
+padding-top: 5px;
+margin-bottom: -2px;
+height: 34px;
+width: 100%;
+}
+svg:not(:root), symbol, image, marker, pattern, foreignObject {
+    overflow: hidden;
+}
+.availability-time-line-graphic {
+width: 100%
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Ведомость" %}</span>
+</div>
+<div class="ui divider"></div>
+
+
+<div data-component-id="rhznvxg4v7yh" class="component-inner-container status-green showcased" data-component-status="operational" data-js-hook="">
+
+
+    <span class="name">
+      API
+      &nbsp;
+    </span>
+
+    <span class="component-status">
+      Operational
+    </span>
+
+    <span class="tool icon-indicator fa fa-check tooltipstered"></span>
+
+      <div class="shared-partial uptime-90-days-wrapper">
+  <svg class="availability-time-line-graphic" preserveAspectRatio="none" height="34" viewBox="0 0 648 34">
+
+    <rect height="34" width="3" x="0" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="5" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="10" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="15" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="20" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="25" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="30" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="35" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="40" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="45" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="50" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="55" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="60" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="65" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="70" y="0" fill="#a1ad4c" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="75" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="80" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="85" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="90" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="95" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="100" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="105" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="110" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="115" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="120" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="125" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="130" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="135" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="140" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="145" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="150" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="155" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="160" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="165" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="170" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="175" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="180" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="185" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="190" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="195" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="200" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="205" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="210" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="215" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="220" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="225" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="230" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="235" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="240" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="245" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="250" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="255" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="260" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="265" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="270" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="275" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="280" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="285" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="290" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="295" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="300" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="305" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="310" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="315" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="320" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="325" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="330" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="335" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="340" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="345" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="350" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="355" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="360" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="365" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="370" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="375" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="380" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="385" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="390" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="395" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="400" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="405" y="0" fill="#efa720" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="410" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="415" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="420" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="425" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="430" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="435" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="440" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+    <rect height="34" width="3" x="445" y="0" fill="#43b581" class="tool tooltipstered" data-html="true"></rect>
+</svg>
+  <div class="legend ">
+  <div class="legend-item light legend-item-date-range"><span class="availability-time-line-legend-day-count">90</span> days ago</div>
+  <div class="spacer"></div>
+  <div class="legend-item legend-item-uptime-value">
+    <span id="uptime-percent-rhznvxg4v7yh">99.98</span> % uptime
+  </div>
+  <div class="spacer"></div>
+  <div class="legend-item light legend-item-date-range">Today</div>
+</div>
+
+</div>
+
+
+</div>
+
+
+<br/><br/><br/><br/>
+{% endblock %}

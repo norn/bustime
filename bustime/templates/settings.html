@@ -1,109 +1,372 @@
-{% extends "base.html" %}
-{% block titlee %}Настройки{% endblock %}
-{% block meta_descr %}Настройки позволяют отключить звук, управлять различными оповещения и делать другие изменения{% endblock %}
+{% extends "base.html" %}{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block titlee %}{% trans "Настройки" %}{% endblock %}
+{% block meta_descr %}{% trans "Настройки позволяют отключить звук, управлять различными оповещения и делать другие изменения" %}{% endblock %}
 
 {% block nav_settings %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/settings/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/settings/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/settings/" />
+{% endfor %}
+
+<style>
+.checkbox {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.dropdown_settings {
+    float: right;
+}
+.dropdown_setting {
+    margin-bottom: 20px;
+}
+.name_settings {
+    display: inline-block;
+    padding: 10px 0;
+}
+.busfavor_width {
+    min-width: 156px !important;
+}
+.show_descr {
+    visibility: visible !important;
+    animation: fadeIn 0.5s;
+}
+.popup_descr {
+    visibility: hidden;
+    width: 75%;
+    background-color: #f0f0f0;
+    color: #000;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    left: 25px;
+    font-size: 12px;
+    bottom: -30%;
+    padding: 10px;
+}
+.popup_descr::after {
+    content: "";
+    position: absolute;
+    left: -9px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #f0f0f0 transparent transparent;
+}
+.ui.checkbox.settings_page input[type="checkbox"], .ui.checkbox.settings_page label::before, .ui.toggle.checkbox.settings_page input:checked ~ label::before, .ui.toggle.checkbox.settings_page input:checked ~ label::after {
+    right: 0 !important;
+    left: auto !important;
+}
+.ui.toggle.checkbox.settings_page input ~ label::after {
+    right: 2.15rem !important;
+    left: auto !important;
+}
+.ui.checkbox.settings_page label {
+    padding-left: 0 !important;
+}
+.fa-question-circle-o {
+    color: #DEDEDF;
+    font-size: 20px !important;
+    margin-top: -2px !important;
+}
+.count_busfavor {
+    width: 20%;
+}
+.ui.dropdown.dropdown_settings.selection {
+    min-width: 196px !important;
+}
+.long_name {
+    display: inline-block;
+}
+@media screen and (max-width: 600px) {
+    .count_busfavor {
+        padding: 0;
+    }
+    .count_busfavor {
+        width: 65px;
+    }
+}
+@media screen and (max-width: 390px) {
+    .long_name {
+        width: 190px;
+    }
+    .column {
+        padding: 10px 0 !important;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">Настройки</div>
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/" style="text-decoration-line: underline;">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+
+  <div class="active section">{% trans "Настройки" %}</div>
 </div>
 <div class="ui divider"></div>
 
-<h1 class="ui header" >Настройки
-<div class="sub header">идентификатор: {{us.id}}</div></h1>
-<br/>
-      <div class="ui two column grid stackable">
+{% if other %}
+<div class="ui red message"><b>{% trans "Управление" %}</b>
+{% if ban %}<br/>{% trans "Запрет на редактирование номеров до" %}: {{ ban }} {% endif %}
+
+</div>
+<a class="ui small orange button" href="/settings/{{us.id}}/gban/">{% trans "Бан номеров на сутки" %}</a>
+
+{% endif %}
+
+<form action="./" method="post" class="sform" enctype="multipart/form-data">{% csrf_token %}
+    <div class="ui grid stackable">
         <div class="column">
-             <form action="/settings/" method="post" class="sform">{% csrf_token %}
-            <div class="ui toggle checkbox">
-              <input type="checkbox" name="sound" {% if us.sound %}checked="checked"{%endif%}>
-              <label><i class="fa fa-volume-up fa-fw"></i> Звук</label>
-            </div><br/><br/>
 
-            <div class="ui toggle checkbox">
-              <input type="checkbox" name="sound_plusone" {% if us.sound_plusone %}checked="checked"{%endif%}>
-              <label><i class="fa fa-bullhorn fa-fw"></i> Оповещение +1</label>
-            </div><br/><br/>
-
-            <div class="ui toggle checkbox">
-              <input type="checkbox" name="speed_show" {% if us.speed_show %}checked="checked"{%endif%}>
-              <label><i class="fa fa-dashboard fa-fw"></i> Показывать свою скорость</label>
-            </div><br/><br/>
-
-            <div class="ui toggle checkbox">
-              <input type="checkbox" name="font_big" {% if us.font_big %}checked="checked"{%endif%}>
-              <label><i class="fa fa-font fa-fw"></i> Красивый шрифт (чуть медленнее)</label>
-            </div>
-
-            {% if us.premium %}<br/><br/>
-            <div class="ui toggle checkbox">
-              <input type="checkbox" name="gps_off" {% if us.gps_off %}checked="checked"{%endif%}>
-              <label><i class="fa fa-globe fa-fw"></i> Отключить автопоиск по GPS</label>
-            </div><br/><br/>
-
-            <div class="ui toggle checkbox">
-              <input type="checkbox" name="multi_all" {% if us.multi_all %}checked="checked"{%endif%}>
-              <label><i class="fa fa-binoculars fa-fw"></i> Отображать всё</label>
-            </div>
-            {% endif %}
-
-        </div> <!-- div col end -->
-
-        <div class="column">
-             <!-- <i class="fa fa-picture-o fa-fw"></i> Оформление
-                 <select name="us_theme" class="ui dropdown" style="width:100%">
-                 <option value="0" {% if us.theme == 0 %}selected="selected"{%endif%}>Оригинальный</option>
-                 <option value="1" {% if us.theme == 1 %}selected="selected"{%endif%}>Оливковый</option>
-                 <option value="2" {% if us.theme == 2 %}selected="selected"{%endif%}>Хэллоуин</option>
-                 <option value="3" {% if us.theme == 3 %}selected="selected"{%endif%}>Карбон</option>
-                 <option value="4" {% if us.theme == 4 %}selected="selected"{%endif%}>Инкогнито</option>
-                 <option value="7" {% if us.theme == 7 %}selected="selected"{%endif%}>Кровь и Песок</option>
-                 <option value="8" {% if us.theme == 8 %}selected="selected"{%endif%}>8 Бит</option>
-                 <option value="10" {% if us.theme == 10 %}selected="selected"{%endif%}>День Валентина</option>
-                 <option value="11" {% if us.theme == 11 %}selected="selected"{%endif%}>Новый Год 2015</option>
-                 <option value="12" {% if us.theme == 12 %}selected="selected"{%endif%}>Игры престолов</option>
-             </select><br/><br/> -->
-
-             {% if us.premium %}
-             <select name="busfavor_amount" class="">
-              <option value="5" {% if us.busfavor_amount == 5 %}selected{%endif%}>5 любимых маршрутов</option>
-               <option value="10" {% if us.busfavor_amount == 10 %}selected{%endif%}>10 любимых маршрутов</option>
-               <option value="20" {% if us.busfavor_amount == 20 %}selected{%endif%}>20 любимых маршрутов</option>
-               <option value="30" {% if us.busfavor_amount == 30 %}selected{%endif%}>30 любимых маршрутов</option>
-             </select><br/><br/>
-             {% endif %}
-             </form>
-            {% if transaction %}
-            <button class="ui labeled icon basic button green"><i class="fa fa-money icon"></i>Пин код: <b>{{transaction.pin}}</b><br/>
-            (до {{transaction.end_time.date}})</button><br/><br/>
-            {% endif %}
-
-            <form action="/pin/" method="post">
-                <div class="ui action input">
-                  <input type="text" name="pin" placeholder="пин-код">
-                  <button class="ui teal button" type='submit'><i class="fa fa-diamond icon"></i> ввод</button>
+            <div class="dropdown_setting">
+                <div class="name_settings count_busfavor">{% trans "Кол-во избранных" %}:</div>
+                <div class="dropdown_settings">
+                    <select id="select" name="busfavor_amount" class="ui compact dropdown busfavor_width">
+                         <option value="0" {% if us.busfavor_amount == 0 %}selected{%endif%}>0 </option>
+                         <option value="5" {% if us.busfavor_amount == 5 %}selected{%endif%}>5 </option>
+                         <option value="10" {% if us.busfavor_amount == 10 %}selected{%endif%}>10</option>
+                         {% if user.is_authenticated %}
+                         <option value="20" {% if us.busfavor_amount == 20 %}selected{%endif%}>20</option>
+                         <option value="30" {% if us.busfavor_amount == 30 %}selected{%endif%}>30</option>
+                         {% endif %}
+                    </select>
+                    <button class="ui icon button" style="margin: 0 0 0 5px; padding: 12px;" onclick="favor_clear();return false;"><i class="fa fa-trash" aria-hidden="true"></i></button>
                 </div>
-            </form><br/>
+            </div>
 
-            <button class="ui fluid right labeled icon button" onclick="window.location.href = '/us/reset-bus-favorites/';">
-            <i class="fa fa-star-o icon"></i> Очистить любимые</button>
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="sound" {% if us.sound %}checked="checked"{%endif%} aria-label="{% trans "Звук" %}">
+                <label> {% trans "Звук" %}<i class="fa-question-circle-o icon" aria-hidden="true" id="descr_sound" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_sound">{% trans "Включает звук приближения автобуса" %}.</div>
+            </div>
 
-            {% if transaction.vip %}
-            <br/>
-            <a href="/icon-editor/"><button class="ui fluid right labeled icon button">
-            <i class="fa fa-paw icon"></i> Редактор наклеек</button></a>
+            <div class="ui toggle checkbox settings_page">
+                <input id="expert" type="checkbox" name="expert" onclick="hidden_radio()" {% if us.expert %}checked="checked"{%endif%} aria-label="{% trans "Расширенный режим" %}">
+                <label> {% trans "Расширенный режим" %} <i class="fa-question-circle-o icon" aria-hidden="true" id="descr_expert" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_expert">{% trans "Добавляет кнопки скрытия маршрутов, быстрого доступа и радио." %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="voice" {% if us.voice %}checked="checked"{%endif%} aria-label="{% trans "Голосовое сопровождение" %}">
+                <label> {% trans "Голосовое сопровождение" %} <i class="fa-question-circle-o icon" aria-hidden="true" id="descr_voice" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_voice">{% trans "Чтение информации для слабовидящих" %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="font_big" {% if us.font_big %}checked="checked"{%endif%} aria-label="{% trans "Использовать шрифт PT Sans" %}">
+                <label> {% trans "Использовать шрифт PT Sans" %} <i class="fa-question-circle-o icon" aria-hidden="true" id="descr_font_big" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_font_big">{% trans "На некоторых устройствах может выглядеть красивее, дополнительно загружает около 200Kb данных" %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="busfav_hold" {% if us.busfav_hold %}checked="checked"{%endif%} aria-label="{% trans "Удерживать любимые" %}">
+                <label> {% trans "Зафиксировать избранные" %} <i class="fa-question-circle-o icon" aria-hidden="true" id="descr_busfav_hold" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_busfav_hold">{% trans "Любимые маршруты перестают изменяться в зависимости от частоты просмотра и удаление из любимых блокируется" %}.</div>
+            </div>
+
+            {% if tcard %}
+            <div class="dropdown_setting">
+                <div class="name_settings">{% trans "Номер ТК" %}:</div>
+                <div class="ui input dropdown_settings" style="width: 196px;">
+                    <input type="text" placeholder="{% trans "№ транспортной карты" %}" maxlength="16" id="id_tcard" name="tcard" value="{% if us.tcard %}{{us.tcard}}{% endif %}" title="{% trans " Номер транспортной карты " %}">
+                </div>
+
+            </div>
             {% endif %}
+
+
+
+            <div id="select_radio" class="dropdown_setting" style="{% if us.expert %}display: block;{% else %}display: none;{%endif%}">
+                <div class="name_settings">{% trans "Радио" %}</div>
+                <select name="select_radio" class="ui dropdown dropdown_settings">
+                    <option value="" {% if not us.radio %}selected{% endif %}>{% trans "не установлен" %}</option>
+                    <option value="lay" {% if us.radio == "lay" %} selected{%endif%}> {% trans "Лаундж" %} </option>
+                    <option value="rok" {% if us.radio == "rok" %} selected{%endif%}>{% trans "Рок" %} </option>
+                    <option value="shans" {% if us.radio == "shans" %} selected{%endif%}> {% trans "Шансон" %} </option>
+                    <option value="elect" {% if us.radio == "elect" %} selected{%endif%}> {% trans "Электронная" %} </option>
+                    <option value="pop" {% if us.radio == "pop" %} selected{%endif%}> {% trans "Поп" %} </option>
+                </select>
+            </div>
+
+            <div id="select_dark_theme" class="dropdown_setting">
+                <div class="name_settings">{% trans "Темная тема" %}</div>
+                <select name="select_dark_theme" class="ui dropdown dropdown_settings">
+                    <option value="off" {% if us.attrs.dark_theme == "off" %} selected{%endif%}> {% trans "Выключена" %} </option>
+                    <option value="on" {% if us.attrs.dark_theme == "on" %} selected{%endif%}>{% trans "Включена" %} </option>
+                    <option value="auto" {% if us.attrs.dark_theme == "auto" %} selected{%endif%}>{% trans "Автоматически" %} </option>
+                </select>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="gps_off" {% if us.gps_off %}checked="checked"{%endif%} aria-label="{% trans "Выключить поиск остановок" %}">
+                <label> <div class="long_name">{% trans "Отключить поиск ближайшей остановки" %}</div> <i class="fa-question-circle-o icon" aria-hidden="true" id="descr_gps_off" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_gps_off">{% trans "Прекращает искать ближайшую остановку в поиске маршрута" %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="multi_all" {% if us.multi_all %}checked="checked"{%endif%} aria-label="{% trans "Отображать всех" %}">
+                <label> <div class="long_name">{% trans "Отображать смежные маршруты" %} </div><i class="fa-question-circle-o icon" aria-hidden="true" id="descr_multi_all" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_multi_all">{% trans "Отображает транспортные средства других маршрутов, остановки у которых совпадают с выбранным" %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="live_indicator" {% if us.attrs.live_indicator %}checked="checked"{%endif%} aria-label="{% trans "Отображение индикатора соединения" %}">
+                <label> <div class="long_name">{% trans "Отображение индикатора соединения" %} </div><i class="fa-question-circle-o icon" aria-hidden="true" id="descr_live_indicator" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_multi_all">{% trans "Отображение индикатора соединения в нижней части экрана" %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="plusone" {% if us.attrs.plusone %}checked="checked"{%endif%} aria-label="{% trans "Изменение количества ТС на маршруте" %}">
+                <label> <div class="long_name">{% trans "Отображение событий изменения количества транспортных средств на маршруте" %} </div><i class="fa-question-circle-o icon" aria-hidden="true" id="descr_plusone" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_multi_all">{% trans "Отображение изменений количества активных транспортных средств на маршруте в пямом и обратном направлении" %}.</div>
+            </div>
+
+            {% if LANGUAGE_CODE == "ru" %}
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="sound_plusone" {% if us.sound_plusone %}checked="checked"{%endif%} aria-label="{% trans "Звук для события плюс один на маршруте" %}">
+                <label> <div class="long_name">{% trans "Звук для события плюс один на маршруте" %} </div><i class="fa-question-circle-o icon" aria-hidden="true" id="descr_sound_plusone" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_multi_all">{% trans "При изменении количества активных транспортных средств воспроизводит звук" %}.</div>
+            </div>
+            {% endif %}
+            {% comment %}
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="p2p_video" {% if us.p2p_video %}checked="checked"{%endif%} {% if transaction.key != 'premium' %}disabled="disabled"{%endif%} aria-label="{% trans "Видеосвязь (кроме ios)" %}">
+                <label> {% trans "Видеосвязь (кроме iOS)" %} <i class="fa-question-circle-o icon" aria-hidden="true"></i></label>
+            </div>
+            {% endcomment %}
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="bigsticker" {% if us.attrs.bigsticker %}checked="checked"{%endif%} aria-label="{% trans "Большие наклейки для ТС" %}">
+                <label> <div class="long_name">{% trans "Большие наклейки" %} </div><i class="fa-question-circle-o icon" aria-hidden="true" id="descr_plusone" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_multi_all">{% trans "Если на ТС установлен стикер, то он отображается в большем размере слева от символа ТС" %}.</div>
+            </div>
+
+            <div class="ui toggle checkbox settings_page">
+                <input type="checkbox" name="edit_mode" {% if us.edit_mode  %}checked="checked"{%endif%} {% if not user.is_authenticated or not us.premium %}disabled="disabled"{%endif%} aria-label="{% trans "Включить редактирование" %}">
+                <label> {% trans "Включить редактирование" %} <i class="fa-question-circle-o icon" aria-hidden="true" id="descr_edit_mode" onclick="descripton_settings(this.id)" style="float: left; margin-right: 10px;"></i></label>
+                <div class="popup_descr descr_edit_mode">{% trans "Включить интерфейс редактора" %}.</div>
+            </div>
+
         </div>
-      </div>
-
-  <div class="ui grid"><div class="center aligned column">
-    <div class="ui button" onclick="window.location.href = '/';">Отменить</div>
-    <div class="ui positive right labeled icon button" onclick="$('.sform').submit();">
-      Сохранить<i class="fa fa-check icon"></i>
     </div>
-  </div></div>
+</form>
 
+<script>
+function favor_clear() {
+    var a = confirm("{% trans "Все любимые маршруты будут сброшены. Вы уверены? " %}");
+    if (a) {
+        window.location.href = '/us/reset-bus-favorites/';
+    }
+}
+
+function descripton_settings(id_elem) {
+    var elem = $('.' + id_elem);
+    if (elem.hasClass("show_descr")) {
+        $('.popup_descr').removeClass("show_descr");;
+    } else {
+        $('.popup_descr').removeClass("show_descr");
+        $('.' + id_elem).addClass("show_descr");;
+    }
+}
+
+function hidden_radio() {
+    var div = document.getElementById('select_radio');
+    var check = document.getElementById('expert');
+    if (check.checked) {
+        div.style.display = 'block';
+    } else {
+        div.style.display = 'none'
+    }
+}
+
+function js_page_extra() {
+    $('.ui.dropdown').dropdown();
+
+    $(document).click(function(e){
+        var $target = $(e.target);
+        if ( !$target.is('.fa-question-circle-o') && !$target.parents('.fa-question-circle-o').length) {
+            $('.popup_descr').removeClass("show_descr");
+        }
+    });
+
+    $('[type="checkbox"]').change(function(){
+        var name = $(this).prop("name");
+        var checked = $(this).prop("checked");
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name: name, checked: checked, csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(data, textStatus, jqXHR) {
+                console.log("ok");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('[name="tcard"]').change(function(){
+        tcard_check();
+    });
+
+     $('[name = "select_radio"]').change(function(){
+        var name  = $(this).prop("name");
+        var value = $(this).prop("value");
+        console.log(name, value);
+
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name : name, value: value, csrfmiddlewaretoken: '{{ csrf_token}}'
+            }
+        });
+    });
+
+     $('[name = "select_dark_theme"]').change(function(){
+        var name  = $(this).prop("name");
+        var value = $(this).prop("value");
+        console.log(name, value);
+
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name : name, value: value, csrfmiddlewaretoken: '{{ csrf_token}}'
+            },
+            success: function(data, textStatus, jqXHR) {
+                if (value === "on" || (value === "auto" && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark_theme');
+                } else {
+                    document.documentElement.classList.remove('dark_theme');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('[name = "busfavor_amount"]').change(function(){
+        var name  = $(this).prop("name");
+        var value = $(this).prop("value");
+
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name : name, value : value, csrfmiddlewaretoken: '{{ csrf_token}}'
+            }
+        });
+    });
+}
+</script>
 
 {% endblock %}

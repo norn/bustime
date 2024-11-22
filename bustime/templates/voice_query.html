@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% load cache %}{% load l10n %}
+
+{% block content %}
+<form action="./" method="post">{% csrf_token %}
+<div class="ui input">
+<input type="text" name="name" value="" placeholder="название остановки"/>
+</div>
+<input type="submit" class="ui pink button" value="запросить"/></td>
+<br/><br/>
+<table>
+ {% for s in stops %}
+  <tr><td>
+    <a href="{{ s.get_slug_url }}" target="_blank">{{s}}</a>
+  </td><td>
+    <a href="{{s.city.get_absolute_url}}" target="_blank">{{ s.city }}</a></td></tr>
+ {% endfor %}
+</table>
+<br/><br/>
+{% endblock %}

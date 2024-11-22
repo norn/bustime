@@ -4,10 +4,14 @@ __pycache__/
 
 # C extensions
 *.so
+*.o
 
 # Distribution / packaging
 .Python
 env/
+.env/
+venv/
+.venv/
 build/
 develop-eggs/
 dist/
@@ -19,9 +23,11 @@ lib64/
 parts/
 sdist/
 var/
+logs/
 *.egg-info/
 .installed.cfg
 *.egg
+node_modules/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -47,23 +53,29 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-
 # Sphinx documentation
 docs/_build/
 
 # PyBuilder
 target/
 
-# norn
-zbusd/ssl
-zbusd/supervisor
-zbusd/trash
-zbusd/crawler-krsk.py
-zbusd/perm-crawler.py
+# project
+local_settings.py
+GeoLite2-City.mmdb
+ssl/
+logs/
+log/
+backoffice/static/
 .hg
 .hgignore
-log
-backoffice/static/
-bustime/local_settings.py
+*.log
+*.br
+*.bz2
+*.tmp
+*.temp
+*.old
+*.dump
+v?/*.json
+v?/*.patch
+uploads/
+semantic/dist/

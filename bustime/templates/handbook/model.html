@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/bus/">{% trans "Автобус" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{{model.name}}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/bus.png" />
+</div>
+<br/>
+<table class="ui striped table">
+    {% for feature in model.vehiclemodelfeature_set.all %}
+        <tr>
+            <td>{{feature.feature.name}}</td>
+            <td>{{feature.value}}</td>
+        </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

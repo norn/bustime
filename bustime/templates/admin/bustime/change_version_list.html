@@ -1,0 +1,47 @@
+{% extends "admin/change_list.html" %}
+
+{% block extrahead %}
+  {{ block.super }}
+
+  <style>
+    @media (min-width: 1280px) {
+      #changelist {
+        display: grid;
+        grid-template-columns: 1fr 240px;
+        grid-template-rows: auto auto 1fr;
+        grid-column-gap: 40px;
+        grid-row-gap: 0px;
+      }
+
+      #changelist > * {
+        grid-column-start: 1;
+        grid-column-end: 1;
+        margin-right: 0 !important; /* hax :( */
+      }
+
+      #changelist-form > * {
+        margin-right: 0 !important; /* more hax :( */
+      }
+
+      #changelist #changelist-filter {
+        position: relative;
+        grid-area: 1 / 2 / 4 / 3;
+      }
+
+    th.column-get_diff {
+        width: 50%;
+    }   
+    }
+
+    table { 
+        margin-left: auto; 
+        margin-right: auto; 
+        font-size: 20px; 
+        height: 100%; 
+        table-layout: fixed; 
+        min-width: 1280px;
+    }
+
+  </style>
+
+{% endblock %}

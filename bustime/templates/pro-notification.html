@@ -1,16 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <center><br/>
-<i style="font-size:3em;color:#135229" class="fa fa-diamond"></i><br/>
+<i style="font-size:3em;color:#135229" class="fa-diamond icon"></i><br/>
 <h1 class="ui header">Поздравляем!</h1>
 
 <div style="font-size:120%" class="brand-brown">
 	Активирована подписка до {{transaction.end_time.date}},
 <br/>вы можете перенести ее на любое устройство введя пин-код в настройках <i class="fa fa-cog"></i>
 <p style="font-size:125%;color:red">запишите пин-код: <b>{{transaction.pin}}</b></p>
-<p style="font-size:100%;color:#555">поддержка по телефону <b>+7-903-921-4337</b> с 13:00 до 21:00 (Калининград)</p>
-<a href="/"><button class="ui green right labeled icon button">Продолжить <i class="fa fa-step-forward icon"></i></button></a>
+<p style="font-size:100%;color:#555">поддержка по email <b>support@mail.address</b></p>
+<form action="" method="post">{% csrf_token %}
+<input type="hidden" name="notified" value="1">
+<button class="ui green right labeled icon button" type="submit">Продолжить <i class="fa-step-forward icon"></i></button>
+</form>
 </div>
 <br/><br/><br/>
 </center>

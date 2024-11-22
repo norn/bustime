@@ -1,0 +1,518 @@
+{% extends "base.html" %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Тесты RPC" %}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{% block extra_head %}
+
+<script src="https://cdn.bustime.loc/static/js/jquery-3.1.0.min.js"></script>
+<script>
+var city_id={{city.id}};
+var us_id={{us.id}};
+</script>
+{% endblock %}
+
+{% block nav_company %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/admin/">{% trans "Управление сервером" %}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Тесты RPC" %}</div>
+</div>
+<div class="ui divider"></div>
+
+{% if user.is_authenticated %}
+<div class="ui stackable grid">
+    <div class="row">
+        <div class="four wide column">
+            <a class="ui button" onclick="toggler('#us_content')">us</a>
+            &nbsp;<a class="ui button" onclick="toggler('#city_content')">city</a>
+            &nbsp;<a class="ui button" onclick="toggler('#allevents_content')">allevents</a>
+        </div>
+        <div class="six wide column">
+            <b>{% trans "Маршрут" %}</b>&nbsp;
+            <select id="buses" size="1" class="ui dropdown search" onchange="busesOnChange(this)">
+                {% for b in buses %}
+                <option value="{{b.id}}*{{b.name}}">{{b.name}}, ttype={{b.ttype}}, id={{b.id}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="six wide column">
+            <b>{% trans "Провайдер" %}</b>&nbsp;
+            <select id="provs" size="1" class="ui dropdown search" onchange="provsOnChange(this)">
+                {% for p in provs %}
+                <option value="{{p.id}}">{{p.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="six wide column">
+            <b>{% trans "ТС" %}</b>&nbsp;
+            <select id="vehs" size="1" class="ui dropdown search" onchange="vehsOnChange(this)" style="max-width:80%;">
+                {% for b in vehs %}
+                <option value="{{b.uniqueid}}*{{b.gosnum}}">{{b.gosnum|default:"НЕТ"}}, bortnum={{b.bortnum|default:"НЕТ"}}, id={{b.uniqueid}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="five wide column">
+            <div class="ui action input">
+                <input type="text" id="uniqueid" placeholder="uniqueid" style="max-width:50%;">
+                <button class="ui button" onclick="vehicle('uniqueid')">Uniqueid events</button>
+            </div>
+        </div>
+        <div class="five wide column">
+            <div class="ui action input">
+                <input type="text" id="gosnum" placeholder="gosnum" style="max-width:50%;">
+                <button class="ui button" onclick="vehicle('gosnum')">Gosnum events</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="us_content" class="ui message hidden">
+  <div class="header">us</div>
+  <p>{{us_}}</p>
+</div>
+<div id="city_content" class="ui message hidden" >
+  <div class="header">city</div>
+  <p>{{city_}}</p>
+</div>
+<div id="allevents_content" class="ui message hidden" >
+  <div class="header">allevents</div>
+  <p>{{allevents}}</p>
+</div>
+<br/>
+
+<div class="ui grid">
+    <div class="column">
+        <table class="ui small celled table">
+            <thead>
+                <tr>
+                    <th width="20%">Функция RPC</th>
+                    <th width="*">data</th>
+                    <th width="5%">Вызов</th>
+                    <th width="5%">Сброс</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select id="fname" size="1" class="ui dropdown search" onchange="fnameOnChange(this.value)">
+                        <option>PROXIES</option>
+                        <option>rpc_bus get</option>
+                        <option>rpc_bus set</option>
+                        <option>rpc_chat_get</option>
+                        <option>rpc_chat</option>
+                        <option>rpc_city_error</option>
+                        <option>rpc_bdata</option>
+                        <option>rpc_bootstrap_amounts</option>
+                        <option>rpc_buses_by_radius</option>
+                        <option>rpc_buses_by_radius_v2</option>
+                        <option>rpc_gosnum get</option>
+                        <option>rpc_gosnum set</option>
+                        <option>rpc_gps_send</option>
+                        <option>rpc_get_city_icons</option>
+                        <option>rpc_mobile_bootstrap</option>
+                        <option>rpc_provider get</option>
+                        <option>rpc_provider set</option>
+                        <option>rpc_schedule get</option>
+                        <option>rpc_schedule set</option>
+                        <option>rpc_status_server</option>
+                        <option>rpc_status_counter</option>
+                        <option>rpc_stop_ids</option>
+                        <option>rpc_vehicle</option>
+                        <option>rpc_vehicle_info</option>
+                        <option>/ajax/jam/ get</option>
+                        <option>/ajax/nominatim/</option>
+                        <option>/api/jsonrpc user_get</option>
+                        <option>/api/jsonrpc db_version</option>
+                        <option>/api/jsonrpc get_city_version</option>
+                        <option>/api/jsonrpc get_city_version</option>
+                        <option>/mapzen/ https://tile.bustime.ru</option>
+                        <option>/mapzen/ https://ru.bustime.loc</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="ui input" style="width:100%;">
+                            <input type="text" id="data"
+                                value='{"bus_id": "", "get": ["name", "provider", "price", "discount", "payment_method", "mtime", "ctime"]}'>
+                        </div>
+                    </td>
+                    <td>
+                        <button id="button_fname_call" class="ui button" onclick="fname_call()" disabled>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button id="button_fname_reset" class="ui button" onclick="fname_reset()" disabled>
+                            <i class="fa fa-undo" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:top;">
+                        <b>Ответ:</b>
+                    </td>
+                    <td colspan="3">
+                        <pre id="debug"
+                            style="height: 300px; width:100%; max-width:900px; overflow:auto; border:1px solid gray;">
+                        </pre>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="vertical-align:top;">
+                        <b>Websocket:</b>
+                    </td>
+                    <td colspan="3">
+                        <pre id="websocket"
+                            style="height: 100px; width:100%; max-width:900px; overflow:auto; border:1px solid gray;">
+                        </pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% else %}
+<a class="ui button" href="/wiki/">Вход</a>
+{% endif %}
+
+
+<script>
+function busesOnChange(buses) {
+
+}
+
+function provsOnChange(provs) {
+
+}
+
+function vehsOnChange(vehs) {
+    let a = vehs.value.split('*');
+    $("#uniqueid").val(a[0]);
+    $("#gosnum").val(a[1]);
+}
+
+function vehicle(what) {
+    let val = $(`#${what}`).val();
+    if(val) {
+        url = `/admin/vehicle/?${what}=${val}`;
+        let win = window.open(url, '_blank');
+        win.focus();
+        //window.location.href = url;
+    }
+}
+
+function fnameOnChange(fname) {
+    fname_reset();
+    debug('');
+}
+
+function fname_reset() {
+    fname = $("#fname").val().split(' ');  // 0 - func name, 1 - method (get/set)
+    let bus_id = $("#buses").val() ? $("#buses").val().split('*')[0] : 0;
+    let uniqueid = $("#vehs").val() ? $("#vehs").val().split('*')[0] : '';
+    let prov_id = $("#provs").val() || 0;
+
+    switch(fname[0]){
+        case 'PROXIES':
+            $("#data").val(`{"url": "http://example.org/", "timeout": "5"}`);
+            break;
+
+        case 'rpc_bus':
+            if(fname[1]=='get')
+                $("#data").val(`{"bus_id": "${bus_id}", "get": ["name", "provider", "price", "discount", "payment_method", "mtime", "ctime"]}`);
+            else
+                $("#data").val(`{"bus_id": "${bus_id}", "set": {"provider":${prov_id}, "price":25, "discount":false}}`);
+            break;
+
+        case 'rpc_gosnum':
+            if(fname[1]=='get')
+                $("#data").val(`{"gosnum": {"city_id":{{city.id}}, "uniqueid": "${uniqueid}"}}`);
+            else
+                $("#data").val(`{"gosnum":{"city_id":{{city.id}}, "uniqueid":"${uniqueid}", "gosnum":"тест", "label":"Тест", "model": "паз-32054-03", "region":"66"}}`);
+            break;
+
+        case 'rpc_chat_get':
+            $("#data").val(`{"bus_id": "${bus_id}"}`);
+            break;
+
+        case 'rpc_chat_get':
+            $("#data").val(`{"bus_id": "${bus_id}"}`);
+            break;
+
+        case 'rpc_chat':
+            $("#data").val(`{"bus_id": "${bus_id}", "message": "test"}`);
+            break;
+
+        case 'rpc_buses_by_radius':
+        case 'rpc_buses_by_radius_v2':
+            let x = "{{city.point.x}}";
+            let y = "{{city.point.y}}";
+            x = x.replace(",", ".");
+            y = y.replace(",", ".");
+            $("#data").val(`{"city_id": {{city.id}}, "x": ${x}, "y": ${y}, "buses": [${bus_id}], "radius": 100}`);
+            break;
+
+        case 'rpc_get_city_icons':
+            $("#data").val(`{"ms_id":"", "city_id":"{{city.id}}", "us_id":"{{us.user.id}}"}`);
+            break;
+
+        case 'rpc_mobile_bootstrap':
+            $("#data").val(`{"ms_id":"", "city_id":"{{city.id}}", "us_id":"{{us.user.id}}"}`);
+            break;
+
+        case 'rpc_vehicle':
+            $("#data").val(`{"city_id":"{{city.id}}", "uniqueid":"${uniqueid}", "uid_provider":"${prov_id}"}`);
+            break;
+
+        case 'rpc_vehicle_info':
+            $("#data").val(`{"uniqueid":"${uniqueid}"}`);
+            break;
+
+        case 'rpc_schedule':
+            if(fname[1]=='get')
+                $("#data").val(`{"bus_id": "${bus_id}"}`);
+            else
+                $("#data").val(`{"bus_id": "${bus_id}", "tt_start": {"0": "06:20 06:40", "1": "06:20 06:40"}, "tt_start_holiday": {"0": "06:20 06:40", "1": "06:20 06:40"}}`);
+            break;
+
+        case 'rpc_bdata':
+            $("#data").val(`{"bus_id": "${bus_id}", "mode": 1, "mobile": false}`);
+            break;
+
+        case 'rpc_bootstrap_amounts':
+            $("#data").val(`{"city_id": "{{city.id}}"}`);
+            break;
+
+        case 'rpc_provider':
+            if(fname[1]=='get')
+                $("#data").val(`{"provider": {"id": "${prov_id}"}}`);
+            else
+                $("#data").val(`{"provider": {"city_id":{{city.id}}, "id":"${prov_id}", "name":""}}`);
+            break;
+
+        case 'rpc_status_server':
+            $("#data").val(``);
+            break;
+
+        case 'rpc_city_error':
+            $("#data").val(`{"city_id": "{{city.id}}"}`);
+            break;
+
+        case 'rpc_status_counter':
+            $("#data").val(`{"city_id": "{{city.id}}"}`);
+            break;
+        
+        case 'rpc_stop_ids':
+            $("#data").val(`{"ids": [1135], "mobile": true}`);
+            break;
+
+        case 'rpc_gps_send':
+            let d = new Date();
+            let s = d.getTime();
+            let lat = "{{city.point.y}}".replace(",", ".");
+            let lon = "{{city.point.x}}".replace(",", ".");
+            $("#data").val(`{"us_id": "{{us_.id}}", "lat": "${lat}", "lon": "${lon}", "accuracy": "10.0", "speed": "10.0", "heading": "0.0", "timestamp": ${s}}`);
+            break;
+
+        case '/ajax/jam/':
+            $("#data").val(`{"city_id": "{{city.id}}", "bus_ids": [${bus_id}]}`);
+            break;
+
+        case '/ajax/nominatim/':
+            $("#data").val(`{"q": "{{city.slug}}", "format": "json", "limit": "1", "addressdetails": "1"}`);
+            break;
+
+        case '/api/jsonrpc':
+            if(fname[1] === 'user_get'){
+                $("#data").val(`{"id":"6789", "method": "user_get", "params": {"ms_id": "34993", "db_base": "v7"}}`);
+            }
+            else if(fname[1] === 'db_version'){
+                $("#data").val(`{"id": "6789", "method": "db_version", "params": {"ms_id": "34993"}}`);
+            }
+            else if(fname[1] === 'get_city_version'){
+                $("#data").val(`{"id": "6789", "method": "get_city_version", "params": {"ms_id": "34993", "city_id": 201, "db_base": "v7"}}`);
+            }
+            break;
+
+        case '/mapzen/':
+            $("#data").val(`{"zoom": 13, "x": 4660, "y": 2405, "mode": "json"}`);
+            break;
+    }   // switch
+}
+
+function fname_call() {
+    $("#debug").html('');
+
+    let fname = $("#fname").val();
+    let data = $("#data").val();
+    data = data ? JSON.parse($("#data").val()) : null;
+
+    if( fname.indexOf('/ajax/') !== -1 ) {
+        // ajax
+        debug("Ждите...");
+        fname = $("#fname").val().split(' ');  // 0 - func name, 1 - method (get/post)
+        if( fname.length == 1 )
+            fname[1] = 'GET';
+        /* https://basicweb.ru/jquery/jquery_method_ajax.php */
+        $.ajax({
+            type: fname[1],
+            url: fname[0],
+            data: data,
+            dataType: 'json',
+            success: function(data) {
+                debug(data);
+            },
+            error(jqXHR, textStatus, errorThrown) {
+                debug(`${fname[1]} ${fname[0]}: ${textStatus}: ${errorThrown}`);
+            }
+        });
+    }
+    else if( fname.indexOf('PROXIES') !== -1 || fname.indexOf('get_dyn_proxy') !== -1 ) {
+        // PROXIES
+        debug("Ждите...");
+        $.ajax({
+            type: 'GET',
+            url: '/ajax/test_proxy',
+            data: {"method": fname, "url": data["url"], "timeout": data["timeout"]},
+            dataType: 'json',
+            success: function(data) {
+                debug(data);
+            },
+            error(jqXHR, textStatus, errorThrown) {
+                debug(`requests.get(${data["url"]}, proxies=${fname}): ${textStatus}: ${errorThrown}`);
+            }
+        });
+    }
+    else if( fname.indexOf('api/jsonrpc') !== -1 ) {
+        // api/jsonrpc
+        debug("Ждите...");
+        $.ajax({
+            type: 'POST',
+            url: '/api/jsonrpc/',
+            data: JSON.stringify(data),
+            headers: {"Content-Type": "text/plain"},
+            success: function(data) {
+                debug(data);
+            },
+            error(jqXHR, textStatus, errorThrown) {
+                fname = $("#fname").val().split(' ');  // 0 - func name, 1 - method (get/post)
+                debug(`${fname[0]} ${fname[1]}: ${textStatus}: ${errorThrown}`);
+            }
+        });
+    }
+    else if( fname.indexOf('/mapzen/') !== -1 ) {
+        // api/jsonrpc
+        debug("Ждите...");
+        fname = $("#fname").val().split(' ');  // 0 - url name, 1 - server
+        console.log('fname=', fname)
+        url = `${fname[1]}/mapzen/vector/v1/all/${data.zoom}/${data.x}/${data.y}.${data.mode}`
+        console.log('url=', url)
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'text',
+            success: function(data) {
+                try {
+                    debug(JSON.parse(data));
+                }
+                catch(err) {
+                    debug(data);
+                }
+            },
+            error(jqXHR, textStatus, errorThrown) {
+                debug(`$.ajax(${fname}): ${textStatus}: ${errorThrown}`);
+            }
+        });
+    }
+    else {
+        // socket
+        fname = $("#fname").val().split(' ');  // 0 - func name, 1 - method (get/set)
+        socket.emit(fname[0], data, (data) => debug(data));
+    }
+}
+
+function toggler(v) {
+  $(v).toggleClass('hidden');
+}
+
+function debug(msg)
+{
+    if( typeof msg == 'object' )
+        msg = JSON.stringify(msg, null, 4);
+    $("#debug").html(msg);
+}
+
+function router(event) {
+    if( typeof event == 'object' )
+        event = JSON.stringify(event, null, 4);
+    $("#websocket").html(event);
+}
+
+function wsocket_reconnect() {
+    // после распространения работы bustime_main.js на все страницы такая странная конструкция
+    window.router = function(event) {
+        if( typeof event == 'object' )
+            event = JSON.stringify(event, null, 4);
+        $("#websocket").html(event);
+    };
+
+    window.debug = function(msg) {
+        if( typeof msg == 'object' )
+            msg = JSON.stringify(msg, null, 4);
+        $("#debug").html(msg);
+    };
+
+    if (socket == undefined) {
+        websconnect();
+    }
+
+    socket.close(); // main socket in bustime_main.js
+    socket = null;
+    socket = io(); // wss://host:port/socket.io/
+
+    // http://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-handler
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+
+    socket.on('connect', function() {
+        socket.emit('authentication', {username: us_id, password: "", os:"web"});
+        router(new Date() + ": Socket connected");
+    });
+
+    socket.on("*", function(event,data) {
+        router(event);
+    });
+
+    socket.on('disconnect', function() {
+        router('Socket disconnect');
+    });
+
+    $("#button_fname_call").prop("disabled", false);
+    $("#button_fname_reset").prop("disabled", false);
+}
+</script>
+{% endblock %}
+
+{% block body_end %}
+<script>
+window.addEventListener('load', function() {
+    fname_reset();
+    setTimeout(wsocket_reconnect, 1000);  // дать сокету в bustime_main.js отработать
+});
+</script>
+{% endblock %}

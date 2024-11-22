@@ -1,65 +1,380 @@
-{% extends "base.html" %}
-{% block titlee %}{{bus.ttype_name}} {{bus.name}} - Расписание - {{city.name}}{% endblock %}
-{% block meta_descr %}{{bus.ttype_name}} {{bus.name}} - расписание в {{bus.city.name_gde}}{% endblock %}
+{% extends "base.html" %}{% load timeorama %}}{% load cache %}{% load l10n %}{% load i18n %}{% load russia_or_not_tag %}
+{% get_current_language as LANGUAGE_CODE %}
 
-{%block extra_head%}
-<link rel="canonical" href="http://www.bustime.ru{{bus.get_absolute_url_schedule}}">
+{% block titlee %}{{ bus.ttype_name }} {{ bus.name }} - {% trans "Расписание и маршрут" %}{% endblock %}
+{% block meta_descr %}{{ bus.ttype_name }} {{ bus.name }} - {% trans "Расписание и маршрут" %}. 
+{% trans "Автобусы онлайн в реальном времени и другая информация для пассажиров общественного транспорта" %}.{% endblock %} 
+
+{% block extra_head %}
+    <link rel="alternate" hreflang="x-default" href="https://bustime.loc{{ bus.get_absolute_url_schedule }}">
+    <link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{ bus.get_absolute_url_schedule }}">
+    {% get_available_languages as LANGUAGES %}
+    {% for language_code, language_name in LANGUAGES %}
+        <link rel="alternate" hreflang="{{ language_code }}"
+              href="https://{{ language_code }}.bustime.loc{{ bus.get_absolute_url_schedule }}"/>
+    {% endfor %}
+
+    <script src="https://cdn.bustime.loc/static/js/schedule_bus.js" type="text/javascript"></script>
+    <style>
+        .ft {
+            color: #555;
+            font-size: 1.33em;
+        }
+
+        /*hue-rotate(360deg); sepia(0.5);*/
+        @keyframes beatanimo {
+            0% {
+                filter: grayscale(0);
+
+            }
+            50% {
+                filter: grayscale(0.5);
+            }
+            100% {
+                filter: grayscale(0);
+            }
+        }
+
+        .btc {
+            animation: beatanimo 0.5s infinite;
+        }
+
+
+        @media (max-width: 767px) {
+            .ft {
+                font-size: 16px;
+            }
+
+            #lmap {
+                min-height: 400px;
+                height: 100%;
+            }
+
+            .ads_mob {
+                max-width: 100%;
+                margin: 0 !important;
+            }
+        }
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BusTrip",
+  "isicV4": "H",
+  "name": "{{ bus.ttype_name }} {{ bus.name }}",
+  "busName": "{{ bus.ttype_name }} {{ bus.name }}",
+  "description": "{{ place.name }}"
+}
+</script>
 {% endblock %}
-{% block nav_schedule %}active{%endblock%}
-{%block content%}
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <a class="section" href="/{{city.slug}}/">Общественный транспорт в {{city.name_gde}}</a>
-  <div class="ui divider"> / </div>
-<a class="section" href="/{{city.slug}}/schedule/">Расписание</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">{{bus.ttype_name}} {{bus.name}}</div>
-</div>
-<div class="ui divider"></div>
+
+{% block nav_schedule %}active{% endblock %}
+{% block content %}
+    <script>
+        {% include "_js_init.html" %}
+        city_monitor_bus = {{bus.id}}; //test
+        var US_CITY_POINT_X = {{us.city.point.x|stringformat:"f"}};
+        var US_CITY_POINT_Y = {{us.city.point.y|stringformat:"f"}};
+        var vue_data = {events: [], user_points: [], req_key: ""};
+
+        var route0 = [
+            {%for r in route0%}
+                {{r.busstop.id}},
+            {%endfor%}
+        ];
+        var route1 = [
+            {%for r in route1%}
+                {{r.busstop.id}},
+            {%endfor%}
+        ];
+
+        var busstops = {
+        {% for b in busstops %}
+            {{b.id}}: {
+            id: {{b.id}},
+            name:"{{b.name}}", moveto
+        :
+            "{% if b.moveto %}{{b.moveto}}{%endif%}", x
+        :{{b.point.x|unlocalize}},
+            y:{{b.point.y|unlocalize}} },
+        {% endfor %} }
+        ;
+    </script>
+
+    <div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+        <a class="section" href="/{{ place.slug }}/">{{place.name}}</a>
+        <i class="right angle icon divider"></i>
+        <a class="section" href="/{{ place.slug }}/timetable/">{% trans "Расписание" %}</a>
+        <i class="right angle icon divider"></i>
+        <div class="active section">{{ bus.ttype_name }} {{ bus.name }}</div>
+    </div><br/><br/>
+    <!-- <h1 class="ui center aligned header">{{bus.ttype_name}} {{bus.name}}<div class="sub header">{{now}}</div></h1> -->
+
+    <div id="app">
+        <div class="ui two column stackable grid">
+            <div class="left aligned column">
+                <div style="overflow: hidden" class="btcc">
+                    {% if bus.ttype == 1 %}
+                        <img style="max-width: 100%;" class="btc" src="https://cdn.bustime.loc/static/img/stop_n_trolleybus.webp"
+                             alt="{% trans "троллейбус рядом с остановкой" %}"/>
+                    {% elif bus.ttype == 2 %}
+                        <img style="max-width: 100%;" class="btc" src="https://cdn.bustime.loc/static/img/stop_n_tramway.webp"
+                             alt="{% trans 'трамвай рядом с остановкой' %}"/>
+                    {% elif bus.ttype == 5 %}
+                        <img style="max-width: 100%;" class="btc" src="https://cdn.bustime.loc/static/img/stop_n_intercity.webp"
+                             alt="{% trans 'автобус рядом с остановкой' %}"/>
+                    {% elif bus.ttype == 6 or bus.ttype == 7  %}
+                        <img style="max-width: 100%;" class="btc" src="https://cdn.bustime.loc/static/img/stop_n_train.webp"
+                             alt="{% trans 'поезд рядом с остановкой' %}"/>
+                    {% else %}
+                        <img style="max-width: 100%;" class="btc" src="https://cdn.bustime.loc/static/img/stop_n_bus.webp"
+                             alt="{% trans 'автобус рядом с остановкой' %}"/>
+                    {% endif %}</div>
+                <br/><br/>
+                {% trans "Тип транспортного средства" %}: <a href="/help/{{ bus.ttype_slug }}/">{{ bus.ttype_name }}</a>
+                    <br/>
+                {% if bus.provider %}{% trans "Обслуживает" %}:
+                    <a href="/{{place.slug}}{{ bus.provider.get_absolute_url }}">{{ bus.provider.name }}</a><br/>
+                {% endif %}
 
 
-<h1 class="ui center aligned header">Расписание: {{bus.ttype_name}} {{bus.name}}, {{bus.city.name}}</h1>
+                {% trans "Маршрут проходит через" %}: {% for p in bus.places.all %}
+                   <a href="/{{p.slug}}/">{{p.name}}</a>{% if not forloop.last %}, {% endif %}
+                {%endfor%}<br/><br/>
+
+                {% if bus.distance0 %}{% trans "Протяженность маршрута" %}: {{ bus.distance0_km }} {% trans "км." %}
+                    <br/>{% endif %}
+                {% if bus.travel_time %}{% trans "Время в пути" %}: {{ bus.travel_time|floatformat:"0"}}
+                    {% trans "мин." %}
+                    <br/>{% endif %}
+                {% trans "Текущее время в населенном пункте" %}: {{now.time}}<br/><br/>
+                
+                <a class="ui blue button" href="/{{ place.slug }}/#{{ bus.slug }}">{% trans "смотреть онлайн" %}</a>
+            </div>
+            <script>document.write('<div class="column" id="lmap">')</script>{# если JS заблокирован, лишнего пространства для карты не будет #}
+            
+            </div>
+        </div>
+        <br/><br/>
+
+        {% if ads_show %}
+            <div class="ui center aligned grid ads_mob">
+                <div class="column adsense">
+                    <div style="width: 336px; height: 290px; display: inline-block;">
+                        {% russia_or_not us.ip as is_russia %}
+                        {% if is_russia %}
+                            {% include "ads/sch_yandex_ru_1.html" %}
+                        {% else %}
+                            {% include "ads/bustime_336x280_sch1_ou.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div><br/><br/><br/>
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+            <center><a class="ui labeled orange icon button" href="{{ bus.get_absolute_url }}edit-schedule/">
+                <i class="fa-pencil icon"></i> {% trans "редактировать расписание" %}</a>
+            </center>
+        {% else %}
+            <center><a class="ui labeled orange icon button"
+                       href="/register/?next={{ bus.get_absolute_url }}edit-schedule/">
+                <i class="fa-pencil icon"></i> {% trans "редактировать расписание" %}</a>
+            </center>
+        {% endif %}
+
+        <table class="ui unstackable table" id="dsel">
+            <thead>
+            <tr>
+                <th><a href="#d0">{% trans "Направление" %} 1</a></th>
+                <th><a href="#d1">{% trans "Направление" %} 2</a></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>{{ bus.amount_a }} {% trans 'на маршруте' %}</td>
+                <td>{{ bus.amount_b }} {% trans 'на маршруте' %}</td>
+            </tr>
+            </tbody>
+        </table>
+        </center><br/>
+
+        {% if ads_show and 0 %}
+            <div class="ui center aligned stackable grid">
+                <div class="eight wide column adsense">
+                    {% russia_or_not us.ip as is_russia %}
+                    {% if is_russia %}
+                        {% include "ads/sch_yandex_ru_1.html" %}
+                    {% else %}
+                        {% include "ads/bustime_336x280_sch1_ou.html" %}
+                    {% endif %}
+                </div>
+                <div class="eight wide column adsense">
+                    {% if us.country.code == "ru" %}
+                        {% include "ads/sch_yandex_ru_2.html" %}
+                    {% else %}
+                        {% include "ads/bustime_336x280_sch2_ou.html" %}
+                    {% endif %}
+                </div>
+            </div><br/>
+        {% endif %}
 
 
-<div class="ui two column grid">
-<div class="column">
-<h2 class="ui header">{{bus.napr_a}}</h2>
-<table class="ui table">
-{%for r in route0%}
-<tr><td>
-	<h3 class="ui header">{{r.busstop.name}}</h3>
-	{% if r.times %}<div class="ui blue labels">{%endif%}
-    {% for t in r.times %}
-	{% ifchanged t.hour%}<br/><br/>{% endifchanged %}
-	<div class="ui label">
-	  <i class="fa fa-clock-o icon"></i> {{t}}
-	</div>
-	{% endfor %}
-    {% if r.times %}</div>{%endif%}
-</td></tr>
-{%endfor%}
-</table>
-</div>
-<div class="column">
-<h2 class="ui header">{{bus.napr_b}}</h2>
-<table class="ui table">
-{%for r in route1%}
-<tr><td>
-	<h3 class="ui header">{{r.busstop.name}}</h3>
-	{% if r.times %}<div class="ui blue labels">{%endif%}
-    {% for t in r.times %}
-	{% ifchanged t.hour%}<br/><br/>{% endifchanged %}
-	<div class="ui label">
-	  <i class="fa fa-clock-o icon"></i> {{t}}
-	</div>
-	{% endfor %}
-    {% if r.times %}</div>{%endif%}
-</td></tr>
-{%endfor%}
-</table>
-</div>
 
-</div>
+        <div class="ui two column stackable grid">
+            <div class="column">
 
+                {# расписание: направление 0 #}
+
+                <table class="ui compact unstackable table" id="d0">
+                    {% for r in route0 %}
+                        <tr>
+                            {# первая колонка - время #}
+                            {% if time_bst %}
+                            <td>
+                                {% for key, value in time_bst.items %}
+                                    {% if key == r.id %}
+                                        <div class="ft">{{ value }}</div>{% endif %}
+                                {% endfor %}
+                            </td>
+                            {% endif %}
+                            {# вторая колонка - название остановки #}
+                            <td>
+                                {# первая в списке остановка - конечная, выделяем #}
+                                {% if forloop.counter == 1 %}
+                                    <b>{{ r.busstop.name }}</b>
+                                    {% if r.times %}&nbsp;<i class="fa-clock-o icon"></i>{% endif %}
+                                    {# кнопка редактирования времени отправления с остановк #}
+
+                                {% else %}
+                                    <a href="/{{place.slug}}{{r.busstop.get_slug_url}}">{{ r.busstop.name }}</a>
+                                {% endif %}
+
+                                {# вывод времени отправления с остановки #}
+                                {% if r.times %}
+                                    <div class="ui labels">
+                                        {% for t in r.times %}
+                                            <div class="ui label {% timeorama t now.time %}">{{ t|time:"H:i"}}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if r.id in bdata_mode0.0.stops %}<br/>
+                                    {% if bus.ttype == 0 %}<img width="95" src="https://cdn.bustime.loc/static/img/theme/schedule/bus.png"
+                                                                alt="{% trans 'Автобус' %}">{% endif %}
+                                    {% if bus.ttype == 1 %}
+                                        <img width="105" src="https://cdn.bustime.loc/static/img/theme/schedule/trolleybus.png"
+                                             alt="{% trans 'Троллейбус' %}">{% endif %}
+                                    {% if bus.ttype == 2 %}<img width="105" src="https://cdn.bustime.loc/static/img/theme/schedule/tramway.png"
+                                                                alt="{% trans 'Трамвай' %}">{% endif %}
+                                    {% if bus.ttype == 3 %}<img width="70" src="https://cdn.bustime.loc/static/img/theme/schedule/bus-taxi.png"
+                                                                alt="{% trans 'Маршрутное такси' %}">{% endif %}
+                                    {% if bus.ttype == 5 %}
+                                        <img width="100" src="https://cdn.bustime.loc/static/img/theme/schedule/bus-intercity.png"
+                                             alt="{% trans 'Междугородний' %}">{% endif %}
+                                    {% if r.id in bdata_mode0.0.ramp_stops %}
+                                        <i class="wheelchair icon" style="font-size:1.8em"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <a href="#dsel" class="ui labeled icon button"><i class="fa-chevron-up icon"
+                                                                  aria-hidden="true"></i>{% trans "вверх" %}</a>
+
+                {% if ads_show %}<br/><br/>
+                    <div class="adsense">
+                        <center>
+                            {% russia_or_not us.ip as is_russia %}
+                            {% if is_russia %}
+                                {% include "ads/sch_yandex_ru_2.html" %}
+                            {% else %}
+                                {% include "ads/bustime_336x280_sch2_ou.html" %}
+                            {% endif %}
+                        </center>
+                    </div>
+                {% endif %}
+
+
+            </div>
+
+            <div class="column">
+
+                {# расписание: направление 1 #}
+                <table class="ui compact unstackable table" id="d1">
+                    {% for r in route1 %}
+                        <tr>
+                            {# первая колонка - время #}
+                            {% if time_bst %}
+                            <td>
+                                {% for key, value in time_bst.items %}
+                                    {% if key == r.id and value %}
+                                        <div class="ft">{{ value }}</div>{% endif %}
+                                {% endfor %}
+                            </td>
+                            {% endif %}
+                            {# вторая колонка - название остановки #}
+                            <td>
+                                {# первая в списке остановка - конечная, выделяем #}
+                                {% if forloop.counter == 1 %}
+                                    <b>{{ r.busstop.name }}</b>
+                                    {% if r.times %}&nbsp;<i class="fa-clock-o icon"></i>{% endif %}
+                                {% else %}
+                                    <a href="/{{place.slug}}{{r.busstop.get_slug_url}}">{{ r.busstop.name }}</a>
+                                {% endif %}
+
+                                {# вывод времени отправления с остановки #}
+                                {% if r.times %}
+                                    <div class="ui labels">
+                                        {% for t in r.times %}
+                                            <div class="ui label {% timeorama t now.time %}">{{ t|time:"H:i"}}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                {% if r.id in bdata_mode0.1.stops %}<br/>
+                                    {% if bus.ttype == 0 %}<img width="95" src="https://cdn.bustime.loc/static/img/theme/schedule/bus.png"
+                                                                alt="{% trans 'Автобус' %}">{% endif %}
+                                    {% if bus.ttype == 1 %}
+                                        <img width="105" src="https://cdn.bustime.loc/static/img/theme/schedule/trolleybus.png"
+                                             alt="{% trans 'Троллейбус' %}">{% endif %}
+                                    {% if bus.ttype == 2 %}<img width="105" src="https://cdn.bustime.loc/static/img/theme/schedule/tramway.png"
+                                                                alt="{% trans 'Трамвай' %}">{% endif %}
+                                    {% if bus.ttype == 3 %}<img width="70" src="https://cdn.bustime.loc/static/img/theme/schedule/bus-taxi.png"
+                                                                alt="{% trans 'Маршрутное такси' %}">{% endif %}
+                                    {% if bus.ttype == 5 %}
+                                        <img width="100" src="https://cdn.bustime.loc/static/img/theme/schedule/bus-intercity.png"
+                                             alt="{% trans 'Междугородний' %}">{% endif %}
+                                    {% if r.id in bdata_mode0.1.ramp_stops %}
+                                        <i class="wheelchair icon" style="font-size:1.8em"></i>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <a href="#dsel" class="ui labeled icon button"><i class="fa-chevron-up icon"
+                                                                  aria-hidden="true"></i>{% trans "вверх" %}</a>
+            </div>
+        </div>
+
+        {% if ads_show and 0 %}
+            <br/>
+            <center>
+                {% russia_or_not us.ip as is_russia %}
+                {% if is_russia %}
+                    {% include "ads/sch_yandex_ru_3.html" %}
+                {% else %}
+                    {% include "ads/bustime_336x280_sch1_ou.html" %}
+                {% endif %}
+            </center>
+        {% endif %}
+
+    </div>
 {% endblock %}

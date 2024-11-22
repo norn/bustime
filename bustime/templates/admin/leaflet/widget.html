@@ -1,0 +1,15 @@
+{% extends "leaflet/admin/widget.html" %}
+
+{% block callback %}
+    {{ block.super }}
+    map.fullscreenControl = true;
+    map.addControl(new L.Control.Fullscreen());
+{% endblock callback %}
+
+{% block map %}
+<div id="{{ id_css }}-div-map" style="width: 100%;">
+    {{ block.super }}
+</div>
+{% endblock map %}
+
+

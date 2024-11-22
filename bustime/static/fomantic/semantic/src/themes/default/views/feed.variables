@@ -1,0 +1,195 @@
+/*******************************
+             Feed
+*******************************/
+
+/* -------------------
+        Feed
+-------------------- */
+
+@margin: 1em 0;
+
+/* -------------------
+      Elements
+-------------------- */
+
+/* Event */
+@eventWidth: 100%;
+@eventPadding: @3px 0;
+@eventMargin: 0;
+@eventBackground: none;
+@eventDivider: none;
+
+/* Event Label */
+@labelWidth: 2.5em;
+@labelHeight: auto;
+@labelAlignSelf: stretch;
+@labelTextAlign: left;
+
+/* Icon Label */
+@iconLabelOpacity: 1;
+@iconLabelWidth: 100%;
+@iconLabelSize: 1.5em;
+@iconLabelPadding: 0.25em;
+@iconLabelBackground: none;
+@iconLabelBorderRadius: 0;
+@iconLabelBorder: none;
+@iconLabelColor: rgba(0, 0, 0, 0.6);
+
+/* Image Label */
+@imageLabelWidth: 100%;
+@imageLabelHeight: auto;
+@imageLabelBorderRadius: @circularRadius;
+
+/* Text Label */
+@textLabelTopMargin: 0.5em;
+@uiTextLabelTopMargin: 0.65em;
+@multilineTextLabelTopMargin: 0;
+@uiMultilineTextLabelTopMargin: 0.3em;
+
+/* Ui label */
+@uiLabelTopMargin: 0.4em;
+@uiLabelZIndex: 1;
+
+/* Content w/ Label */
+@labeledContentMargin: 0.5em 0 @relative5px @relativeLarge;
+@lastLabeledContentPadding: 0;
+
+/* Content */
+@contentAlignSelf: stretch;
+@contentTextAlign: left;
+@contentWordWrap: break-word;
+
+/* Date */
+@dateMargin: -0.5rem 0 0;
+@datePadding: 0;
+@dateColor: @lightTextColor;
+@dateFontSize: @relativeMedium;
+@dateFontWeight: @normal;
+@dateFontStyle: @normal;
+
+/* Summary */
+@summaryMargin: 0;
+@summaryFontSize: @relativeMedium;
+@summaryFontWeight: @bold;
+@summaryColor: @textColor;
+
+/* Summary Image */
+@summaryImageWidth: auto;
+@summaryImageHeight: 10em;
+@summaryImageMargin: -0.25em 0.25em 0 0;
+@summaryImageVerticalAlign: middle;
+@summaryImageBorderRadius: 0.25em;
+
+/* Summary Date */
+@summaryDateDisplay: inline-block;
+@summaryDateFloat: none;
+@summaryDateMargin: 0 0 0 0.5em;
+@summaryDatePadding: 0;
+@summaryDateFontSize: @relativeTiny;
+@summaryDateFontWeight: @dateFontWeight;
+@summaryDateFontStyle: @dateFontStyle;
+@summaryDateColor: @dateColor;
+
+/* User */
+@userFontWeight: @bold;
+@userDistance: 0;
+@userImageWidth: @summaryImageWidth;
+@userImageHeight: @summaryImageHeight;
+@userImageMargin: @summaryImageMargin;
+@userImageVerticalAlign: @summaryImageVerticalAlign;
+
+/* Extra Summary Data */
+@extraMargin: 0.5em 0 0;
+@extraBackground: none;
+@extraPadding: 0;
+@extraColor: @textColor;
+
+/* Extra Images */
+@extraImageMargin: 0 0.25em 0 0;
+@extraImageWidth: 6em;
+
+/* Extra Text */
+@extraTextPadding: 0;
+@extraTextPointer: none;
+@extraTextFontSize: @relativeMedium;
+@extraTextLineHeight: @lineHeight;
+@extraTextMaxWidth: 500px;
+
+/* Metadata Group */
+@metadataDisplay: inline-block;
+@metadataFontSize: @relativeTiny;
+@metadataMargin: 0.5em 0 0;
+@metadataBackground: none;
+@metadataBorder: none;
+@metadataBorderRadius: 0;
+@metadataBoxShadow: none;
+@metadataPadding: 0;
+@metadataColor: rgba(0, 0, 0, 0.6);
+
+@metadataElementSpacing: 0.75em;
+
+/* Like */
+@likeColor: "";
+@likeHoverColor: #ff2733;
+@likeActiveColor: #ef404a;
+@likeTransition: 0.2s color ease;
+
+/* Metadata Divider */
+@metadataDivider: "";
+@metadataDividerColor: rgba(0, 0, 0, 0.2);
+@metadataDividerOffset: -1em;
+
+@metadataActionCursor: pointer;
+@metadataActionOpacity: 1;
+@metadataActionColor: rgba(0, 0, 0, 0.5);
+@metadataActionTransition: color @defaultDuration @defaultEasing;
+
+@metadataActionHoverColor: @selectedTextColor;
+
+/* -------------------
+      Variations
+-------------------- */
+
+/* Connected */
+@connectedBorderColor: @borderColor;
+@connectedBorderWidth: 2px;
+@connectedBorder: @connectedBorderWidth solid @connectedBorderColor;
+@connectedBorderLeftOffset: 1.2em;
+@connectedBorderTopOffset: 2.1em;
+@connectedBorderHeight: e(%("calc(100%% - %d)", @iconLabelSize));
+
+/* Divided */
+@dividedBorderColor: @borderColor;
+@dividedBorderWidth: @borderWidth;
+@dividedBorder: @dividedBorderWidth solid @dividedBorderColor;
+
+/* Ordered */
+@orderedCountName: ordered;
+@orderedCountContent: counter(@orderedCountName);
+@orderedTopOffset: 0.6em;
+@orderedBottomMargin: 0.3em;
+@orderedBorderColor: transparent;
+@orderedBorderWidth: 2px;
+@orderedHeight: @labelWidth;
+@orderedBorder: @orderedBorderWidth solid @orderedBorderColor;
+@orderedBorderRadius: 50%;
+@orderedColor: @white;
+@orderedBackground: @orderedBasicBorderColor;
+@orderedBasicBorderColor: #bbbbbb;
+@orderedBasicColor: inherit;
+@orderedBasicBackground: transparent;
+@orderedConnectedBorderTopOffset: 2.7em;
+@orderedConnectedBorderHeight: e(%("calc(100%% - %d)", (@orderedConnectedBorderTopOffset - 0.2em)));
+@orderedConnectedLabeledBorderTopOffset: 4.85em;
+@orderedConnectedLabeledBorderHeight: e(%("calc(100%% - %d)", (@orderedConnectedLabeledBorderTopOffset - 0.2em)));
+
+/* Inverted */
+@invertedBackground: @black;
+@invertedIconLabelColor: @invertedLightTextColor;
+@invertedLikeColor: @invertedLightTextColor;
+@invertedLikeHoverColor: @invertedSelectedTextColor;
+@invertedLikeActiveColor: @invertedLikeColor;
+
+@invertedConnectedBorderColor: @whiteBorderColor;
+@invertedDividedBorderColor: @whiteBorderColor;
+@invertedTextLabelColor: @white;

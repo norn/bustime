@@ -1,0 +1,8 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+{% load leaflet_tags %}
+{% block extrahead %}{{ block.super }}
+{% leaflet_js plugins="ALL" %}
+{% leaflet_css plugins="ALL" %}
+{% endblock %}
+

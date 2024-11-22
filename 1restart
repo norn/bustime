@@ -1,0 +1,39 @@
+#!/bin/bash
+
+LIGHT_RED='\e[91m'
+LIGHT_GREEN='\e[92m'
+NC='\e[0m' # No Color
+echo -e "${LIGHT_GREEN}RESTART${NC} `date +"%T"`"
+
+# don't check syntax on dev, too slow
+if [[ `hostname` != *'dev'* ]]; then
+  # step 1 syntax check
+  python utils/syntax_check.py .
+  ret=$?
+  if [ $ret -ne 0 ]; then
+    echo -e "${LIGHT_RED}SYNTAX FAILURE${NC}"
+    exit 1
+  else
+    echo "Syntax check [ok]"
+  fi
+
+  # step 2 unit tests
+  python utils/tests.py
+  ret=$?
+  if [ $ret -ne 0 ]; then
+    echo -e "${LIGHT_RED}FAILURE${NC}"
+    exit 1
+  fi
+fi
+
+# ok, seems like we are ready
+touch /tmp/bustime_reload
+echo -e "${LIGHT_GREEN}RELOAD${NC} `date +"%T"`"
+
+# waits for respawn to measure time
+tail -f /var/log/uwsgi/app/bustime.log | while read line; do
+    if echo "$line" | grep -q "spawned uWSGI worker"; then
+        break
+    fi
+done
+echo -e "${LIGHT_GREEN}DONE${NC} `date +"%T"`"

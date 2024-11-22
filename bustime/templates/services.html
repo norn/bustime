@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Подключение города" %}{% endblock %}
+{% block meta_descr %}{% trans "Предложение для городской администрации, перевозчиков, операторов информационных систем и водителей." %}. {% trans "Бесплатное подключение, аналитика, функции диспетчера и приложение для водителей." %}. {% trans "Набор сервисов и доступ к инфраструктуре для онлайн отслеживания транспорта" %}{% endblock %}
+
+{% block nav_services %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/services/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/services/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/services/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block content %}
+
+<style type="text/css">
+.ui.icon.header {
+    opacity: 0.8;
+}
+.pt {
+    margin:1rem 0;
+    font-size:1.5rem;
+}
+</style>
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Подключение города" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="pt">
+    <h2></h2>
+</div>
+
+<div class="ui yellow text container segment" style="font-size:1.75rem;">
+<!-- <p><a href="email:support@bustime.loc">{% trans "Подключитесь" %}</a> {% trans "к стабильной и технологичной" %} <b>{% trans "системе по отслеживанию общественного транспорта" %}</b>!</p> -->
+<img class="ui centered big image" src="https://cdn.bustime.loc/static/img/services-city.png">
+<!-- {% trans "Сайт и приложения Bustime предоставляют информацию для пассажиров о текущем положении общественного транспорта" %} -->
+</div>
+
+
+<div class="ui huge list">
+  <div class="item">
+    <i class="gift icon"></i>
+    <div class="content">
+      <div class="header">{% trans "Бесплатно" %}</div>
+      <div class="description">
+          <b>{% trans "Открытое" %}</b> {% trans "подключение и никаких платежей" %}
+          <br/>{% trans "Более 99.5% надежности" %} (<a href="https://ping-admin.com/uptime/d728854a2445bb984ccfcd3a456235d271041.html" target="_blank">{% trans "аптайм" %}</a>)
+          <br/>{% trans "Отлаженные и доступные методы доставки информации" %}
+        </div>
+    </div>
+  </div>
+  <div class="item">
+    <i class="fighter jet icon"></i>
+    <div class="content">
+      <div class="header">{% trans "Высшее качество для пассажиров" %}</div>
+      <div class="description">{% trans "Приложения для смарфтонов и планшетов c лидирующими позициями в" %}" <a href="https://play.google.com/store/apps/details?id=com.indie.bustime" target="_blank">Google Play</a> и <a href="https://itunes.apple.com/ru/app/bustime-vrema-avtobusa!/id879310530" target="_blank">App Store</a>
+        <br/>{% trans "Универсальный и доступный" %} <a href="/">web site</a>, {% trans "адаптированный под все устройства" %}
+        <br/>{% trans "Высокая скорость и изысканный сервис в простом интерфейсе" %}
+    </div>
+    </div>
+  </div>
+  <div class="item">
+    <i class="microchip icon"></i>
+    <div class="content">
+      <div class="header">{% trans "Открытость" %}</div>
+      <div class="description">{% trans "Доступ к" %} <a class="item" target="_blank" href="https://github.com/norn/bustime">{% trans "исходным кодам" %}</a> {% trans "под свободной лицензией MIT" %}
+        <br/>{% trans "Форкайте и изменяйте согласно вашим нуждам самостоятельно" %}</b>
+        <br/>{% trans "Располагайте сервера на свой площадке" %}</div>
+    </div>
+  </div>
+</div>
+
+<br/><br/>
+
+<h2 class="ui header" id="transporter">{% trans "Для перевозчиков" %}</h2>
+<div class="ui huge bulleted list">
+  <div class="item">
+           {% trans "Публикуйте свои данные под открытой лицензией и добавьте их в Bustime бесплатно" %}
+  </div>
+  <div class="item">
+           {% trans "Ваши GPS-трекеры предоставляют данные пассажирам в какой момент нужно быть на остановке, чтобы сесть в ваш транспорт" %}
+  </div>
+  <div class="item">
+    {% trans "Предоставляем отчеты для транспорта, пассажиров, подсчет рейсов, километраж, трэки" %}
+  </div>
+  <div class="item">
+    {% trans "Примем данные в форматах: Arnavi, Галилео, GPS101, SAT-LITE, Виалон IPS, Виалон NIS (SOAP / Олимпстрой), ЕГТС (ЭРА-ГЛОНАСС)" %} {% trans "или" %} <a href="https://play.google.com/store/apps/details?id=com.indie.bustime">Android {% trans "приложение" %}</a>
+  </div>
+</div>
+<img class="ui centered big image" src="https://cdn.bustime.loc/static/img/services-transporter2.png">
+
+<br/><br/>
+<h2 class="ui header" id="infosys">{% trans "Для операторов информационных систем" %}</h2>
+<div class="ui huge bulleted list">
+  <div class="item">
+    {% trans "Расширяет спектр услуг для пассажиров без затрат и рисков" %}
+  </div><div class="item">
+    {% trans "Принимает данные, анализируеет и предоставляет пассажирам" %}
+  </div><div class="item">
+    {% trans "Уменьшает стоимость поддержки информирования пассажиров" %}
+  </div><div class="item">
+    {% trans "Уменьшает расходы на инфраструктуру и разработку ПО" %}
+  </div>
+  <!--<div class="item">
+    Улучшайте и <a href="https://bustime.loc/contacts/">делегируйте</a>!
+  </div>-->
+</div>
+<img class="ui centered big image" src="https://cdn.bustime.loc/static/img/services-infosys.png">
+
+
+<br/><br/>
+<h2 class="ui header" id="driver">{% trans "Для водителей" %}</h2>
+<div style="overflow: hidden;width:100%">
+<div class="ui huge bulleted list">
+  <div class="item">
+  {% trans "Android-приложение помогает соответствовать расписанию и быть на связи" %}.
+ </div> <div class="item">
+  {% trans "Терминал сбора данных на основе планшета является недорогим устройством, которое объединяет в себе множество функций" %}.
+ </div> <div class="item">
+  {% trans "Водитель в реальном времени оценивает положение на схеме маршрута, телеметрию и другой транспорт, что позволяет ему оперативно принимать решения" %}.
+ </div> <div class="item">
+  {% trans "Отправка координат, голосовая связь, прием сообщений от диспетчера" %}.
+ </div>
+</div>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sUkM_fNrQPU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<br/><br/>
+<h2 class="ui header" id="passenger">{% trans "Для пассажиров" %}</h2>
+<div class="pt">
+  <p>{% trans "Удобный и быстрый информационный сервис для пассажиров общественного транспорта" %}.</p>
+</div>
+<div class="ui huge bulleted list">
+        <div class="item">{% trans "Websocket обновления на основе спутниковых GPS данных" %}
+  </div><div class="item">{% trans "сжатый протокол для минимизации потребления Интернет" %}
+  </div><div class="item">{% trans "настраиваемый пользовательский интерфейс" %}
+  </div><div class="item">{% trans "поддержка Talkback и функций для слабовидящих" %}
+  </div><div class="item">{% trans "звуковые оповещения" %}
+  </div><div class="item">{% trans "адаптивная верстка и планшетный режим в приложении" %}
+  </div><div class="item">{% trans "ретрансляция" %}
+  </div><div class="item">{% trans "предупреждение обрывов связи" %}
+  </div><div class="item">{% trans "цветовые схемы" %}
+  </div><div class="item">{% trans "встроенный чат" %}
+  </div><div class="item">{% trans "отзывы о транспорте" %}
+  </div><div class="item">{% trans "ночной режим" %}
+  </div><div class="item">{% trans "низкопольность, аппарели, логотипы" %}
+  </div><div class="item">{% trans "пассажиры на остановках" %}
+  </div><div class="item">{% trans "отключаемая анимация" %}
+  </div><div class="item">{% trans "конфигурация стартового экрана" %}
+  </div><div class="item">{% trans "мультиязычность" %}
+  </div><div class="item">{% trans "журнал и трэки" %}
+  </div>
+</div>
+<br/><br/><br/>
+
+
+{% endblock %}

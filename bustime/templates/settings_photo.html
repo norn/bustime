@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}Настройки{% endblock %}
+{% block meta_descr %}Настройки позволяют отключить звук, управлять различными оповещения и делать другие изменения{% endblock %}
+
+{% block nav_settings %}active{%endblock%}
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/settings/photo/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/settings/photo/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/settings/photo/" />
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/settings/">Настройки</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">Выбор фото</div>
+</div>
+<div class="ui divider"></div>
+
+
+<h1 class="ui header">Выбор фото
+<div class="sub header">идентификатор: {{us.id}}</div>
+</h1>
+
+{% if not variants %}
+  {% for photo in persons %}
+  <a href="?person={{photo.person}}">
+  <img class="ui small image" style="height:200px;margin-left:20px" src="https://cdn.bustime.loc/static/img/ava/{{photo.src}}">
+  </a>
+  {% endfor %}
+{% else %}
+  {% for photo in variants %}
+  <a href="?src={{photo.src}}">
+  <img class="ui small image" style="height:200px;margin-left:20px" src="https://cdn.bustime.loc/static/img/ava/{{photo.src}}">
+  </a>
+  {% endfor %}
+{%endif%}
+
+
+<br/><br/>
+
+
+{% endblock %}

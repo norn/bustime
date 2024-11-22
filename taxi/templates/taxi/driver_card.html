@@ -1,0 +1,180 @@
+{% block extra_head %}
+    <style>
+        .noborder {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .user-card {
+            font-size: 12px;
+            margin: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .user-form {
+            display: flex;
+            flex: auto;
+            gap: 2em;
+        }
+
+        .user-column {
+            gap: 2em;
+        }
+
+        .user-column > *:not(:last-child) {
+            display: block;
+            padding-bottom: 0.5em;
+        }
+
+        .taxi-button {
+            background: #ffe216 !important;
+            height: 48px;
+            justify-content: center;
+            line-height: 2em !important;
+            color: rgba(0, 0, 0, .95) !important;
+        }
+
+        .approve-button {
+            background: #ffe216 !important;
+            justify-content: center;
+            color: rgba(0, 0, 0, .95) !important;
+            padding: 1.1em 0.78571429em !important;
+            margin-left: auto;
+        }
+
+        .deny-button {
+            border: 2px solid #EF3905 !important;
+            background: #ffffff !important;
+            justify-content: center;
+            color: rgba(0, 0, 0, .95) !important;
+            margin-left: auto;
+        }
+
+        .taxi-button:hover {
+            background: #e4ca14 !important;
+        }
+
+        #driver .busstop_name {
+            cursor: pointer;
+            color: #713232;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #driver .ui.label {
+            padding: 0.5em 0.3em;
+        }
+
+        #driver .ui.card {
+            width: 400px;
+            border: none;
+        }
+
+        .ui.feed > .event > .content .summary {
+            font-size: 0.85em;
+        }
+
+        .ui.red.summary {
+            color: #db2828 !important;
+        }
+
+        .ui.avatar.image, .ui.avatar.image img {
+            flex-shrink: 0;
+            width: 80px !important;
+            height: 80px !important;
+        }
+
+        #driver .ui.card .meta, .ui.cards > .card .meta {
+            font-size: 12px;
+        }
+        .ui.very-massive.rating {
+            font-size: 3.5rem;
+            padding-top: 0.3em;
+        }
+        .rating-box {
+            background: #f2f2f2;
+            padding: 19px 0 25px 0;
+            text-align: center;
+            margin: 1em -1em;
+        }
+
+        /* https://gitlab.com/nornk/bustime/-/issues/2705 при активном режиме попутчика уменьшилась карта
+        #lmap {
+            height: 185px;
+        }
+        */
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+<!-- driver_card.html -->
+<div class="ui centered card noborder">
+    <div class="content" style="padding: 0px; width:100%">
+        <div class="user-card">
+            <div class="ui image avatar">
+                <img src="{% if taxiuser.avatar %} /static/{{taxiuser.avatar}} {% else %} /static/img/ava/driver_0_1.jpg {% endif %}"/>
+            </div>
+            <div>
+                <div class="ui tiny header">{{ taxiuser.name }}</div>
+                <div class="user-form">
+                    <div class="user-column">
+                        <div>
+                            <div class="meta">Рейтинг</div>
+                            <div style="display: flex; flex: auto;">
+                                <i class="star yellow icon" style="font-size: 1.5em"></i>
+                                <div style="font-weight:700; text-align:center;">{{ taxiuser.driver_rating }}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="meta">Подвез</div>
+                            <div style="font-weight:600; text-align:center;">{{ taxiuser.driver_rating_cnt }}</div>
+                        </div>
+                        <div>
+                            <div class="meta">Отзывов</div>
+                            <div style="font-weight:600; text-align:center;">0</div>
+                        </div>
+                    </div><!--user-column-->
+                    <div class="user-column">
+                        <div style="display: flex; gap: 2em;">
+                            <div>
+                                <div>{{ taxiuser.car.model }}</div>
+                                <div style="display: flex; flex-direction: row; gap: 0.5em">
+                                    <div class="ui basic label relaxed">{{ taxiuser.car.gos_num }}</div>
+                                    <div class="meta"
+                                         style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+                                        {{ taxiuser.car.color }}
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="ui icon button" href="/carpool/profile/"
+                                    style="align-self: flex-start; width: 40px; height: 40px;">
+                                <i class="edit icon"></i>
+                            </a>
+                        </div>
+                        <div class="ui image" style="width: 190px; ">
+                            <img class="ui medium rounded image" src="/static/{{ taxiuser.car.photo }}"
+                                 style="max-width: 100%">
+                        </div>
+                    </div><!--user-column-->
+                </div><!--user-form-->
+            </div>
+        </div><!--user-card-->
+    </div><!--content-->
+
+    {% if taxiuser.car_count > 0 %}
+    <div class="extra content" style="text-align: center;">
+        <button id="taxiuser_driver_start_stop2" class="ui button"
+                style="color:black; background-color: rgba(255, 226, 22, 1); width: 328px; height: 48px;"
+                onclick="set_taxi_user('driver');">
+            {% if taxiuser.driver and taxiuser.gps_on %}Закончить подвозить{% else %}Начать подвозить{% endif %}
+        </button>
+    </div>
+    {% endif %}
+</div><!--ui card-->
+
+{% endblock %}

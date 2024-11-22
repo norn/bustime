@@ -1,0 +1,128 @@
+{% load i18n admin_urls static %}
+<div class="js-inline-admin-formset inline-group"
+        id="{{ inline_admin_formset.formset.prefix }}-group"
+        data-inline-type="stacked"
+        data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
+    <fieldset class="module {{ inline_admin_formset.classes }}">
+        <h2>{{ inline_admin_formset.opts.verbose_name_plural|capfirst }}</h2>
+        {{ inline_admin_formset.formset.management_form }}
+        {{ inline_admin_formset.formset.non_form_errors }}
+
+        {% for inline_admin_form in inline_admin_formset %}
+        <div class="inline-related{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form last-related{% endif %}" id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
+            <h3>
+                <b>{{ inline_admin_formset.opts.verbose_name|capfirst }}:</b> <span class="inline_label">{% if inline_admin_form.original %}{{ inline_admin_form.original }}{% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %} <a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}" class="{% if inline_admin_formset.has_change_permission %}inlinechangelink{% else %}inlineviewlink{% endif %}">{% if inline_admin_formset.has_change_permission %}{% translate "Change" %}{% else %}{% translate "View" %}{% endif %}</a>{% endif %}
+                {% else %}#{{ forloop.counter }}{% endif %}</span>
+                {% if inline_admin_form.show_url %}<a href="{{ inline_admin_form.absolute_url }}">{% translate "View on site" %}</a>{% endif %}
+                {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}<span class="delete">{{ inline_admin_form.deletion_field.field }} {{ inline_admin_form.deletion_field.label_tag }}</span>{% endif %}
+            </h3>
+            <div id="runtime-help" style="text-align:center;"></div>
+            {% if inline_admin_form.form.non_field_errors %}{{ inline_admin_form.form.non_field_errors }}{% endif %}
+            {% for fieldset in inline_admin_form %}
+            {% include "admin/includes/fieldset.html" %}
+            {% endfor %}
+            {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+            {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+        </div>
+        {% endfor %}
+    </fieldset>
+</div>
+<script>
+const $ = django.jQuery;
+var savedOptions = {};  // кэш введённых параметров
+$(document).ready(function() {
+    if( $("#id_receiver_set-__prefix__-handler").length ){
+        // это работает когда нет обработчика (записи в модели Receiver)
+        $("#id_receiver_set-__prefix__-handler").css("width", "70%");
+        $("#id_receiver_set-__prefix__-source").on('change', sourceChange);
+        $("#id_receiver_set-__prefix__-params").on('blur', paramsBlur);
+    }
+
+    if( $("#id_receiver_set-0-handler").length ){
+        // это работает когда есть обработчик (запись в модели Receiver)
+        $("#id_receiver_set-0-handler").css("width", "70%");
+        $("#id_receiver_set-0-source").on('change', sourceChange);
+        $("#id_receiver_set-0-params").on('blur', paramsBlur);
+    }
+
+    //input type="checkbox" name="crawler" id="id_crawler"
+    $("input[name=crawler]").on('change', crawlerChange);
+});
+
+
+// изменилось поле source
+function sourceChange(e){
+    // если есть сохраненное в кэше значение поля params - применяем
+    if(savedOptions.hasOwnProperty(e.target.value)){
+        $("#id_receiver_set-0-params").val(savedOptions[e.target.value]);
+        return;
+    }
+
+    // скрыть список портов
+    $("div.field-source").find(".help").hide();
+    $("div.field-params").find(".help").html("")
+    $("#runtime-help").html("");
+
+    // иначе вычисляем поле params
+    switch(e.target.value){
+        case '0': // glonassd
+            // список портов
+            //$("div.field-source").find(".help").show();
+            $("#id_receiver_set-0-params").val( $("div.field-source").find(".help").html() );
+            $("div.field-params").find(".help").html("Список портов через запятую")
+            break;
+        case '1': // infopass
+            $("#id_receiver_set-0-params").val('{\n\t"url": "", \n\t"referer": ""\n}\n');
+            $("div.field-params").find(".help").html('{"url": "", "referer": ""}')
+            break;
+        case '2': // транснавигация
+            $("#id_receiver_set-0-params").val('{\n\t"ok_id": "", \n\t"url": "", \n\t"referer": ""\n}\n');
+            $("div.field-params").find(".help").html('{"ok_id": "", "url": "", "referer": ""}')
+            $("#runtime-help").html("Желательно использовать crawler");
+            break;
+        case '3': // askglonass
+            $("#id_receiver_set-0-params").val('{\n\t"url": "", \n\t"auth_login": "", \n\t"auth_pass": ""\n}\n');
+            $("div.field-params").find(".help").html('{"url": "", "auth_login": "", "auth_pass": ""}')
+            break;
+        case '4': // wialon
+            $("#id_receiver_set-0-params").val('{\n\t"url": "", \n\t"token": ""\n}\n');
+            $("div.field-params").find(".help").html('{"url": "", "token": ""}')
+            $("#runtime-help").html("Желательно использовать crawler");
+            break;
+        case '5': // nimbus
+            $("#id_receiver_set-0-params").val('{\n\t"token": "", \n\t"subs": ""\n}\n');
+            $("div.field-params").find(".help").html('{"token": "", "subs": ""}')
+            $("#runtime-help").html("Не забудьте в файл /etc/supervisor/conf.d/nimbuses.conf добавить настройку для города<br>и выполнить sudo supervisorctl reread && sudo supervisorctl update<br>Подробности смотри в обработчике");
+            break;
+        default:
+            $("#runtime-help").html("Будет создан пустой обработчик");
+    }   // switch
+}   // sourceChange
+
+
+// покидаем поле params
+function paramsBlur(e){
+    // сохраним значение в кэше
+    savedOptions[$("#id_receiver_set-0-source").val()] = e.target.value;
+}   // paramsBlur
+
+
+// изменилось поле City.crawler
+function crawlerChange(e){
+    let handler = null;
+    if( $("#id_receiver_set-0-handler").length )
+        handler = $("#id_receiver_set-0-handler");
+    else if( $("#id_receiver_set-__prefix__-handler").length )
+        handler = $("#id_receiver_set-__prefix__-handler");
+
+    if(handler){
+        let val = handler.val();
+        if(e.target.checked){
+            handler.val( val.replace('/bustime/update/', '/zbusd/') );
+        }
+        else {
+            handler.val( val.replace('/zbusd/', '/bustime/update/') );
+        }
+    }
+}   // crawlerChange
+</script>

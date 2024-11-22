@@ -1,0 +1,73 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/admin/">{% trans "Администратор" %}</a>
+  <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Логи на карте" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<div>
+    {% trans "Всего событий: " %}
+    <span id="count"></span>
+</div>
+<br>
+
+<div id="map_logs" style="height: 550px;"></div>
+
+<script>
+function js_page_extra() {
+
+    // инициализация карты
+    var map_logs = new maplibregl.Map({
+        container: "map_logs",
+        style: 'https://demotiles.maplibre.org/style.json',
+        center: {"lng": US_CITY_POINT_X, "lat": US_CITY_POINT_Y},
+        zoom: 10
+    });
+
+    // ф-я добавления маркера со всплыващим окном на карту
+    function add_marker_logs(data) {
+
+        // всплывающее окно с информацией
+        var popup = new maplibregl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        }).setText(data.msg);
+
+        // добавление маркера с окном на карту
+        var marker = new maplibregl.Marker({scale: 0.5})
+            .setLngLat([data.x, data.y])
+            .setPopup(popup)
+            .addTo(map_logs);
+    }
+
+    // получение данных логов
+    $.ajax({
+        url: '/ajax/not_found/',
+        method: 'GET',
+        success: function(response) {
+            var data = JSON.parse(response);
+            $("#count").html(data.length);
+            data.forEach(function(item) {
+                add_marker_logs(item);
+            });
+        },
+        error: function(error) {
+            console.error('Ошибка при получении данных:', error);
+        }
+    });
+
+
+}
+</script>
+
+{% endblock %}

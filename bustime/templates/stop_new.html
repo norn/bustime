@@ -1,0 +1,70 @@
+{% extends "base.html" %}{% load cache %}{% load l10n %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}stop/new/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}stop/new/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}stop/new/" />
+{% endfor %}
+
+<script src="https://cdn.bustime.loc/static/js/stop_new.js" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 400px;
+    max-height: 100%;
+}
+</style>
+{% endblock %}
+
+{% block nav_main %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class=  "right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/stop/">Остановка</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">Создать новую</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui grid">
+    <div class="column">
+
+<form action="./" method="post">{% csrf_token %}
+{{ form.non_field_errors }}
+
+<b>Кликните на карту чтобы указать расположение остановки</b>
+<div id="lmap"></div>
+<br/><a class="ui button" onclick="map_center_me()">центрировать по моим координатам</a>
+<input type="hidden" name="point_x" value="">
+<input type="hidden" name="point_y" value="">
+<table class="ui table">
+  <tbody>
+    <tr><td>название</td><td><div class="ui fluid input">{{form.name}}</div>{{ form.name.errors }}</td></tr>
+    <tr><td>координаты</td>
+      <td class="point">
+        <div class="ui fluid input">{{form.point}}</div> {{ form.point.errors }}
+    </td></tr>
+      <tr><td colspan="2" class="ui center aligned">
+        <input type="submit" class="ui blue button" value="Создать новую остановку"/>
+      </td></tr>
+  </tbody>
+</table>
+
+</form>
+</div>
+</div>
+<br/><br/>
+
+<script>
+{% include "_js_init.html" %}
+
+</script>
+
+
+{% endblock %}

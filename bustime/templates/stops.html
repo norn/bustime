@@ -1,0 +1,37 @@
+{% extends "base.html" %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+{% block titlee %}{{place.name}}: {% trans "все остановки" %}{% endblock %}
+{% block meta_descr %}{% trans "Все остановочные пункты общественного транспорта в" %} {% if LANGUAGE_CODE == "ru" %}{{us.city.name_gde}}{% else %}{{us.city.name}}{% endif %}.{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url}}stop/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url}}stop/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url}}stop/" />
+{% endfor %}
+
+{% if ads_show and device and 0 %}{% include "bustime_pagelevel.html" %}{% endif %}
+{% endblock %}
+
+{% block nav_stop %}active{%endblock%}
+{%block content%}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="https://{{domain}}/{{place.slug}}/">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Остановки" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui four column stackable grid">
+{% for sstop in sstops %}
+<div class="column">
+    <div class="ui fluid vertical menu">
+      {% for s in sstop %}
+      <a class="item" href="/{{place.slug}}{{s.get_slug_url}}"{% if user.is_staff %} title="{{s.id}}"{% endif %}>{% if s.divider %}<b>{%endif%}{{s.name}}{% if s.divider %}</b>{%endif%}</a>
+      {% endfor %}
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

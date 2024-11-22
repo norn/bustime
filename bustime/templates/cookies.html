@@ -1,0 +1,69 @@
+{% extends "base.html" %}{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block titlee %}Cookies Policy{%endblock%}
+{% block meta_descr %}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/cookies-policy/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/cookies-policy/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/cookies-policy/" />
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">Cookies Policy</span>
+</div>
+
+<br/><br/>
+
+<div class="ui grid">
+<div class="column">
+<div class="ui message">
+To make this site work properly, we sometimes place small data files called cookies on your device. The cookie allows the website to "remember" your actions or preferences over time. Most big websites do this too.
+
+<br/><br/>
+Most browsers support cookies, but users can set their browsers to decline them and can delete them whenever they like.
+</div>
+
+<h2 class="ui header">What are cookies?</h2>
+A cookie is a small text file that a website saves on your computer or mobile device when you visit the site. It enables the website to remember your actions and preferences (such as login, language, font size and other display preferences) over a period of time, so you don't have to keep re-entering them whenever you come back to the site or browse from one page to another.
+
+
+<h2 class="ui header">How do we use cookies?</h2>
+A number of our pages use cookies to remember:
+
+<ul>optimize content delivery</ul>
+<ul>recognize your repeat visits and preferences</ul>
+<ul>personalized ads</ul>
+<ul>if you have already replied to a survey pop-up that asks you if the content was helpful or not (so you won't be asked again)</ul>
+<ul>if you have agreed (or not) to our use of cookies on this site</ul>
+<ul>Also, some videos embedded in our pages use a cookie to anonymously gather statistics on how you got there and what videos you visited.</ul>
+
+Enabling these cookies is not strictly necessary for the website to work but it will provide you with a better browsing experience. You can delete or block these cookies, but if you do that some features of this site may not work as intended.
+
+The cookie-related information <b>is not used to identify you personally</b> and the pattern data is fully under our control. These cookies are not used for any purpose other than those described here.
+
+<h2 class="ui header">Do we use other cookies?</h2>
+
+Some of our pages or subsites may use additional or different cookies to the ones described above. If so, the details of these will be provided in their specific cookies notice page. You may be asked for your agreement to store these cookies.
+
+<h2 class="ui header">How to control cookies</h2>
+You can <b>control and/or delete</b> cookies as you wish. You can delete all cookies that are already on your computer and you can set most browsers to prevent them from being placed. If you do this, however, you may have to manually adjust some preferences every time you visit a site and some services and functionalities may not work.
+
+<h2 class="ui header">Contact Us</h2>
+If you have any questions about this Privacy Policy, please contact us at support@mail.address or at: <br/><br/>
+
+Bustime OÜ<br/>
+Sepapaja 6<br/>
+Tallinn 15551, Estonia
+</div></div>
+
+
+
+{% endblock %}

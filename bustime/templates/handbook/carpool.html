@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Попутка" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/carpool.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Попутка — это неофициальный способ передвижения, когда водитель частного автомобиля подбирает пассажиров, следующих в том же направлении, обычно за символическую плату или бесплатно. Этот способ удобен для людей, которым нужно добраться до определенного места, и для водителей, которые хотят сэкономить на топливе или просто ищут компанию в дороге." %}</p>
+</div>
+<br/><br/>
+{% endblock %}

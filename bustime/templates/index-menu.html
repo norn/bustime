@@ -1,0 +1,46 @@
+{% load i18n %}
+<div class="ui container">
+     <div class="ui equal width column stackable grid" style="opacity: 0.8">
+            <div class="column">
+                <div class="ui {% if tcard_available %}four{%else%}three{%endif%} item labeled icon secondary menu">
+                     <a class="item" href="https://openweathermap.org/city/{{place.weather}}" rel="noreferrer" target="_blank" title="{% trans "Погода" %}" aria-label="{{place.name}} {% if avg_temp > 0 %}+{%endif%}{{avg_temp}}˚">
+                        {% if weather == "rain" %}<i class="icon fa-tint" title="{% trans "дождь" %}"></i>
+                        {% elif weather == "snow" %}<i class="icon fa-snowflake-o" title="{% trans "снег" %}"></i>
+                        {% elif weather == "ice" %}<i class="icon fa-snowflake-o" title="{% trans "град" %}"></i>
+                        {% elif weather == "smoke" %}<i class="icon fa-recycle" title="{% trans "смог" %}"></i>
+                        {% elif weather == "clear" %}<i class="icon fa-sun-o" title="{% trans "ясно" %}"></i>
+                        {% elif weather == "clouds" %}<i class="icon fa-mixcloud" title="{% trans "облачно" %}"></i>
+                        {% elif weather == "dark_clouds" %}<i class="icon fa-cloud" title="{% trans "пасмурно" %}"></i>
+                        {% elif weather == "fog" %}<i class="icon fa-tree" title="{% trans "туман" %}"></i>
+                        {% else %}<i class="icon fa-thermometer-half" title="{% if weather %}{% trans weather %}{% endif %}"></i>{% endif %}
+                        <span id="weather_t" class="weather_t">{% if avg_temp > 0 %}+{%endif%}{{avg_temp}}˚</span></a>
+
+                    {% if tcard_available %}
+                        <a class="item tcard_balance{% if tcard.warning %} blink{% endif %}" href="/{{place.slug}}/settings/" title="{% if tcard.warning %}{% trans "менее 5 поездок" %}{%else%}{% trans "Транспортная карта" %}{% endif %}"><i class="credit card icon"></i>
+                            {% if tcard %}
+                                {{tcard.balance|floatformat:"0"}}
+                                {%if tcard.social%}{% trans "раз" %}{%else%} р.{% endif %}
+                            {% else %}
+                                ?
+                            {% endif %}</a>
+                    {% endif %}
+
+                     <!--<a aria-label="{{avg_jam_ratio}} {% trans " баллов " %}" class="item" href="/{{us.city.slug}}/jam/" title="{% trans "Дорожная ситуация" %}"><i class="icon fa-tachometer" aria-hidden="true"></i>{{avg_jam_ratio}}/10</a>-->
+
+                     <a class="item" href="{{us.city.get_absolute_url}}status/" title="{% trans "Состояние сервера и системы мониторинга" %}"><i class="fa-heartbeat icon" aria-hidden="true"></i>{% trans "Состояние" %}</a>
+                     <a class="item" href="/{{place.slug}}/settings/" title="{% trans "Настройки сайта" %}"><i class="fa-cog icon"></i>{% trans "Настройки" %}</a>
+                </div>
+            </div>
+
+        {% if transaction.key %}
+        <div class="column">
+            <div class="ui fluid four item labeled icon secondary menu">
+                <a class="item" href="https://hodlhodl.com/join/RVPW" rel="noreferrer" target="_blank" title="{% trans "Стоимость 0.001 Биткоина" %}"><i class="fa-btc icon" aria-hidden="true"></i>{{btc_price}}€</a>
+                <a class="item" href="{{city.check_url}}" title="id={{us.city.id}}" %}"><i class="asterisk icon"></i>{% trans "Источник" %}</a>
+                <a class="item" href="/wiki/bustime/log/?city__id__exact={{us.city.id}}&ttype=get_bus_by_name" title="{% trans "Логи" %}" %}"><i class="fa-file-text-o icon"></i>{% trans "Логи" %}{% if not_found %}({{not_found}}){%endif%}</a>
+                <a class="item" href="/{{us.city.slug}}/admin/" title="{% trans "Управление сервером" %}"><i class="fa-cogs icon"></i>{% trans "Сервер" %}</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div><br/>

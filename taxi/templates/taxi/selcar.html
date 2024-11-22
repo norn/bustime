@@ -1,0 +1,77 @@
+{% extends "base.html" %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Такси" %}{% endblock %}
+
+{% block meta_descr %}
+{% trans "bustime-такси: Выбор машины такси" %}.
+{% endblock meta_descr %}
+
+{% block nav_help %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="/static/{{request.resolver_match.app_name}}/css/taxi.css">
+{% endblock extra_head %}
+
+{% block content %}
+
+<div class="ui breadcrumb">
+    <a class="section" href="/{{request.session.city.slug}}/">{{request.session.city.name}}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/carpool/usage/driver/">{% trans "Попутчик" %}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Выбор машины" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<h1 class="ui header">
+    {% trans "Выбор машины" %}
+    <div class="sub header"></div>
+</h1>
+
+{% if messages %}
+<div id="messages" class="ui container">
+{% for message in messages %}<div class="ui {{ message.tags }} message">{{ message|safe }}</div>{% endfor %}
+</div>
+<br>
+{% endif %}
+
+<div class="ui segment">
+    <div class="ui middle aligned divided selection list">
+    {% for car in cars %}
+        <a class="item" href="/carpool/selcar/{{car.id}}/">
+            <div class="right floated content">
+                <div class="ui label" title="{% trans 'Пассажиров' %}"><i class="users icon"></i>{{car.passengers}}</div>
+                <div class="ui label" title="{% trans 'Детских кресел' %}"><i class="child icon"></i>{{car.baby_seat}}</div>
+            </div>
+            <img class="ui tiny image" src="/static/{{car.photo}}">
+            <div class="content" style="white-space:nowrap;overflow: hidden;text-overflow: ellipsis;">
+                <div class="header">
+                    {% if car.current %}<i class="favorite icon"></i>{% endif %}{{car.gos_num}}
+                </div>
+                {{car.model.name}}
+            </div>
+        </a>
+    {% endfor %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block body_end %}
+<script src="/static/{{request.resolver_match.app_name}}/js/taxi.js"
+        id="taxi.js"
+        data-city_id="{{request.session.city.id|default:0}}"
+        data-user_id="{{request.user.id|default:0}}"
+        data-session_key="{{request.session.session_key}}"></script>
+<script>
+function js_page_extra() {
+    websconnect();
+
+    $("#selcar_table tbody tr").css({"cursor":"pointer"});
+
+    $( "#selcar_table tbody" ).on( "click", "tr", function() {
+        $("#car_id").val( $(this).attr('id') );
+        $("#selcar").submit();
+    });
+}   // js_page_extra
+</script>
+{% endblock body_end %}

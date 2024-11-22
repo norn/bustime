@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% load thumbnail %}
+{% load revisionstag %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "История изменений" %}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }.bustime.loc{{city.get_absolute_url}}history/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}history/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block nav_history %}active{%endblock%}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+    <i class="right angle icon divider"></i>
+    {% trans "История изменений" %}
+</div>
+<div class="ui divider"></div>
+
+<h2>{{city.name}}: {% trans "история изменений" %}</h2>
+<table class="ui celled table">
+    <thead>
+        <tr>
+            <th class="ten wide">{% trans "Новость" %}</th>
+            {% if user and user.is_staff %}<th>{% trans "Ссылка" %}</th>{% endif %}
+            <th>{% trans "Автор" %}</th>
+            <th>{% trans "Дата" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% autoescape off %}
+        {% for n in news %}
+        <tr>
+            <td data-label='{% trans "Новость" %}'>{{n.revision.get_comment}}</td>
+            <!-- <td data-label='{% trans "Новость" %}'>{{n.body}}</td> -->
+            {% if user and user.is_staff %}
+            <td data-label='{% trans "Ссылка" %}'>
+                <!-- {% if n.news_link %}<a href="{{n.news_link}}" target="_blank">{% trans "Просмотр" %}</a>{% endif %} -->
+                {% if n.object_id %}<a href="{{n|get_object_link}}" target="_blank">{% trans "Просмотр" %}</a>{% endif %}
+            </td>
+            {% endif %}
+            <td data-label='{% trans "Автор" %}'>
+                {% if user and user.is_staff %}<a href="/wiki/auth/user/{{n.revision.user.id}}/change/" target="_blank">{% endif %}
+                {% if n.revision.user %}{{n.revision.user.first_name|default:n.revision.user.id}}{%endif%}
+                <!-- {% if user and user.is_staff %}<a href="/wiki/auth/user/{{n.author.id}}/change/" target="_blank">{% endif %}
+                {% if n.author %}{{n.author.first_name|default:n.author.id}}{%endif%} -->
+                {% if user and user.is_staff %}</a>{% endif %}
+            </td>
+            <td data-label='{% trans "Дата" %}'>{{n.revision.date_created|date:"d.m.y H:i"}}</td>
+            <!-- <td data-label='{% trans "Дата" %}'>{{n.ctime|date:"d.m.y H:i"}}</td> -->
+        </tr>
+        {% endfor %}
+        {% endautoescape %}
+    </tbody>
+</table>
+
+<!--кнопки страниц-->
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right menu">
+            {% for p in news.paginator.page_range %}
+            <a class="{% if p == news.number %}active {%endif%}item" href="/{{city.slug}}/history1/page-{{p}}/">{{p}}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% load thumbnail %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{{provider.name}}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/{{place.slug}}/company/{{provider.id}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/{{place.slug}}/company/{{provider.id}}/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/{{place.slug}}/company/{{provider.id}}/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block nav_company %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/company/">{% trans "Перевозчики" %}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{{provider.name}}</div>
+</div>
+<div class="ui divider"></div>
+
+{% if provider.logo %}
+    {% comment %}
+    {% thumbnail provider.logo "640x480" format="PNG" crop="center" as im %}
+    <img src="{{ im.url }}" width="320" height="240" aria-label="{% trans 'Логотип перевозчика' %}">
+    {% endthumbnail %}
+    {% endcomment %}
+    <img src="{{provider.logo.url}}" aria-label="{% trans 'Логотип перевозчика' %}" style="max-width:320px;">
+{% endif %}
+
+<table class="ui celled table">
+  <tbody>
+    <tr>
+      <td>{% trans "изменен" %}</td>
+      <td>{{provider.mtime}}</td>
+    </tr>
+
+    <tr>
+      <td>{% trans "Сайт" %}</td>
+      <td>
+        {% if provider.www %}
+        <a href="{{provider.www}}" target="_blank" rel="nofollow" aria-label="{% trans 'Сайт перевозчика' %} {{provider.www}}">{{provider.www}}</a>
+        {% else %}
+        {% trans "не заполнен" %}
+        {% endif %}
+      </td>
+    </tr>
+
+    <tr>
+      <td>{% trans "Телефон" %}</td>
+      <td>
+        {% if provider.phone %}
+        <a href="tel:{{provider.phone}}" aria-label="{% trans 'Номер телефона перевозчика' %} {{provider.phone}}">{{provider.phone}}</a>
+        {% else %}
+        {% trans "не заполнен" %}
+        {% endif %}
+      </td>
+    </tr>
+
+    <tr>
+      <td>Email</td>
+      <td>
+        {% if provider.email %}
+        <a href="mailto:{{provider.email}}" aria-label="{% trans 'Почта перевозчика' %} {{provider.email}}">{{provider.email}}</a>
+        {% else %}
+        {% trans "не заполнен" %}
+        {% endif %}
+      </td>
+    </tr>
+
+    <tr>
+      <td>{% trans "Адрес" %}</td>
+      <td aria-label="{% trans 'Адрес перевозчика' %} {{provider.address}}">
+        {% if provider.address %}
+        {{provider.address}}
+        {% else %}
+        {% trans "не заполнен" %}
+        {% endif %}
+      </td>
+
+    </tr>
+
+    {% if provider.info %}
+    <tr>
+      <td>{% trans "Дополнительно" %}</td>
+      <td>{{provider.info}}</td>
+    </tr>
+    {% endif %}
+
+    <tr>
+      <td>{% trans "Обслуживает маршруты" %}</td>
+      <td style="line-height:3em">
+        {% for b in buses %}{% if b %}
+        <a class="ui basic button" href="{{b.get_absolute_url}}" target="_blank">{{b.ttype_name}} {{b.name}}</a>
+        {% endif %}{% endfor %}
+      </td>
+    </tr>
+  </tbody>
+</table>
+<!-- {{provider.point}} -->
+
+{% if user.is_authenticated and not us.is_banned %}
+<center>
+<a class="ui icon labeled button" href="{% url 'admin:bustime_busprovider_change' provider.id %}"><i class="fa-pencil icon" title="{% trans "редактировать" %}"></i>{% trans "изменить" %}</a>
+<br/>{% trans "обновления вступают в силу в течение 24 часов" %}
+</center>
+{% elif not us.is_banned %}
+<center>
+<a class="ui icon labeled button" href="/register/?next={% url 'admin:bustime_busprovider_change' provider.id %}"><i class="fa-pencil icon" title="{% trans "редактировать" %}"></i>{% trans "изменить" %}</a>
+<br/>{% trans "сайт будет обновлен в течение 24 часов" %}
+</center>
+{% endif %}
+
+<br/><br/>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}{% load l10n %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% block titlee %}Описание {{bus.ttype_name}} {{bus.name}}, {{bus.city.name}}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{%block extra_head%}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{bus.get_absolute_url}}">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{bus.get_absolute_url}}">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{bus.get_absolute_url}}" />
+{% endfor %}
+
+<script src="https://cdn.bustime.loc/static/js/router.js" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 550px;
+}
+</style>
+{% endblock %}
+
+{% block nav_route %}active{%endblock%}
+{%block content%}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/">Главная</a><div class="ui divider"> / </div>
+
+  <a class="section" href="https://bustime.loc/{{city.slug}}/">
+  {{city.name}}</a><div class="ui divider"> / </div>
+  <div class="active section">{{bus.ttype_name}} {{bus.name}}</div>
+</div>
+<div class="ui divider"></div>
+
+
+
+<h1 class="ui header center aligned">{{bus.ttype_name}} {{bus.name}}
+<div class="sub header">{{bus.city.name}}</div>
+</h1>
+
+<div class="ui center aligned grid">
+   <div class="column">
+    <a class="ui labeled icon center aligned button route_edit" href="./edit/">
+  <i class="fa-pencil icon"></i> Редактировать маршрут
+ </a>
+    </div>
+</div>
+
+<div class="ui center aligned grid">
+   <div class="column"><div id="lmap"></div></div>
+</div>
+
+<div class="ui two column stackable grid">
+<div class="column">
+
+<h2 class="ui header">{{bus.napr_a}}</h2>
+<div class="ui big divided relaxed list" id="route0">
+{%for r in route0%}
+<div class="item">
+{{r.busstop.name}}</div>
+{%endfor%}
+<div class="item">
+<div class="ui small input">
+  <input type="text" placeholder="название остановки">
+</div>
+<button class="ui green button" onclick="busstop_add0()"><i class="fa-plus icon"></i> Добавить</button>
+</div>
+</div>
+</div>
+
+<div class="column" id="route1">
+<h2 class="ui header">{{bus.napr_b}}</h2>
+<div class="ui big divided relaxed list">
+
+{% verbatim %}
+<div class="item" v-for="r in route">
+{{busstops[r].name}}->{{busstops[r].moveto}}</div>
+{% endverbatim %}
+</div>
+</div>
+
+<script>
+{% include "_js_init.html" %}
+var route0 = [
+  {%for r in route0%}
+  {{r.busstop.id}},
+  {%endfor%}
+];
+var route1 = [
+  {%for r in route1%}
+  {{r.busstop.id}},
+  {%endfor%}
+];
+
+var busstops = {
+{% for b in busstops %}
+ {{b.id}}: {id: {{b.id}}, name:"{{b.name}}", moveto:"{% if b.moveto %}{{b.moveto}}{%endif%}", x:{{b.point.x|unlocalize}}, y:{{b.point.y|unlocalize}} }, 
+{% endfor %} };
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}{% load l10n %}{% load i18n %}
+{% block titlee %}Все ТС {{bus.city.name_o}} на карте{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{%block extra_head%}
+<script>{% include "_js_init.html" %}</script>
+<script src="https://bustm.net/static/js/uevents-on-map.js?v=4" type="text/javascript"></script>
+
+<style>
+#lmap {
+    height: 550px;
+}
+.vehicle_info td {
+    border-bottom:1px solid lightgray;
+}
+
+</style>
+{% endblock %}
+
+{% block nav_route %}active{%endblock%}
+{%block content%}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/admin/">Администратор</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">Все uevents</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui center aligned grid">
+   <div class="column"><div id="lmap"></div></div>
+</div>
+
+<script>
+var place_point_y = {{place.point.y|unlocalize}};
+var place_point_x = {{place.point.x|unlocalize}};
+var place_id = {{place.id}};
+var uevents = {{uevents|safe}};
+</script>
+{% endblock %}

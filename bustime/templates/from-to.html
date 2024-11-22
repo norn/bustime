@@ -1,0 +1,80 @@
+{% load i18n %}
+{# https://semantic-ui.com/introduction/getting-started.html #}
+<div class="ui stackable two column grid" style="margin: 18px 0;">
+    <div class="four column centered row" style="padding-bottom: 0; padding-top: 3px;"><!-- если убрать этот контейнер, инпуты станут шире и покажут длинное название остановки -->
+        <div class="column">
+            <div class="ui left action icon input large fluid">
+                <button id="stops_position" class="ui icon button" title="Где я" onclick="start_location_service(force=1);">
+                    <i class="fa-map-marker icon"></i>
+                </button>
+                <input type="text" id="id_stops" value="{{stop_from|safe}}" placeholder="{% trans " откуда " %}">
+            </div>
+        </div>
+        <div class="column">
+            <div class="ui right action large icon input fluid">
+                <input type="text" id="id_stops2" value="{{stop_to|safe}}" placeholder="{% trans " куда " %}">
+                <button id="search_trip" class="ui icon button" title="{% trans "Найти маршрут" %}" onclick="request_bus_trip(us_city);">
+                    <i class="fa-search icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% if error %}
+    <div class="four column centered row">
+        <div class="ui huge error message">
+           {{ error|safe }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</div><!--ui container -->
+
+<script>
+function fromToInit(){
+    $("#id_stops").autocomplete({
+        minLength: 3,
+        source: stops,  // in static/js/city-*-*.js
+        select: function(a, b) {
+            NO_MORE_USE_POSITION = 1;
+            stop_ids(b.item.ids);
+        }
+    }).keypress(function(e) {
+        if (e.keyCode === 13) {
+            NO_MORE_USE_POSITION = 1;
+            autocomplete_enter(this.value, "#id_stops");
+        }
+    });
+    $("#id_stops2").autocomplete({
+        minLength: 3,
+        source: stops,
+        select: function(a, b) {
+            //stop_destination_save(b.item.ids);
+        }
+    }).keypress(function(e) {
+        if (e.keyCode === 13) {
+            autocomplete_enter(this.value, "#id_stops2");
+        }
+    });
+}
+
+function autocomplete_enter(name, target) {
+    var lname = name.toLowerCase();
+    for (var i = 0; i < stops.length; i++) {
+        if (stops[i].value.toLowerCase() == lname) {
+            $(target).val(stops[i].value);
+            stop_ids(stops[i].ids);
+            request_bus_trip(us_city);
+            return;
+        }
+    }
+    alert('Остановка не найдена');
+}
+
+// переход на страницу списка найденных маршрутов
+function request_bus_trip(city_id) {
+    var stop_from = encodeURIComponent(document.getElementById("id_stops").value);
+    var stop_to  = encodeURIComponent(document.getElementById("id_stops2").value);
+    window.location.href = `/${us_city_slug}/busstops_trip?stop_from=${stop_from}&stop_to=${stop_to}`;
+}
+</script>

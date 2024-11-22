@@ -6,28 +6,25 @@
   <i class="fa-clock-o icon"></i>
   <div class="content">
     <div class="header">
-      Вы превысили суточный лимит использования сайта
+      Суточный лимит использования сайта 2 часа в день
     </div>
-    <p>Активируйте <a href="/pro/">профессиональную подписку</a> чтобы отключить ограничения.</p>
-    <p>Если у вас есть пин-код от действующей подписки, то вы можете активировать его ниже</p>
+    <p>Активируйте <a href="/pro/">премиум подписку</a> для круглосуточного доступа.</p>
   </div>
 </div>
 <div class="ui grid"><div class="center aligned column">
-            <br/><br/>
             {% if us.pro_demo_date.date == now.date %}
-            Сегодня профессиональный режим вы уже пробовали.
+            Сегодня профессиональный режим вы уже пробовали. <br/>Классическая версия <a href="/{{us.city.slug}}/schedule/">доступна здесь</a>.
             {%else%}
             <a href="/pro-demo/">
-            <button class="ui red icon right labeled button"><i class="fa fa-birthday-cake icon"></i> Попробовать бесплатно, 30 мин</button>
+            <button class="ui red icon right labeled button"><i class="fa-birthday-cake icon"></i> Попробовать бесплатно, 10 мин</button>
             </a>
             {%endif%}<br/><br/>
             <form action="/pin/" method="post">
                 <div class="ui action input">
                   <input type="text" name="pin" placeholder="пин-код">
-                  <button class="ui teal button" type='submit'><i class="fa fa-diamond icon"></i> ввод</button>
+                  <button class="ui blue button" type='submit'><i class="fa-diamond icon"></i> ввод</button>
                 </div>
-            </form><br/>
+            </form>
 </div></div>
 <br/><br/>
-
 {% endblock %}

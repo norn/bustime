@@ -1,0 +1,86 @@
+{% extends "base.html" %}{% load l10n %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}Пассажиры в {% if LANGUAGE_CODE == "ru" %}{{us.city.name_gde}}{% else %}{{us.city.name}}{% endif %} {{tm|date}}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{city.get_absolute_url}}status/{{tm|date}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{city.get_absolute_url}}status/{{tm|date}}/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{city.get_absolute_url}}status/{{tm|date}}/" />
+{% endfor %}
+
+  <script src="https://cdn.bustime.loc/static/js/status_day.js?v=3" type="text/javascript"></script>
+  <style>#lmap {height: 687px;}</style>
+
+  <script type="text/javascript">
+  var tm = "{{tm}}";
+  var tm_year = {{tm.year}};
+  var tm_month = {{tm.month}};
+  var tm_day = {{tm.day}};
+  var CITY_POINT_X = {{city.point.x|stringformat:"f"}};
+  var CITY_POINT_Y = {{city.point.y|stringformat:"f"}};
+  </script>
+{% endblock %}
+
+{% block nav_status %}active{%endblock%}
+{%block content%}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+<a class="section" href="/{{city.slug}}/status/">{% trans "Статус" %}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{{tm.date}}</div>
+</div>
+<div class="ui divider"></div>
+
+
+
+<h1 class="ui center aligned header">{{tm|date:"l"}}, {{tm.date}}<div class="sub header"><i class="fa fa-globe"></i> {{ passengers_cnt_web }} + <i class="fa fa-android"></i> {{ passengers_cnt_android }} + <i class="fa fa-apple"></i> {{ passengers_cnt_ios }}, всего: {{ passengers_cnt }}</div></h1>
+
+<div class="ui grid">
+  <div class="column"><div id="lmap"></div></div>
+</div>
+
+
+<div class="ui two column stackable grid">
+
+<div class="column">
+<div class="ui huge segment">
+<!-- <span class="cnt"></span>  -->
+<div class="ui icon button playb" onclick="play_pause()"><i class="fa fa-hourglass-start"></i></div>
+<span class="from"></span>, пассажиров за 5 минут
+</div></div>
+
+
+<div class="column">
+  <div class="ui huge segment">
+  <div class="ui three tiny grey statistics">
+
+  <div class="statistic">
+    <div class="value"><i class="fa-globe icon"></i> <span class="cnt_web">0</span></div>
+  </div>
+  <div class="statistic">
+    <div class="value"><i class="fa-android icon"></i> <span class="cnt_android">0</span></div>
+  </div>
+  <div class="statistic">
+    <div class="value"><i class="fa-apple icon"></i> <span class="cnt_ios">0</span></div>
+  </div>
+
+  </div>
+  </div>
+
+</div>
+</div>
+
+
+<br/>
+
+
+
+
+{% endblock %}

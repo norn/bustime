@@ -1,0 +1,6 @@
+/*******************************
+        Global Overrides
+*******************************/
+
+/* Import Droid Arabic Kufi */
+@import (css) url("https://fonts.googleapis.com/css2?family=Droid+Arabic+Kufi");

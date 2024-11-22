@@ -1,0 +1,411 @@
+{% extends "base.html" %}{% load l10n %}{% load i18n %}
+{% load i18n %}
+{% load static %}
+{% block titlee %}{% trans "Редактирвание" %} {{ bus.ttype_name }} {{ bus.name }}, {{ place.name }}{% endblock %}
+{% block meta_descr %}{% endblock %}
+
+{% block extra_head %}
+    {% include "v-components/modal.html" %}
+    <script>
+    var place={{place|safe}};
+    var US_CITY_POINT_Y = place.point.y || 0.0;
+    var US_CITY_POINT_X = place.point.x || 0.0;
+    </script>
+    <script src="{% static  'js/route_edit.js' %}" type="text/javascript"></script>
+    <style>
+        #lmap {
+            height: 550px;
+        }
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 60%; /* Could be more or less, depending on screen size */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Параметры тени */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        @media screen and (max-width: 600px) {
+            #map_column {
+                width: 100%;
+                margin: 0;
+            }
+            .btn_margin {
+                margin-bottom: 15px !important;
+            }
+            .button.blue.right {
+                float: left !important;
+            }
+            .form_top {
+                display: table !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block nav_route %}active{% endblock %}
+{% block content %}
+    <div id="app">
+        <div class="ui big breadcrumb">
+            <a class="section" href="/">{% trans "Выбор города" %}</a>
+            <i class="right angle icon divider"></i>
+            <a class="section" href="/{{ place.slug }}/">{{ place.name }}</a>
+            <i class="right angle icon divider"></i>
+            <div class="active section">{{ bus.ttype_name }} {{ bus.name }}</div>
+        </div>
+
+        <form action="./" class="ui form form_top" @submit.prevent="submitForm">
+            {% csrf_token %}
+            <input type="hidden" name="name" v-model="form.name">
+            <input type="hidden" name="point" v-model="form.point">
+            <input type="hidden" id="place_id" value="{{ place.id }}">
+            <input type="hidden" id="place_name" value="{{ place.slug }}">
+            <div class="inline fields">
+                <div class="ten wide field" :class="{ error: form.errors.name }" ref="name">
+                    <label>Остановка</label>
+                    <input type="text" placeholder="Название" v-model="form.name">
+                </div>
+                <div class="six wide field" :class="{ error: form.errors.point }" ref="point">
+                    <input type="text" placeholder="Координаты" v-model="form.point">
+                </div>
+            </div>
+            <div class="ui error message"></div>
+            <div class="ui button btn_margin" @click="onCentralizeMap">
+                <i class="crosshairs icon"></i>Центровать по моим координатам
+            </div>
+            <button class="ui button blue submit right floated"
+                    :class="{'double loading disabled': form.status_loading}" ref="submit"
+                 type="submit">Создать новую остановку</button>
+        </form>
+        <div class="ui divider"></div>
+
+        <div class="ui center aligned grid" id="map_column">
+            <div class="column">
+                <div id="lmap"></div>
+            </div>
+        </div>
+
+        Выбрана: <b class="bs_selected"></b><br/>
+        <!-- use the modal component -->
+        <modal v-if="modal.show" @close="modal.show=false">
+            <template v-slot:header>
+                <span class="close" id="modalCancel" @click="modal.show=false">&times;</span>
+            </template>
+            <template v-slot:body>
+                <p><b>Выберите источник - маршрут и направление</b></p>
+                <div class="ui form">
+                    <div class="fields">
+                        <div class="field">
+                            <label>Маршрут</label>
+                            <select name="modal-bus-select" id="modal-bus-select"
+                                    @change="modalBusSelectChange">
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Направление</label>
+                            <select name="modal-dir-select" id="modal-dir-select"
+                                    @change="modalDirSelectChange">
+                                <option>0</option>
+                                <option>1</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Вставка</label>
+                            <select name="modal-insert-type-select" id="modal-insert-type-select">
+                                <option value="-1" selected="selected">В конец</option>
+                                <option value="-2">В начало</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p>
+                <div class="ui celled relaxed list">
+                    <div class="item">
+                        <div class="ui master checkbox"
+                             ref="master_stops_modal" @change="onMasterStopModalChanged">
+                            <input type="checkbox" name="stops_modal">
+                            <label>Остановки</label>
+                        </div>
+                        <!--<div id="loader" class="ui active slow blue double inline centered loader"></div>-->
+                        <div class="list" style="overflow:auto; max-height: 28em;">
+                            <div class="item" v-for="stop in modal.stops">
+                                <div class="ui child checkbox">
+                                    <input type="checkbox" name="stop"
+                                           :id="stop" :value="stop" v-model="modal.stopsSelected"
+                                           @change="onStopModalChanged">
+                                    <label>[[ bus_stops[stop].name ]]->[[ bus_stops[stop].moveto ]]</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </p>
+            </template>
+            <template v-slot:footer>
+                <p style="text-align:right;">
+                    <button className="ui gray button" @click="modal.show=false">Отмена</button>&nbsp;
+                    <button className="ui green button" @click="busCopyStart">Копировать</button>
+                </p>
+            </template>
+        </modal>
+
+        <div class="ui two column stackable grid">
+            <div class="column" id="route0">
+                <h2 class="ui header">{{ bus.napr_a }}</h2>
+                {% verbatim %}
+                    <div class="ui fluid selection dropdown search busstop_selector_0">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" v-for="bus_stop in bus_stops" :data-value="bus_stop.id">
+                                [[bus_stop.name]]->[[bus_stop.moveto]]
+                            </div>
+                        </div>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <tr>
+                            <td style="text-align:left;">
+                                <button class="ui green button add_button" @click="onAddBusStop(0)">
+                                    <i class="fa-plus icon"></i> Добавить
+                                </button>
+                            </td>
+                            <td style="text-align:right;">
+                                <button class="ui blue button" @click="onShowModal(0)">
+                                    <i class="fa-plus icon"></i> Копировать из маршрута
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="ui big divided relaxed list">
+                        <div class="item" v-for="(r,index) in route[0]" track-by="index"
+                             :class="anchoredIndex0 === index ? 'color-0-bg' : ''">
+                            <div class="compact ui small icon buttons" id="bs_{{ bus_stops[r].id }}">
+                                <button class="ui button down_button"
+                                        @click="onMoveBusStopDown(0, bus_stops[r].id)">
+                                    <i class="fa-arrow-down icon"></i></button>
+                                <button class="ui icon button anchor_button"
+                                        :class="anchoredIndex0 === index ? 'blue' : ''"
+                                        @click="onAnchorBusStop(bus_stops[r].id, 0)"><i class="fa-anchor icon"></i>
+                                </button>
+                                <button class="ui button up_button"
+                                        @click="onMoveBusStopUp(0, bus_stops[r].id)">
+                                    <i class="fa-arrow-up icon"></i>
+                                </button>
+                            </div>
+                            <button class="ui mini icon red button delete_button" style="margin-left:10px"
+                                    @click="onDeleteBusStop(bus_stops[r].id, 0)"><i
+                                    class="fa-times icon"></i></button>
+                            <br/>
+                            [[index]]. <b>[[bus_stops[r].name]]</b> -> [[bus_stops[r].moveto]]
+                        </div>
+                    </div>
+
+                    <div class="ui message">[
+                        <template v-for="item in route[0]">
+                            [[ item ]],
+                        </template>
+                        ]
+                    </div>
+                {% endverbatim %}
+            </div>
+
+            <div class="column" id="route1">
+                <h2 class="ui header">{{ bus.napr_b }}</h2>
+
+                {% verbatim %}
+                    <div class="ui fluid selection dropdown search busstop_selector_1" ref="busstop_selector_1">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" v-for="bus_stop in bus_stops" :data-value="bus_stop.id">
+                                [[bus_stop.name]]->[[bus_stop.moveto]]
+                            </div>
+                        </div>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <tr>
+                            <td style="text-align:left;">
+                                <button class="ui green button add_button" @click="onAddBusStop(1)">
+                                    <i class="fa-plus icon"></i> Добавить
+                                </button>
+                            </td>
+                            <td style="text-align:right;">
+                                <button class="ui blue button" @click="onShowModal(1)">
+                                    <i class="fa-plus icon"></i> Копировать из маршрута
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="ui big divided relaxed list">
+                        <div class="item" v-for="(r, index) in route[1]" track-by="index"
+                             :class="anchoredIndex1 === index ? 'color-0-bg' : ''">
+                            <div class="compact ui small icon buttons" id="bs_{{ bus_stops[r].id }}">
+                                <button class="ui button down_button"
+                                        @click="onMoveBusStopDown(1, bus_stops[r].id)">
+                                    <i class="fa-arrow-down icon"></i>
+                                </button>
+                                <button class="ui icon button anchor_button"
+                                        :class="anchoredIndex1 === index ? 'blue' : ''"
+                                        @click="onAnchorBusStop(bus_stops[r].id, 1)">
+                                    <i class="fa-anchor icon"></i>
+                                </button>
+                                <button class="ui button up_button"
+                                        @click="onMoveBusStopUp(1, bus_stops[r].id)">
+                                    <i class="fa-arrow-up icon"></i>
+                                </button>
+                            </div>
+                            <button class="ui mini icon red button delete_button" style="margin-left:10px"
+                                    @click="onDeleteBusStop(bus_stops[r].id, 1)"><i
+                                    class="fa-times icon"></i></button>
+                            <br/>
+                            [[index]].<b>[[bus_stops[r].name]]</b> -> [[bus_stops[r].moveto]]
+                        </div>
+                    </div>
+
+                    <div class="ui message">[
+                        <template v-for="item in route[1]">
+                            [[ item ]],
+                        </template>
+                        ]
+                    </div>
+                    <!--<textarea rows="3" style="width:100%">{{ route[1].join(", ") }}</textarea>-->
+                    </div>
+                {% endverbatim %}
+        </div>
+
+        <br/><br/>
+        <br/><br/>
+        <br/><br/>
+        <div class="ui stackable center aligned three column grid">
+            <div class="column">
+                <a class="ui red button delete_button" href="../delete/"><i class="fa-remove icon"></i> Удалить маршрут</a>
+            </div>
+            <div class="column">
+                <button class="ui orange button save_button"
+                        :class="{'double loading disabled': status_saving}"
+                        ref="save_button"><i class="fa-floppy-o icon"></i>
+                    Сохранить
+                </button>
+            </div>
+            <div class="column">
+                <button id="circle_button" class="ui green button" ref="circle_button"> Раскольцевать</button>
+            </div>
+        </div>
+
+        <br/><br/>
+        <br/><br/>
+        <br/><br/>
+    </div>
+
+    <script type="text/javascript">
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("main_container").style.display = "none";
+        RouteEditApp.data = () => {
+            {%if new_stop %}
+                let new_stop = JSON.parse('{{new_stop|safe}}')
+                if (new_stop && this.userlog) {
+                    userlog.push({
+                        'place': {{place.id}},
+                        'bus': this.busId,
+                        'nbusstop_id': new_stop.nbusstop_id,
+                        'name': new_stop.name,
+                        'note': `Создание остановки ${new_stop.nbusstop_id}: ${new_stop.name}`
+                    });
+                    window.sessionStorage.setItem("userlog", JSON.stringify(userlog));
+                    new_stop = null;
+                }
+            {% endif %}
+
+            let route = {0: [], 1: []};
+            route[0] = [
+                {% for r in route0 %}
+                    {{ r.busstop.id }},
+                {%endfor%}
+            ];
+            route[1] = [
+                {%for r in route1%}
+                    {{r.busstop.id}},
+                {%endfor%}
+            ];
+
+            let bus_stops = {};
+            {% for b in busstops %}
+                bus_stops[{{ b.id }}] = {
+                    "id": {{ b.id }},
+                    "name": "{{ b.name }}",
+                    "moveto": "{% if b.moveto %} {{ b.moveto }} {% endif %}",
+                    "x": {{ b.point.x|unlocalize }},
+                    "y": {{ b.point.y|unlocalize }}
+                };
+            {% endfor %}
+
+            return {
+                allStops: null,
+                iconStops: null,
+                route: route,
+                bus_stops: bus_stops,
+                busId: {{  bus.id }},
+                busCityId: {{ place.id }},
+                selectedStop0: null,
+                selectedStop1: null,
+                anchoredIndex0: -1,
+                anchoredIndex1: -1,
+                modal: {
+                    showed: false,
+                    data: [],
+                    direction: -1,
+                    directionSelected: 0,
+                    busIndexSelected: 0,
+                    stopsSelected: [],
+                    stops: [],
+                },
+                form: {
+                    name: "",
+                    point: "",
+                    errors: {
+                        name: false,
+                        point: false
+                    },
+                    status_loading: false
+                },
+                userlog: [],
+                status_saving: false,
+                map: {
+                    status_loading: false
+                }
+            }
+        }
+        
+
+        function js_page_extra() {
+            $("#loader").hide();
+            $("#main_container").show()
+            const {createApp} = Vue;
+            app = createApp(RouteEditApp)
+                .component("modal", {
+                    template: "#modal-template"
+                })
+                .mount("#app");
+
+            app.defaultStops = Object.values(app.bus_stops);
+        }
+    </script>
+{% endblock %}

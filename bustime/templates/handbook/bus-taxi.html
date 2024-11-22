@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Маршрутное такси" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/bus-taxi.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Маршрутное такси — это небольшой коммерческий автобус или микроавтобус, который перевозит пассажиров по фиксированному маршруту, часто останавливаясь по требованию. Оно совмещает особенности такси и общественного транспорта, предоставляя более гибкое и быстрое передвижение по сравнению с обычными автобусами." %}</p>
+</div>
+<br/><br/>
+{% endblock %}

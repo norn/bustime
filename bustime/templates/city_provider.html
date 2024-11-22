@@ -1,0 +1,150 @@
+{% extends "base.html" %}{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load cache %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Администратор" %}</div>
+</div>
+<div class="ui divider"></div>
+
+{% if error_msg %}
+<div class="ui error big message">{{error_msg}}</div>
+{% endif %}
+
+
+<div class="ui header">{% trans "Поставщик данных" %}
+  <div class="sub header">{% trans "расширенные права доступа" %}</div>
+</div>
+
+<form class="ui form" method="post">{% csrf_token %}
+<table class="ui table">
+
+
+  <tr><td><b>{% trans "Поставка данных" %}</b></td>
+     <td class="fa fa-times" aria-hidden="true" id="data1">
+    </td>
+  </tr>
+
+
+
+  <tr><td><b>{% trans "Качество данных" %}</b></td>
+    <td id="near">
+    </td>
+  </tr>
+
+
+
+
+
+<tr><td><b>Доступ к данным</b></td>
+    <td>
+      <button class="ui labeled green icon button"><i class="check icon"></i> {% trans "включен" %}</button><br/>
+      {% trans "Разрешен полный доступ к" %} <a href="{{us.place.get_absolute_url}}transport/">{% trans "трэкам" %}</a> - 7 {% trans "дней" %}.<br/>
+      {% trans "Разрешен полный доступ к" %} <a href="{{us.place.get_absolute_url}}transport/">{% trans "истории состояний" %}</a> - 30 {% trans "дней" %}.
+    </td>
+  </tr>
+  <tr><td><b>{% trans "Публиковать новость" %}</b></td>
+    <td>
+      {% trans "Новость публикуется в разделе новости города. Размещайте сюда информацию об изменениях маршрутов, и другую важную информацию касающуюся общественного транспорта." %}<br/>
+      <div class="ui input">
+    <textarea name="dp_news" maxlength="160" style="width:320px; height:100px;"></textarea>
+  </div>
+      <br/>{% trans "Максимум 160 символов" %}.<br/>
+
+  <br/><br/><button class="ui button" type="submit" name="news_new">{% trans "опубликовать" %}</button> <button class="ui button" type="submit" name="news_del">{% trans "удалить" %}</button>
+
+</td>
+
+  </tr>
+
+
+
+  <tr><td><b>{% trans "Срочное сообщение" %}</b></td>
+    <td>
+      {% trans "Сообщение всплывает при каждом запуске приложения и на главной странице сайта. Размещайте срочную и важную информацию - аварии, недоступность серверов" %}.<br/>
+      <div class="ui input">
+    <textarea name="dp_flash" maxlength="160" style="width:320px; height:100px;">{% if place.block_info %}{{place.block_info}}{% endif %}</textarea>
+  </div>
+      <br/>{% trans "Максимум 160 символов" %}.<br/>
+
+  <br/><br/><button class="ui button" type="submit" name="flash_new">{% trans "опубликовать" %}</button> <button class="ui button" type="submit" name="flash_del">{% trans "удалить" %}</button></td>
+  </tr>
+
+  <tr><td><b>{% trans "Статистика посещений" %}</b></td>
+    <td>
+      {% trans "Информация о посещаемости сервиса - сайта и приложений, доступна в разделе" %}  <a href="{{us.place.get_absolute_url}}status/">{% trans "Состояние сервера" %}</a>
+    </td>
+  </tr>
+
+
+<!--
+  <tr><td><b>Изменить информации о перевозчиках</b></td>
+    <td></td>
+  </tr>
+
+  <tr><td><b>Изменить расписание</b></td>
+    <td></td>
+  </tr> -->
+
+</table>
+</form>
+<br/><br/>
+
+
+
+<script>
+var socket;
+function js_page_extra() {
+    socket = io();
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);
+    };
+    socket.on('connect', function() {
+        console.log("Socket connected");
+        socket.emit('authentication', {username: "", password: "", os:"web"});
+        socket.emit('join', "ru.bustime.status__" + {{place.id}});
+    });
+    socket.on("*", function(event, data) {
+        var counter = data.status_counter;
+        if (!!counter.nearest )
+        {
+            document.getElementById("near").innerHTML = counter.nearest;
+        }
+
+        if (counter.nearest > 0)
+        {
+            document.getElementById("data1").innerHTML = "Работает";
+            document.getElementById("data1").className = "fa fa-check";
+        }
+        else
+        {
+            if (counter.nearest == 0)
+            {
+                document.getElementById("data1").innerHTML = "Не работает";
+                document.getElementById("data1").className = "fa fa-times";
+            }
+        };
+    });
+} // function js_page_extra
+
+
+
+</script>
+
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block extra_head %}
+    <style>
+        .ui.relaxed.ordered.list .item .content {
+            padding-left: 0.62em;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/blog/">{% trans "Блог" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "10 советов для комфортного путешествия на общественном транспорте" %}</span>
+</div>
+
+<img class="ui image" src="/static/img/blog/blog-10-tips-public-transport.webp" />
+            <div class="ui huge relaxed ordered list">
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Используйте мобильные приложения для планирования поездок" %}</div>
+                        <div class="description">{% trans "Современные приложения помогут вам выбрать оптимальный маршрут и избежать пробок в часы пик" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Избегайте часы пик" %}</div>
+                        <div class="description">{% trans "Если ваш график позволяет, постарайтесь планировать поездки в менее загруженное время" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Приобретайте проездные билеты заранее" %}</div>
+                        <div class="description">{% trans "Это поможет избежать очередей и сэкономить время на покупку билетов перед каждой поездкой" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Выбирайте правильное место" %}</div>
+                        <div class="description">{% trans "В метро и автобусах обычно меньше людей у конца состава или автобуса" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Следите за личными вещами" %}</div>
+                        <div class="description">{% trans "В общественном транспорте важно внимательно следить за своими вещами, особенно в часы пик" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Используйте время в пути с пользой" %}</div>
+                        <div class="description">{% trans "Чтение книги или прослушивание подкастов может сделать поездку более приятной" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Будьте вежливы с другими пассажирами" %}</div>
+                        <div class="description">{% trans "Уступите место пожилым людям, беременным женщинам и пассажирам с детьми" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Следуйте указаниям водителя и информационным табло" %}</div>
+                        <div class="description">{% trans "Это обеспечит вашу безопасность и порядок в транспорте" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Оставайтесь на связи" %}</div>
+                        <div class="description">{% trans "Уведомляйте близких о своем местоположении во время поездок, особенно если путешествуете ночью" %}.</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="content">
+                        <div class="header">{% trans "Наслаждайтесь пейзажами" %}</div>
+                        <div class="description">{% trans "Если маршрут проходит через красивые или интересные места, выберите место у окна и наслаждайтесь видами" %}.</div>
+                    </div>
+                </div>
+</div>
+<br/>
+
+{% endblock %}

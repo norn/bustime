@@ -1,0 +1,99 @@
+{% extends "base.html" %}{% load cache %}{% load l10n %}{% load i18n %}
+
+
+{% block extra_head %}
+<script src="https://cdn.bustime.loc/static/js/stop_new.js" type="text/javascript"></script>
+<style>
+#lmap {
+    height: 400px;
+    max-height: 100%;
+}
+</style>
+{% endblock %}
+
+{% block nav_main %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+  <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/admin/">Администратор</a>
+  <i class="right angle icon divider"></i>
+  <div class="active section">Создать маршрут</div>
+</div>
+<div class="ui divider"></div>
+
+<form action="./" method="post" class="ui form">{% csrf_token %}
+  <div class="ui toggle checkbox"><input type="checkbox" name="overwrite" checked="checked"><label><i
+        class="fa fa-data fa-fw"></i> Перезаписывать существующий</label></div><br /><br />
+
+  <div class="ui two column grid">
+    <div class="column">
+      <div class="field">
+        <textarea name="s" cols="40" rows="10" style="width:100%"></textarea>
+      </div>
+      <div class="inline field">
+        <div class="ui toggle checkbox">
+        <input type="checkbox" tabindex="0" id=extra>
+          <label>Дополнительные параметры</label>
+        </div>
+      </div>
+      <div id="extra_data" class="hidden">
+        <div class="field">
+          <label>Маршрут 1</label>
+          <div class="two fields">
+            <div class="field">
+              <input type="text" name="stop_from_1" placeholder="Начальная остановка">
+            </div>
+            <div class="field">
+              <input type="text" name="stop_to_1" placeholder="Конечная остановка">
+            </div>
+          </div>
+        </div>  
+        <div class="field">
+          <label>Маршрут 2</label>
+          <div class="two fields">
+            <div class="field">
+              <input type="text" name="stop_from_2" placeholder="Начальная остановка">
+            </div>
+            <div class="field">
+              <input type="text" name="stop_to_2" placeholder="Конечная остановка">
+            </div>
+          </div>
+        </div>  
+      </div>
+      <input type="submit" class="ui blue button" value="Загрузить">
+    <!-- </div> -->
+  <!-- </div> -->
+</form>
+
+</div>
+<div class="column">
+  {% if result %}
+  <div class="ui message">{{result | safe }}
+  </div>
+  {% endif %}
+</div>
+</div>
+<br /><br />
+
+
+{% endblock %}
+
+{% block js_extra %}
+  <script src="https://cdn.bustime.loc/static/js/jquery.js"></script>
+  <script src="https://semantic-ui.com/dist/semantic.js"></script>
+  <script language='javascript'>
+    $(document).ready(function() {
+      $('.ui.checkbox').checkbox();
+      $('#extra').on('change', function(event) {
+        if (!event.target.checked) {
+          $('#extra_data').hide()
+        } else {
+          $('#extra_data').show()
+        }
+      });
+    });  
+  </script>
+{% endblock %}

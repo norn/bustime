@@ -1,0 +1,122 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block nav_city_admin %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{city.slug}}/admin/">{% trans "Диспетчер" %}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Таблица соответствия" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<script src="https://cdn.bustime.loc/static/js/city_mapping.js?v=5"></script>
+<div class="ui message">
+  {% trans "Выберите транспорт и в появившейся таблице установите маршрут или поменяйте номер." %}
+  <br/>{% trans "Для добавления нового идентификатора воспользуйтесь формой снизу." %}
+  <br/>{% trans "Кнопка 'очистить все' обнуляет установленные маршруты для всего транспорта." %}
+</div>
+<div class="ui two column grid">
+  <div class="column">
+    <select class="ui search dropdown" id="current">
+        <option value="">ТС</option>
+      {% for m in mapping %}
+        <option value="{{m.id}}">{{m.gosnum}} {{m.xeno_id}}</option>
+      {% endfor %}
+    </select> всего:{{mapping|length}}
+  </div>
+
+  <div class="right aligned column">
+    <a class="ui button" href="../mapping-table/">Табличная версия</a><br/><br/>
+  </div>
+</div>
+
+
+<table class="current_info ui table hidden">
+<thead>
+    <tr>
+        <th>{% trans "идентификатор" %}</th>
+        <th>{% trans "гос. номер" %}</th>
+        <th>{% trans "маршрут" %}</th>
+        <th>{% trans "удалить" %}</th>
+    </tr>
+    <tr>
+        <td>
+            <div class="ui input disabled">
+                <input type="text" name="xeno_id" value="" maxlength="16" readonly>
+            </div>
+        </td>
+        <td>
+            <div class="ui input">
+                <input type="text" name="gosnum" value="" maxlength="12">
+            </div>
+        </td>
+        <td>
+            <select class="ui search dropdown" id="bus_drop">
+              <option value="0" selected="selected">{% trans "Не установлен" %}</option>
+              {% for b in buses %}
+              <option value="{{b.id}}">{{b.ttype_name}} {{b.name}}</option>
+              {% endfor %}
+            </select>
+        </td>
+        <td>
+            <button class="ui tiny red icon button delete"><i class="times icon"></i></button>
+        </td>
+    </tr>
+</thead>
+</table>
+<!--
+<div class="current_info ui segment">
+  <h3 class="xeno_id">xeno_id</h3>
+      <div class="ui input">
+      <input type="text" name="gosnum" value="" maxlength="12">
+      </div><br/><br/>
+
+      <select class="ui search dropdown" id="bus_drop">
+        <option value="0" selected="selected">Не установлен</option>
+        {% for b in buses %}
+        <option value="{{b.id}}">{{b.ttype_name}} {{b.name}}</option>
+        {% endfor %}
+      </select>
+</div>-->
+
+<br/><br/>
+<div class="ui two column grid">
+    <div class="left aligned column">
+    <div class="ui input"><input type="text" name="add_new" placeholder="введите идентификатор" maxlength="16"></div>
+    <button class="ui icon labeled button add_button" style="margin-left: 5px"><i class="plus icon"></i>{% trans "Добавить" %}</button>
+    </div>
+
+    <div class="right aligned column">
+    <button class="ui icon labeled red button clear"><i class="circle icon"></i>{% trans "очистить все" %}</button>
+    </div>
+</div>
+<br/><br/>
+<script>
+    var city_id = {{city.id}};
+    // mapping data
+    ma = {
+    {% for m in mapping %}
+    {{m.id}}: {
+      mtime: "{{m.mtime}}",
+      last_changed_by: "{{m.last_changed_by}}",
+      xeno_id: "{{m.xeno_id}}",
+      gosnum: "{% if m.gosnum %}{{ m.gosnum }}{% endif %}",
+      bus_id: "{% if m.bus_id %}{{ m.bus_id }}{% else %}0{% endif %}",
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+    };
+    // buses data
+    var buses = {
+    {% for b in buses %}
+    {{b.id}}: {
+      ttype: "{{m.ttype_name}}",
+      name: "{{m.name}}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+    };
+</script>
+{% endblock %}

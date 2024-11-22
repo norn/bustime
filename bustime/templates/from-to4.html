@@ -1,0 +1,270 @@
+{# список вариантов найденных маршрутов + такси #}
+{% load i18n %}{% load index %}
+
+<!--from-to4.html-->
+{% if trip is None %} {# вывод списка вариантов #}
+    <div class="ui stackable grid" style="margin-top: 1em;margin-bottom: 2em;">
+        <!--заголовок: кнопки-->
+        <div class="column">
+            {% if us.city.car_passing %}
+            <div class="row">
+                <div class="ui three column grid trip_menu">
+                    <div class="column">
+                        <div class="fluid ui button trips item {% if tab_active|default:'trips' == 'trips' %}active{% endif %}"
+                                onclick="changeTaxiTab('trips')"    {# in from-to3.html #}
+                                style="padding-left:2px; padding-right:2px;">
+                            <i class="bus icon"></i>{% if trips %}{{trips.0.title|safe}}{% else %}{% trans 'Городской' %}{% endif %}
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="fluid ui button taxi_trip item {% if tab_active|default:'' == 'taxi_trip' %}active{% endif %}"
+                                onclick="changeTaxiTab('taxi_trip')"
+                                style="padding-left:2px; padding-right:2px;">
+                            <i class="car icon"></i>{% if trips and taxi_path and taxi_path.time %}{{taxi_path.time|safe}}{% else %}{% trans 'На попутке' %}{% endif %}
+                        </div>
+                        <div id="counters_by_type__8" class="floating orange ui label" style="right:36px;top:4px;line-height:6px;">{{ tevents|length|default:0 }}</div>
+                    </div>
+                    <div class="column">
+                        <div class="fluid ui button driver item {% if tab_active|default:'' == 'driver' %}active{% endif %}"
+                                onclick="changeTaxiTab('driver')"
+                                style="padding-left:2px; padding-right:2px;">
+                            <i class="fa-map-marker icon"></i>{% trans 'Подвезти' %}
+                        </div>
+                    </div>
+                </div>
+            </div><!--row-->
+            {% endif %}
+
+            <div class="row" style="margin-top: 1em;">
+                {% if us.city.car_passing %} {# в городе включен Попутчик #}
+                <div id="taxi_trip" class="ui tab taxi_trip" style="width:100%; display:{% if tab_active|default:'' == 'taxi_trip' %}block{% else %}none{% endif %};">
+                    {% if trips %}
+                        <!-- интерфейс пассажира - создание заказа from-to4.html-->
+                        {% include 'taxi/order_inputs.html' %}
+                    {% endif %}
+                </div><!--tab taxi_trip-->
+
+                <div id="driver" class="ui tab driver" style="width:100%; display:{% if tab_active|default:'' == 'driver' %}block{% else %}none{% endif %};">
+                    {% if not taxiuser.id %}
+                        <div class="ui secondary segment center aligned"
+                                style="margin:50px auto; {% if not device %}width:50%;{% endif %}">
+                            {% if user.is_authenticated %}
+                                <a href="/settings_profile/">{% trans 'Заполните данные водителя в профиле' %}</a>, {% trans 'что бы начать подвозить' %}
+                            {% else %}
+                                <a href="/register/">{% trans 'Зарегистрируйтесь' %}</a>, {% trans 'что бы начать подвозить' %}
+                            {% endif %}
+                        </div>
+                    {% elif taxiuser.car_count == 0 %}
+                        <div class="ui secondary segment center aligned"
+                                style="margin:50px auto; {% if not device %}width:50%;{% endif %}">
+                            <a href="/carpool/profile/">{% trans 'Заполните' %}</a>
+                            {% trans ' данные водителя, что бы начать подвозить.' %}
+                        </div>
+                    {% else %}
+                        <!--интерфейс водителя - просмотр заказов-->
+                        {% include 'taxi/driver_card.html' %}
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div id="trips" class="ui tab trips" style="width:100%; display:{% if tab_active|default:'trips' == 'trips' %}block{% else %}none{% endif %};">
+                    {% if trips %}
+                        <!--варианты поездки на автобусах-->
+                        <div class="ui stackable two column centered grid">
+                        {# trip={"peresadka": "Без пересадок", "transfer": 1, "variant_time": 42, "segments": [{"type": "foot", "distance": 389.0, "time": 389000.0, "stops": ["Караульная", "Рынок Луч", "Рынок Луч"], "time_s": "6.0 мин.", "icon": "https://cdn.bustime.loc/static/img/Union.png"}, {"type": "bus", "distance": 7714.0, "time": 1701000.0, "stops": ["Рынок Луч", "Ледовый дворец", "ТРЦ Планета (9 Мая)", "Дом Куприяна", "1-й м-н (9 Мая)", "Детская поликлиника (9 Мая)", "Урванцева", "Северный (9 Мая)", "Школа (Шумяцкого)", "Шумяцкого", "Ястынская (Комсомольский)", "Армейская", "Магазин Металлург", "Краснодарская (Краснодарская)", "Краснодарская (Металлургов)", "Сергея Лазо", "Рынок Кедр", "Дворец труда (Тельмана)"], "bus_id": 600, "direction": 0, "time_bst_ts": 0, "time_bst": "", "time_s": "28.0 мин.", "bus_name": "88", "direction_s": "Спортзал", "icon": "https://cdn.bustime.loc/static/img/bus_route.png"}, {"type": "foot", "distance": 536.0, "time": 536000.0, "stops": ["Дворец труда (Тельмана)", "5-й м-н (Тельмана)"], "time_s": "8.0 мин.", "icon": "https://cdn.bustime.loc/static/img/Union.png"}], "title": "42 мин."} #}
+                        {% for trip in trips %}
+                            <div class="column">
+                                <table class="trip-table">
+                                    <tbody>
+                                        <tr>
+                                            <td width="50%" class="trip-title" style="padding-top:16px;">
+                                                {{trip.title|safe}}
+                                            </td>
+                                            <td width="*" class="gray trip-peresadka" style="padding-top:16px;">
+                                                <a href="javascript:void(0);"
+                                                        onclick="bus_trip_click('{{stop_from}}', '{{stop_to}}', {{forloop.counter0}})">
+                                                    Маршрут
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                {% for segment in trip.segments %}
+                                                    {% if not forloop.first %}
+                                                        <img src='https://cdn.bustime.loc/static/img/space.png' style='margin: 7px;'>
+                                                    {% endif %}
+                                                    <img src="{{segment.icon}}">
+                                                    {% if segment.bus_name %}
+                                                        <strong class='ui label num_bus_route bus-name'>{{segment.bus_name|safe}}</strong>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                            {% if trip.segments.0.stops %}
+                                                {% if trip.segments.0.type == 'foot' %}
+                                                    От ост. "{{trip.segments.0.stops.1|safe}}"
+                                                {% else %}
+                                                    От ост. "{{trip.segments.0.stops.0|safe}}"
+                                                {% endif %}
+                                            {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% if trip.segments.0.time_bst or trip.segments.1.time_bst %}
+                                        <tr>
+                                            <td colspan="2">
+                                                {% if trip.segments.0.time_bst %}
+                                                    Следующий в <b>{{trip.segments.0.time_bst|safe}}</b>
+                                                {% elif trip.segments.1.time_bst %}
+                                                    Следующий в <b>{{trip.segments.1.time_bst|safe}}</b>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                        {% if trip.segments|length > 0 %}
+                                        <tr>
+                                            <td colspan="2" style="padding-bottom:8px;">
+                                                {% with i=trip.segments|length|add:-1 %}
+                                                    {% with seg=trip.segments|index:i %}
+                                                        {{ trip.peresadka|safe }} — {{seg.time_s}} <img src="{{seg.icon}}">
+                                                    {% endwith %}
+                                                {% endwith %}
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div><!--column-->
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div><!--data-tab="trips"-->
+            </div><!--row-->
+        </div><!--column-->
+    </div><!--grid-->
+
+{% elif trip %} {# вывод детализации выбранного варианта #}
+    <div class="ui stackable grid" style="margin-bottom: 2.5em;">
+        <!--заголовок-->
+        <div class="row" style="padding: 0 1rem;">
+            <div class="sixteen wide column center aligned" style="padding: 20px 0;">
+                <table style="width: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <!--кнопка Назад-->
+                        <td width="50px" rowspan="2" style="vertical-align: middle;">
+                            <button class="ui icon button" onclick="restoreTrips()" title='{%trans "Назад" %}'>
+                                <i class="arrow left icon"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="segment-title" style="color:#703233;">
+                            {{trip.title|safe}}
+                        </td>
+                        <td>
+                            ~{{trip.distance|safe}} {%trans 'км.' %}
+                        </td>
+                        <!--кол-во пересадок-->
+                        <td>{{trip.peresadka|safe}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!--детализация-->
+        <div class="two column centered row">
+            <div class="column">
+                <table cellspacing="0" cellpadding="0" class="segment-table">
+                    {% for segment in trip.segments %}
+
+                        {% if segment.type == "bus" %} <!--транспорт-->
+                            <!--название остановки от которой едем-->
+                            <tr>
+                                <td><p class="d1"></p></td>
+                                <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops.0|safe}}&raquo;</td>
+                            </tr>
+                            <!--описание поездки-->
+                            <tr>
+                                <td><hr noshade class="v1"></td>
+                                <td class="bus">
+                                    <!--иконка типа транспорта-->
+                                    <div>
+                                        <img src="{{segment.icon}}">
+                                        {% if segment.bus_name %}
+                                            <strong class='ui label num_bus_route bus-name'>{{segment.bus_name|safe}}</strong>
+                                        {% endif %}
+                                    </div>
+                                    <!--направление маршрута-->
+                                    <div class="gray">
+                                        Направление &laquo;{{segment.direction_s|safe}}&raquo;
+                                    </div>
+                                    <br>
+                                    <!--Время прихода следующего автобуса-->
+                                    {% if segment.time_bst %}
+                                    <div>
+                                        Следующий в <b>{{segment.time_bst|safe}}</b>
+                                    </div>
+                                    {% endif %}
+                                    <!--Кол-во остановок-->
+                                    <div>
+                                        {{segment.stops|length}} остановок / {{segment.time_s}}
+                                    </div>
+                                    <br>
+                                    <!--На какой остановке выходить-->
+                                    <div class="gray">
+                                        Выходить на ост. &laquo;{{segment.stops|last|safe}}&raquo;
+                                    </div>
+                                </td>
+                            </tr>
+                            {% if forloop.last %}
+                                <!--если это последний сегмент, выводим название последней остановки-->
+                                <tr>
+                                    <td><p class="d1"></p></td>
+                                    <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops|last|safe}}&raquo;</td>
+                                </tr>
+                            {% endif %}
+
+                        {% elif segment.type == "foot" %} <!--пешеход-->
+
+                            {% if forloop.first %}
+                                <!--если это первый сегмент, выводим точку A-->
+                                <tr>
+                                    <td>
+                                        <strong class='ui label num_bus_route a1'>A</strong>
+                                    </td>
+                                    <td class="segment-title">{% trans "Мой GPS" %}</td>
+                                </tr>
+                            {% else %}
+                                <!--если это промежуточный сегмент, выводим назвние остановки от которой топаем-->
+                                <tr>
+                                    <td><p class="d1"></p></td>
+                                    <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops.0|safe}}&raquo;</td>
+                                </tr>
+                            {% endif %}
+
+                            <!--расстояние, время-->
+                            <tr>
+                                <td><hr noshade class="v2"></td>
+                                <td class="pesh">
+                                    <img src="{{segment.icon}}">&nbsp;&nbsp;&nbsp;{{ segment.distance|floatformat:0 }} м. / {{segment.time_s}}
+                                </td>
+                            </tr>
+
+                            {% if forloop.last %}
+                                <!--если это последний сегмент, выводим точку B-->
+                                <tr>
+                                    <td>
+                                        <strong class='ui label num_bus_route a1'>B</strong>
+                                    </td>
+                                    <td class="segment-title">{% trans "ост." %} &laquo;{{segment.stops|last|safe}}&raquo;</td>
+                                </tr>
+                            {% endif %}
+                        {% endif %} <!--elif segment.type == "foot"-->
+
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}<!--else if trip is None-->
+<!-- /from-to4.html -->

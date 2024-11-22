@@ -1,0 +1,24 @@
+{
+  "imports": {
+    "jquery": "/static/js/jquery.js",
+    "jquery-ui": "/static/js/jquery-ui.js",
+    "jquery.modal": "/static/js/jquery.modal.min.js",
+    "leaflet": "/static/js/leaflet.js",
+    "justgage": "/static/js/justgage.js",
+    "jscolor": "/static/js/jscolor.min.js",
+    "socket_io": "/static/js/socket.io-2.0.4.js",
+    "recorder": "/static/js/recorder.min.js",
+    "hotkeys": "/static/js/hotkeys.min.js",
+    "js_cookie": "/static/js/js.cookie.js",
+    "semantic": "/static/js/semantic.min.js",
+    "bundle-built": "/static/js/bustime-main-entry.js",
+    "howler": "/static/js/howler.min.js",
+    "vue": "/static/js/vue.global.js",
+    "tablesort": "/static/js/tablesort.js",
+    "maplibre-gl": "/static/maplibre/maplibre-gl.js",
+    "bustime-maplibre": "/static/js/bustime-maplibre.js",
+    "leaflet-maplibre-gl": "/static/maplibre/leaflet-maplibre-gl.js",
+    "common": "/static/js/common.js",
+    "bustime-main": "/static/js/bustime-main.js"
+  }
+}

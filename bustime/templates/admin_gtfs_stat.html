@@ -1,0 +1,10 @@
+{# см. admin_load_gtfs.html #}{% load i18n %}
+<div id="gtfs_stat_grid" class="ui stackable very compact three column grid">
+    {%for updater in updaters %}
+    {% if updater %}
+    <div class="column">
+        <pre style="width:100%;height:300px;overflow:auto;border:1px solid #C9CACA;border-radius:8px;background-color:#F8F8F9;padding:2px;">{{updater}}</pre>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>

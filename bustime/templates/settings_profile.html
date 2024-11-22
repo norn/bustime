@@ -1,0 +1,489 @@
+{% extends "base.html" %}{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Настройки профиля" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/settings_profile/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/settings_profile/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/settings_profile/" />
+{% endfor %}
+
+<style>
+.setting_name {
+    font-size: 12px;
+    color: #4C4C4C;
+    line-height: 12px;
+    margin: 20px 0 10px 0;
+}
+
+.basic_inf {
+    font-size: 16px;
+    color: #000;
+    line-height: 19px;
+    margin: 10px 0;
+}
+.id_phone {
+    margin: 24px 0;
+}
+.checkbox {
+    width: 100% !important;
+    margin: 10px 0 10px 0;
+}
+.add_car {
+    color: #000 !important;
+    padding: 16px !important;
+    margin: 18px 0 !important;
+    width: 400px;
+}
+.image_car, .inf_car, .edit_car, .gosnum_car, .color_car {
+    display: inline-block;
+}
+.image_car {
+    width: 60px;
+    margin: 16px 8px;
+    float: left;
+    text-align: center;
+}
+.edit_car {
+    float: right;
+    margin: 25px 16px 16px 16px;
+}
+.edit_car > .button {
+    background-color: #DEDEDF;
+    color: #4C4C4C;
+}
+.inf_car {
+    margin: 14px;
+}
+.car_card {
+    height: 95px;
+    width: 400px;
+    border: 1px solid #FFDF32;
+    border-radius: 7px;
+    margin-top: 16px;
+}
+.model_car {
+    margin-bottom: 7px;
+}
+.gosnum_car {
+    font-weight: 600;
+    border: 1px solid #909090;
+    padding: 3px;
+    border-radius: 7px;
+}
+.color_car {
+    color: #909090;
+    margin-left: 8px;
+}
+.add_car_but, .input {
+    width: 400px;
+}
+@media screen and (max-width: 600px) {
+    .add_car, .add_car_but, .input, .car_card {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{place.slug}}/" style="text-decoration-line: underline;">{{place.name}}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Настройки профиля" %}</div>
+</div>
+<div class="ui divider"></div>
+
+
+{% if user.is_authenticated %}
+
+    {% if other %}
+    <div class="ui red message"><b>{% trans "Управление" %}</b>
+    {% if ban %}<br/>{% trans "Запрет на редактирование номеров до" %}: {{ ban }} {% endif %}
+    </div>
+    <a class="ui small orange button" href="/settings/{{us.id}}/gban/">{% trans "Бан номеров на сутки" %}</a>
+    {% endif %}
+
+<div class="ui grid stackable" style="margin-bottom: 20px;">
+    <div class="column">
+        <div class="ui two column grid id_phone">
+            <div class="column">
+                <div>
+                    <div class="setting_name">{% trans "ID" %}:</div>
+                    <div class="basic_inf">
+                        <span id="us_id">{{us.id}}</span>
+                        <button class="ui icon button copy_button" style="margin-left: 10px;"><i class="fa fa-files-o" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <div class="setting_name" style="color:#909090;">{% trans "Создан" %}: {{us.ctime | date:"Y.m.d H:i"}}</div>
+            </div>
+
+            <div class="column">
+                <div>
+                    <div class="setting_name">{% trans "Телефон или логин" %}:</div>
+                    <div class="basic_inf" style="padding-top: 7px; height: 37px;">{% if beauty_phone %}{{beauty_phone}}{%else%}{{user.username}}{%endif%}</div>
+                </div>
+                <div class="setting_name" style="color:#909090;">{% trans "Город" %}: {{us.city.name}}</div>
+            </div>
+        </div>
+
+        <div class="setting_name">{% trans "Ник" %}:</div>
+        <div class="ui input"><input type="text" name="name" placeholder="Ваше имя" value="{%if user.first_name%}{{user.first_name}}{%endif%}"></div>
+
+        <div class="ui two column grid">
+            <div class="column">
+                <div class="setting_name">{% trans "Аватар" %}:</div>
+                <div style="margin-bottom: 20px;"><a class="ui small button" href="/settings/photo/">{% trans "Выбрать аватарку" %}</a></div>
+            </div>
+            <div class="column">
+                {% if us.driver_ava %}
+                <div style="margin-top: 25px;"><img style="height:50px" src="https://cdn.bustime.loc/static/img/ava/{{us.driver_ava}}.png"></div>
+                {% endif %}
+             </div>
+        </div>
+
+        <div class="ui toggle checkbox">
+            <input type="checkbox" name="driver_taxi" {% if us.driver_taxi %}checked="checked"{%endif%} aria-label="{% trans "Я хочу подвозить людей" %}">
+            <label>{% trans "Я хочу подвозить людей" %}</label>
+        </div>
+
+        <div class="settings_driver_taxi" style="margin-bottom: 2em; display: {% if us.driver_taxi %}block{% else %}none{% endif %};">
+            {% if messages %}
+            <div id="messages" class="ui container">
+            {% for message in messages %}<div class="ui {{ message.tags }} message">{{ message|safe }}</div>{% endfor %}
+            </div>
+            <br>
+            {% endif %}
+
+            <div id="taxi_agreement" style="display: {% if taxiuser.id %}none{% else %}block{% endif %}">
+                {% include "taxi/agreement1.html" %}
+            </div><!--taxi_agreement-->
+
+            <div id="taxi_controls" style="display: {% if taxiuser.id %}block{% else %}none{% endif %}">
+                <!--такси, данные таксиста-->
+
+                <div class="setting_name">{% trans "ФИО" %}:</div>
+                <div class="ui input"><input type="text" id="taxi_user_name" name="taxi_user_name" placeholder="ФИО" value="{{taxiuser.name|default:''}}"></div>
+
+                <div class="setting_name">{% trans "Номер телефона водителя" %}:</div>
+                <div class="ui input"><input type="text" id="taxi_user_phone" name="taxi_user_phone"  placeholder="Телефон" value="{{taxiuser.phone|default:''}}"></div>
+
+                <div class="setting_name">{% trans "Пол" %}:</div>
+                <select id="taxi_user_gender" name="taxi_user_gender" class="ui dropdown">
+                    <option value="" {% if not taxiuser.gender %}selected{% endif %}>{% trans "не выбран" %}</option>
+                    <option value="0" {% if taxiuser.gender == 0 %} selected{% endif %}>{% trans "Мужчина" %}</option>
+                    <option value="1" {% if taxiuser.gender == 1 %} selected{% endif %}>{% trans "Женщина" %}</option>
+                </select>
+
+                {% for car in cars %}
+                <div class="car_card">
+                    <div class="image_car">
+                        <img src="https://cdn.bustime.loc/static/{{car.photo}}" style="max-width:100%; height: 60px; object-fit: contain;">
+                    </div>
+                    <div class="inf_car">
+                        <div class="model_car">{{car.model}}</div>
+                        <div class="gosnum_color">
+                            <div class="gosnum_car">{{car.gos_num}}</div>
+                            <div class="color_car">{{car.color}}</div>
+                        </div>
+                    </div>
+                    <div class="edit_car">
+                        <a class="ui icon button" href="/carpool/setcar/{{car.id}}/"><i class="edit icon"></i></a>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="add_car_but"><a class="ui yellow button add_car" href="/carpool/setcar/">{% trans "Добавить автомобиль" %}</a></div>
+            </div><!--taxi_controls-->
+        </div><!--settings_driver_taxi-->
+
+        {% if us.city.country.code == "ru" %}
+        <div class="ui toggle checkbox">
+            <input type="checkbox" name="driver_bus" {% if us.driver_bus %}checked="checked"{%endif%} aria-label="{% trans "Я водитель автобуса" %}">
+            <label>{% trans "Я водитель автобуса" %}</label>
+        </div>
+        {% endif %}
+
+        <div class="settings_driver_bus" style="display: {% if us.driver_bus %} block; {% else %} none; {% endif %}">
+            <select id="gps_send_bus" name="gps_send_bus" class="ui dropdown">
+                <option value="" {% if not us.gps_send_bus %}selected{% endif %}>{% trans "не установлен" %}</option>
+                {% for b in buses %}
+                  <option value="{{b.id}}"{% if us.gps_send_bus.id == b.id %} selected{% endif %}>{{b.name}} {{b.ttype_name}}</option>{{ linebreaks }}
+                {% endfor %}
+            </select>
+
+            <div class="ui two column grid">
+                <div class="column">
+                    <div class="setting_name">{% trans "Гос номер автобуса" %}:</div>
+                    <div class="ui input" style="width: 100%">
+                        <input type="text" name="gosnum" placeholder="{% trans "x 000 xx 00" %}" {% if us.gosnum %}value="{{us.gosnum}}"{% endif %}>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="setting_name">{% trans "id оригинала" %}:</div>
+                    <div class="ui input" style="width: 100%">
+                        <input type="text" name="gps_send_of" placeholder="{% trans "айди оригинала" %}" {% if us.gps_send_of %}value="{{us.gps_send_of}}"{% endif %}>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui toggle checkbox" style="margin-top: 20px;">
+                <input type="checkbox" name="gps_send" {% if us.gps_send %}checked="checked"{%endif%} aria-label="{% trans "Отправлять координаты" %}">
+                <label>{% trans "Отправлять координаты" %}</label>
+            </div>
+
+            <div class="ui toggle checkbox">
+                  <input type="checkbox" name="gps_send_ramp" {% if us.gps_send_ramp %}checked="checked"{%endif%} aria-label="{% trans "Аппарель" %}">
+                  <label> {% trans "Аппарель" %} </label>
+            </div>
+
+            <div class="ui toggle checkbox">
+                  <input type="checkbox" name="gps_send_rampp" {% if us.gps_send_rampp %}checked="checked"{%endif%} aria-label="{% trans "Низкопольность" %}">
+                  <label> {% trans "Низкопольность" %} </label>
+            </div>
+
+            <div class="ui toggle checkbox">
+                <input type="checkbox" name="speed_show" {% if us.speed_show %}checked="checked"{%endif%} aria-label="{% trans "Спидометр с предупреждением" %}">
+                <label> {% trans "Показывать скорость" %}</label>
+            </div>
+
+            <div class="ui toggle checkbox">
+                  <input type="checkbox" name="si_active" {% if si.active%}checked="checked"{%endif%} aria-label="{% trans "Наклейка" %}">
+                  <label> {% trans "Наклейка" %}</label>
+            </div>
+
+            <div class="setting_name">{% trans "Наклейка" %}:</div>
+            <input id="load_file" name="photo" type="file" accept="image/*" />
+            <div style="margin-top: 20px;"><img id="si_img" src="{{si.img}}"></div>
+
+            <div class="ui two column grid">
+                <div class="column" style="width: 35%;">
+                    {% if us.gps_send_bus.ttype == 0 or us.gps_send_bus.ttype == 3 %}
+                    <div class="setting_name" style="margin-bottom: 7px;">{% trans "Подтип" %}:</div>
+                    <div class="ui selection dropdown compact" id="tface_menu">
+                        <input name="tface" id="tface" type="hidden" value="{% if us.tface %}{{us.tface}}{%endif%}">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">
+                            <img class="tface" src="https://cdn.bustime.loc/static/img/theme/modern/{% if us.tface %}{{us.tface}}{%else%}{{us.gps_send_bus.ttype_slug}}{%endif%}.png">
+                        </div>
+                        <div class="menu">
+                            <div class="item" data-value="bus-taxi"><img src="https://cdn.bustime.loc/static/img/theme/modern/bus-taxi.png"></div>
+                            <div class="item" data-value="sbus"><img src="https://cdn.bustime.loc/static/img/theme/modern/sbus.png"></div>
+                            <div class="item" data-value="bus"><img src="https://cdn.bustime.loc/static/img/theme/modern/bus.png"></div>
+                            <div class="item" data-value="2bus"><img src="https://cdn.bustime.loc/static/img/theme/modern/2bus.png"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="column" style="width: 65%;">
+                    {% if us.gps_send_bus %}
+                    <div class="setting_name">{% trans "Цвет" %}:</div>
+                    <img class="tcolor_example" src="https://cdn.bustime.loc/static/img/theme/modern/{% if us.tface %}{{us.tface}}{% else %}{{us.gps_send_bus.ttype_slug}}{%endif%}_{{us.tcolor|upper}}.png" default_src="https://cdn.bustime.loc/static/img/theme/modern/{% if us.tface %}{{us.tface}}{% else %}{{us.gps_send_bus.ttype_slug}}{%endif%}.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 10px;">
+                    <input name="tcolor" type="hidden" id="color_value" value="{{us.tcolor}}">
+                    <button id="buttonreset" class="ui button jscolor {valueElement: 'color_value'}" style="font-size: 12px;" type="button">{% trans "выбрать" %}</button>
+                    <button class="ui button" style="background-color: #F4C110; font-size: 12px;" type="button" onclick="tcolor_reset()">{% trans "сбросить" %}</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function tcolor_reset() {
+    var name = "reset"
+    var value = "F4C110";
+    var buttonreset=document.getElementById('buttonreset');
+    buttonreset.style.backgroundColor= '#F4C110';
+    buttonreset.style.color= '#000000';
+    <!--$('#color_value').val('F4C110');-->
+    var src = $('.tcolor_example').attr('default_src');
+    $('.tcolor_example').attr('src', src);
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+            name : name, value: value, csrfmiddlewaretoken: '{{ csrf_token}}'
+            }
+        });
+}
+
+
+function miclick() {
+    var c = $(this).attr('class').split(/\s+/);
+    c = c.pop("item");
+    var src = $("."+c+">img").attr("src");
+    $(".tface").attr('src', src);
+    $("[name=tface]").val(c);
+    console.log('miclick:', c);
+}
+
+
+function js_page_extra() {
+    $('.ui.dropdown').dropdown();
+    $('.ui.radio.checkbox').checkbox();
+    $('.ui.checkbox').checkbox();
+
+    $(".copy_button").click(function() {
+        var $tmp = $("<textarea>");
+        $("body").append($tmp);
+        $tmp.val($('#us_id').text()).select();
+        document.execCommand("copy");
+        $tmp.remove();
+        $('.copy_button').html('<i class="fa fa-check" aria-hidden="true"></i>').fadeIn(100);
+        setTimeout(function(){
+            $('.copy_button').html('<i class="fa fa-files-o" aria-hidden="true"></i>');
+        }, 1000);
+    });
+
+    $('[type="checkbox"]').change(function(){
+        var name = $(this).prop("name");
+        var checked = $(this).prop("checked");
+        //console.log(`name=${name}, checked=`, checked);
+
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name: name, checked: checked, csrfmiddlewaretoken: '{{csrf_token}}'
+            },
+            success: function(result) {
+                // данные успешно сохранены
+                //console.log(`name=${name}, checked=${checked}, result=`, result);
+                // если есть JS-переменная, применяем значение
+                let varname = "us_" + name;
+                if( window.hasOwnProperty(varname) ){
+                    if(typeof(window[varname]) == "number") {
+                        window[varname] = checked ? 1 : 0;
+                    }
+                    else {
+                        window[varname] = checked;
+                    }
+                }
+
+                if(name == 'gps_send'){
+                    // включаем/выключаем отправку координат
+                    if (typeof(start_location_service) === 'function') {
+                      start_location_service();
+                    }
+                }
+
+                if(name == 'taxi_agreement'){
+                    $('#taxi_agreement').css('display', checked ? 'none' : 'block');
+                    $('#taxi_controls').css('display', checked ? 'block' : 'none');
+                }
+            },   // success
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(`error ${textStatus}, ${errorThrown}`);
+            }
+        });
+    });
+
+    $('[type="text"]').change(function(){
+        var name = $(this).prop("name");
+        var value = $(this).prop("value");
+        $.ajax({
+            url: "/ajax/ajax_settings1/",   // bustime.views.ajax_settings1
+            type: "GET",
+            data: {
+                name: name, value: value, csrfmiddlewaretoken: '{{csrf_token}}'
+            }
+        });
+    });
+
+    $('[name="taxi_user_gender"]').change(function(){
+        var name  = $(this).prop("name");
+        var value = $(this).prop("value");
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name : name, value: value, csrfmiddlewaretoken: '{{csrf_token}}'
+            }
+        });
+    });
+
+    $('[name = "gps_send_bus"]').change(function(){
+        var name  = $(this).prop("name");
+        var value = $(this).prop("value");
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                name : name, value: value, csrfmiddlewaretoken: '{{csrf_token}}'
+            }
+        });
+    });
+
+    $('[name="tcolor"]').change(function(){
+        var value_tcolor = $(this).prop("value");
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                value_tcolor: value_tcolor, csrfmiddlewaretoken: '{{csrf_token}}'
+            }
+        });
+    });
+
+    $( '[name="tface"]' ).change(function() {
+        var value_tface =  $(this).prop("value");
+        $.ajax({
+            url: "/ajax/ajax_settings1/",
+            type: "GET",
+            data: {
+                value_tface : value_tface, csrfmiddlewaretoken: '{{csrf_token}}'
+             }
+        });
+    });
+
+    $('[name="driver_bus"]').change(function(){
+        if ($(this).prop("checked")) {
+            $('.settings_driver_bus').css('display', 'block');
+        } else {
+            $('.settings_driver_bus').css('display', 'none');
+        }
+    });
+
+    $('[name="driver_taxi"]').change(function(){
+        if ($(this).prop("checked")) {
+            $('.settings_driver_taxi').css('display', 'block');
+        } else {
+            $('.settings_driver_taxi').css('display', 'none');
+        }
+    });
+
+    $(function() {
+        $('#load_file').on('change', loadfile);
+    });
+
+    function loadfile() {
+        files = $('#load_file')[0].files;
+        var form = new FormData();
+        form.append('photo', files[0]);
+        form.append('csrfmiddlewaretoken', '{{ csrf_token}}');
+        console.log('form', form);
+        $.ajax({
+            url: '/ajax/ajax_settings1/',
+            type: 'POST',
+            data:  form,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $("#si_img").attr("src", data);
+                console.log(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+      });
+    }
+}
+</script>
+{% endblock content %}

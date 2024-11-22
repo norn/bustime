@@ -1,0 +1,1250 @@
+{% extends "base.html" %}{% load i18n %}
+
+{% block nav_city_admin %}active{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdn.bustime.loc/static/maplibre/maplibre-gl.css" rel="stylesheet" />
+<style>
+#maplibre1 {
+    width: 100%;
+    min-height: 600px;
+    height: 90%;
+}
+#maplibre1 #lonlatinfo {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    z-index: 2;
+    padding: 2px;
+    background-color: hsla(0, 0%, 100%, .3);
+    color: #000
+}
+.distance-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+}
+.distance-container > * {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 11px;
+    line-height: 18px;
+    display: block;
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 3px;
+    }
+</style>
+{% endblock extra_head %}
+
+
+{% block content %}
+
+<div class="ui breadcrumb">
+    <a class="section" href="/{{city.slug}}/">{{city.name}}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/{{city.slug}}/admin/">{% trans "Диспетчер" %}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">GTFS</div>
+</div>
+<div class="ui divider"></div>
+
+<div id="map_message" class="ui hidden negative message">
+    <div class="header"></div>
+    <p></p>
+</div>
+
+<div class="ui top attached tabular menu">
+    <div class="{% if data_tab == 'view' %}active{% endif %} item" data-tab="view">{% trans "Просмотр" %}</div>
+    <div class="{% if data_tab == 'tools' %}active{% endif %} item" data-tab="tools">{% trans "Инструменты" %}</div>
+    <div class="{% if data_tab == 'load' %}active{% endif %} item" data-tab="load">{% trans "Загрузка Schedule" %}</div>
+    <div class="{% if data_tab == 'import' %}active{% endif %} item" data-tab="import">{% trans "Импорт Schedule" %}</div>
+    <div class="{% if data_tab == 'stat' %}active{% endif %} item" data-tab="stat">
+        {% trans "Статистика" %}&nbsp;&nbsp;<i class="fa fa-refresh" aria-hidden="true" onclick="stat_refresh()"></i>
+    </div>
+</div>
+
+<div class="ui bottom attached {% if data_tab == 'view' %}active{% endif %} tab segment" data-tab="view">
+    {% include "admin_gtfs_map.html" %}
+</div>
+
+<div class="ui bottom attached {% if data_tab == 'tools' %}active{% endif %} tab segment" data-tab="tools">
+    {% include "admin_gtfs_tools.html" %}
+</div>
+
+<div class="ui bottom attached {% if data_tab == 'load' %}active{% endif %} tab segment" data-tab="load">
+    {% include "admin_gtfs_load.html" %}
+</div>
+
+<div class="ui bottom attached {% if data_tab == 'import' %}active{% endif %} tab segment" data-tab="import">
+    {% include "admin_gtfs_import.html" %}
+</div>
+
+<div class="ui bottom attached {% if data_tab == 'stat' %}active{% endif %} tab segment" data-tab="stat">
+    {% include "admin_gtfs_stat.html" %}
+</div>
+
+{% endblock content %}
+
+
+{% block body_end %}
+<script src="https://cdn.bustime.loc/static/js/jquery.js"></script>
+<script src="https://cdn.bustime.loc/static/maplibre/maplibre-gl.js"></script>
+<script src="https://cdn.bustime.loc/static/js/bustime-maplibre.js"></script>
+<script>
+// карта
+// https://maplibre.org/maplibre-gl-js-docs/api/
+var ml_map = null;
+// всплывающая менюшка
+var popup = null;
+// хранилище текущего фида
+var mobj = {
+    // цвета линий
+    colors: ['#33CCFF', '#66FF00', '#FF00FF', '#6633FF', '#000000', '#FFFFFF'],
+
+    // нити пути
+    shapes: {
+        points: [], // в виде точек (т.е. "шейпы")
+        lines: [],  // в виде линий
+        current: {'id': 'current_shape'},   // выбранный в меню шейп
+    },
+
+    stops: null,    // массив остановок маршрута без разделения по направлениям
+
+    shapesView: 1,  // 1 - показывать как точки, 2 - как линии
+    shapesDir: 2,   // 0 - направление 0, 1-направление 1, 2-оба
+
+    removeFeature(id) {
+        if (ml_map.getLayer(id)) {
+            ml_map.removeLayer(id);
+            if(ml_map.getSource(id)) {
+                ml_map.removeSource(id);
+            }
+        }
+    },
+
+    // очистка карты и объектов shapes
+    clear: function() {
+        popup.remove();
+
+        if(this.shapes.current){
+            this.removeFeature(this.shapes.current.id);
+        }
+
+        for (let direction in this.stops) {
+            this.stops[direction].forEach((item, index, array) => {
+                this.delPopupOver(item.stop_id);
+                this.delPopupClick(item.stop_id);
+                this.removeFeature(item.stop_id);
+            });
+        }
+
+        this.shapes.points.forEach((item, index, array) => {
+            this.removeFeature(item.id);
+        });
+        this.shapes.points.splice(0, this.shapes.points.length);
+
+        this.shapes.lines.forEach((item, index, array) => {
+            this.removeFeature(item.id);
+        });
+        this.shapes.lines.splice(0, this.shapes.lines.length);
+    },
+
+    // вывод shapes/stops на карту
+    show: function(view_mode, dirs_mode, scale) {
+        this.shapesView = view_mode;    // 0 - dots, 1 - lines
+        this.shapesDir = dirs_mode; // направление, 0 | 1 | 2 - оба
+        let coordinates = [];
+
+        if( this.shapesView == 1 ) {
+            // выводим линии
+            for(let index = 0; index < this.shapes.lines.length; index++) {
+                let item = this.shapes.lines[index];
+                // сначала удалим
+                this.removeFeature(item.id);
+
+                // потом нарисуем
+                if( dirs_mode == "2" || dirs_mode == item.id ) {
+                    ml_map.addLayer({
+                        'id': item.id,
+                        'type': 'line',
+                        'source': item.obj,
+                        'layout': {
+                            'line-join': 'round',
+                            'line-cap': 'round'
+                        },
+                        'paint': {
+                            'line-color': this.colors[index],
+                            'line-width': 3
+                        }
+                    });
+
+                    coordinates.concat(item.obj['data']['geometry']['coordinates']);
+
+                    //this.setPopupOver(item.id);
+                }   // if( dirs_mode == "2"
+            }   // for
+
+        }   // if( this.shapesView == 1 )
+        else {
+            // выводим точки
+            for(let index = 0; index < this.shapes.points.length; index++) {
+                let item = this.shapes.points[index];
+                // сначала удалим
+                this.removeFeature(item.id);
+
+                // потом нарисуем
+                if( dirs_mode == "2" || dirs_mode == item.id ) {
+                    ml_map.addLayer({
+                        'id': item.id,
+                        'type': 'circle',
+                        'source': item.obj,
+                        'paint': {
+                            'circle-radius': 4,
+                            'circle-color': this.colors[index]
+                        },
+                        /* будет работать только с 'type': 'symbol'
+                        'layout': { // https://maplibre.org/maplibre-style-spec/layers/#layout-property
+                            // get the label from the source's "label" property
+                            'text-field': ['get', 'label'],
+                            'text-offset': [0, 1.25],
+                            'text-anchor': 'top'
+                        },
+                        */
+                    });
+
+                    item.obj['data']['features'].forEach((feature) => {
+                        coordinates.push(feature['geometry']['coordinates']);
+                    });
+
+                    //this.setPopupOver(item.id);
+                }   // if( dirs_mode == "2"
+            } // for
+
+        }   // else if( this.shapesView == 1 )
+
+        // выводим остановки
+        for (let direction in this.stops) {
+            this.stops[direction].forEach((item, index, array) => {
+                // сначала удалим
+                this.removeFeature(item.stop_id);
+
+                // потом нарисуем
+                if( dirs_mode == "2" || dirs_mode == direction ) {
+                    ml_map.addLayer({
+                        'id': item.stop_id,
+                        'source': {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'Feature',
+                                'geometry': {
+                                    'type': 'Point',
+                                    'coordinates': item.stop_pt_loc
+                                },
+                                'properties': {
+                                    'label': `${item.stop_name}`,
+                                    'location_type': `${item.location_type}`,
+                                    'wheelchair_boarding': `${item.wheelchair_boarding}`,
+                                    'html': `id: ${item.stop_id.split("*")[1]}<br>name: ${item.stop_name}<br>dir: ${direction}<br>lat;lon: ${item.stop_pt_loc[1]};${item.stop_pt_loc[0]}`,
+                                },
+                            },
+                        },
+                        'type': 'circle',
+                        'paint': {
+                            'circle-radius': 8,
+                            'circle-color': this.colors[direction],
+                            'circle-stroke-color': 'red',
+                            'circle-stroke-width': 1,
+                        },
+                        /* будет работать только с 'type': 'symbol'
+                        'layout': {
+                            // get the label from the source's "label" property
+                            'text-field': ['get', 'label'],
+                            'text-offset': [0, 1.25],
+                            'text-anchor': 'top'
+                        },
+                        */
+                    });
+                    this.setPopupOver(item.stop_id);
+                    this.setPopupClick(item.stop_id);
+
+                    coordinates.push(item.stop_pt_loc);
+                }   // if( dirs_mode == "2"
+            }); // this.stops[direction].forEach
+        } // for
+
+        if(coordinates.length > 0 && scale) {
+            // переместим карту
+            var bounds = coordinates.reduce(
+                    function (bounds, coord) {
+                        return bounds.extend(coord);
+                    },
+                    new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
+                );
+
+            ml_map.fitBounds(bounds, { padding: 20 });
+        }
+    },  // show
+
+    delPopupOver: function(source_id) {
+        ml_map.off('mouseenter', source_id, this.popupMouseenter);
+        ml_map.off('mouseleave', source_id, this.popupMouseleave);
+    },  // setPopupOver
+
+    // https://maplibre.org/maplibre-gl-js-docs/example/popup-on-hover/
+    setPopupOver: function(source_id) {
+        ml_map.on('mouseenter', source_id, this.popupMouseenter);
+        ml_map.on('mouseleave', source_id, this.popupMouseleave);
+    },  // setPopupOver
+
+    popupMouseenter: function(e) {
+        // Change the cursor style as a UI indicator.
+        ml_map.getCanvas().style.cursor = 'pointer';
+
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var description = e.features[0].properties.html || e.features[0].properties.label;
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        if( description ) {
+            popup.setLngLat(coordinates).setHTML(description).addTo(ml_map);
+        }
+    },   // popupMouseenter
+
+    popupMouseleave() {
+        ml_map.getCanvas().style.cursor = '';
+        popup.remove();
+    },  // popupMouseleave
+
+    // https://maplibre.org/maplibre-gl-js/docs/examples/popup-on-click/
+    setPopupClick: function(source_id) {
+        ml_map.on('click', source_id, this.popupClick);
+    },  // setPopupClick
+
+    popupClick: function(e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var description = e.features[0].properties.html || e.features[0].properties.label;
+
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        if( description ) {
+            new maplibregl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(description)
+                .addTo(ml_map);
+        }
+    },  // popupClick
+
+    delPopupClick: function(source_id) {
+        ml_map.off('click', source_id, this.popupClick);
+    },  // setPopupClick
+};  // var mobj
+
+var sound_gtfs = null;
+
+function js_page_extra() {
+    $('.tabular.menu .item').tab();
+    $('.ui.accordion').accordion();
+    $('.ui.checkbox').checkbox();
+    $('.ui.radio.checkbox').checkbox();
+
+    $('#date_calendar').calendar({
+        type: 'date',
+        firstDayOfWeek: language == "ru" ? 1 : 0,
+        formatter: {
+          date: function (date, settings) {
+              let datestring = date ? (date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)) : '';
+              return datestring;  // 'YYYY-MM-DD'
+          }
+        },
+        onChange: function(newDate){
+            select_agency_change();
+        },
+        //initialDate: new Date(),
+    });
+
+    // инициализируем карту
+    ml_map = new maplibregl.Map({
+        container: "maplibre1",   // привязка к контейнеру
+        style: 'https://demotiles.maplibre.org/style.json',
+    });
+
+    /* отображение текущего положения на основе геопозиционирования браузера
+    ml_map.addControl(
+        new maplibregl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true
+        }), 'bottom-right'
+    );
+    */
+
+    ml_map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+    ml_map.addControl(new maplibregl.ScaleControl({unit: 'metric'}), 'bottom-left');
+
+    // мышь движется по карте
+    ml_map.on('mousemove', function (e) {
+        // при движении мыши покажем lon/lat
+        // https://learn.javascript.ru/searching-elements-dom
+        if (document.getElementById('lonlatinfo')) {
+          document.getElementById('lonlatinfo').innerHTML =
+            `lat: ${e.lngLat.lat.toFixed(6)} lon: ${e.lngLat.lng.toFixed(6)}`;
+        }
+    });
+
+    // Create a popup, but don't add it to the map yet.
+    popup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false
+    });
+
+
+    if( !socket ) {
+        if (io_port) {
+            socket = io(`http://127.0.0.1:${io_port}`);
+        } else {
+            socket = io();
+        }
+
+        var onevent = socket.onevent;
+        socket.onevent = function (packet) {
+            var args = packet.data || [];
+            onevent.call (this, packet);    // original call
+            packet.data = ["*"].concat(args);
+            onevent.call(this, packet);      // additional call to catch-all
+        };
+
+        socket.on('connect', function() {
+            var d = new Date();
+            console.log(d + ": Socket connected");
+            socket.emit('authentication', {username: us_id, password: "", os:"web"});
+        });
+    }
+
+    if( socket ) {
+        socket.emit('join', "ru.bustime.gtfs_test");
+        socket.on("*", function(event, data) {
+            ws_router(data);
+        });
+    }
+
+    select_feed_change();
+    select_feed1_change();
+    select_feed2_change();
+}   // js_page_extra
+
+
+function showError(error) {
+    $("#map_message .header").html("Error");
+    $("#map_message p").html(error);
+    $("#map_message").removeClass("hidden");
+}   // showError
+
+
+function select_feed_change() {
+    // удаляем сообщение
+    $("#map_message").addClass("hidden");
+
+    let catalog_id = $("#select_feed").val();   // admin_gtfs_map.html
+    let date = $("#date").val();
+
+    $("#link_catalog_edit").attr("href", "/wiki/bustime/gtfscatalog/"+catalog_id+"/change/");   // admin_gtfs_map.html
+
+    $.ajax({
+        url: '/ajax/gtfs_get_feed/',
+        data: {
+            "catalog_id": catalog_id,
+            "date": date,
+        },
+        type: "POST",
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            fill_agency(data.result);
+        }
+        else {
+            //console.log("Error: " + data.error);
+            showError(data.error);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+    });
+}   // select_feed_change
+
+
+function fill_agency(data) {
+    //console.log('fill_agency', data);
+
+    // удаляем старые данные
+    mobj.clear();
+    // удаляем содержимое меню сервисов
+    $("#select_services").empty();
+    $("#select_trips").empty();
+    $("#select_shapes").empty();
+
+    $("#select_route").empty();
+    $("#select_route").dropdown('clear', true);
+
+    $("#select_agency").empty();
+    $("#select_agency").dropdown('clear', true);
+
+    let label = $('option:selected', $("#select_feed")).data("label");
+    $("#feed_url").html(label);
+
+    $("#select_agency").append($('<option>', {value:'', text:'&nbsp;'}));
+    data.agencyes.forEach((item, index) => {
+        $("#select_agency").append($('<option>', {value:`${item.agency_id}`, text:`${item.agency_name}`}));
+    });
+
+    $('#date_calendar').calendar('set date', null, true, false);
+
+    $('#table_calendar tbody').empty();
+    data.calendar.forEach((x, index) => {
+        $('#table_calendar > tbody:last-child').append(`<tr>
+            <td data-label="start">${x.start_date}</td>
+            <td data-label="end">${x.end_date}</td>
+            <td data-label="mo">${x.monday}</td>
+            <td data-label="tu">${x.tuesday}</td>
+            <td data-label="we">${x.wednesday}</td>
+            <td data-label="th">${x.thursday}</td>
+            <td data-label="fr">${x.friday}</td>
+            <td data-label="sa">${x.saturday}</td>
+            <td data-label="su">${x.sunday}</td>
+            <td data-label="service">${x.service_id}</td>
+        </tr>`);
+    });
+
+    $('#table_calendar_dates tbody').empty();
+    data.calendar_dates.forEach((x, index) => {
+        let prefix = x.exception_type == 2 ? 'не ' : '';
+        $('#table_calendar_dates > tbody:last-child').append(`<tr>
+            <td data-label="date">${x.date}</td>
+            <td data-label="service">${x.service_id}</td>
+            <td data-label="exception">${x.exception_type} ${prefix}действует</td>
+        </tr>`);
+    });
+
+    // это нужно, если в фиде нет агенств
+    if( data.routes ) {
+        $("#select_route").append($('<option>', {value:'', text:'&nbsp;'}));
+        data.routes.forEach((item, index, arr) => {
+            let route_name = item.route_short_name.length > 0 ? item.route_short_name : item.route_long_name;
+            $("#select_route").append($('<option>', {value:`${item.route_id}`, text:`${route_name}*${item.route_type}(${item.route_id})`}));
+        });
+    }
+}   // fill_agency
+
+
+function select_agency_change() {
+    // удаляем сообщение
+    $("#map_message").addClass("hidden");
+
+    let catalog_id = $("#select_feed").val();
+    let date = $("#date").val();
+    let agency = $("#select_agency").val();
+    //console.log('select_agency_change', date, agency);
+
+    if( !agency && !date ) {
+        return;
+    }
+
+    $.ajax({
+        url: '/ajax/gtfs_get_route/',
+        data: {
+            "catalog_id": catalog_id,
+            "date": date,
+            "agency": agency,
+            "agencyes_cnt": $('#select_agency option').length -1,
+        },
+        type: "POST",
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            fill_routes(data.result);
+        }
+        else {
+            //console.log("Error: " + data.error);
+            showError(data.error);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+    });
+}   // select_agency_change
+
+
+function fill_routes(data) {
+    // удаляем старые данные
+    mobj.clear();
+    // удаляем содержимое меню сервисов
+    $("#select_services").empty();
+    $("#select_trips").empty();
+    $("#select_shapes").empty();
+
+    $("#select_route").empty();
+    $("#select_route").dropdown('clear', true);
+    $("#select_route").append($('<option>', {value:'', text:'&nbsp;'}));
+    data.routes.forEach((item, index, arr) => {
+        let route_name = item.route_short_name.length > 0 ? item.route_short_name : item.route_long_name;
+        $("#select_route").append($('<option>', {value:`${item.route_id}`, text:`${route_name}*${item.route_type}(${item.route_id})`}));
+    });
+}   // fill_routes
+
+
+function getData() {
+    // удаляем сообщение
+    $("#map_message").addClass("hidden");
+    $("#checkbox_services").prop('checked', false);
+
+    let catalog_id = $("#select_feed").val();
+    let date = $("#date").val();
+    let route = $("#select_route").val();
+    //console.log(`getData: date='${date}', route_id='${route}', catalog_id=${catalog_id}`);
+
+    if( !route && !date ) {
+        return;
+    }
+
+    $.ajax({
+        url: '/ajax/gtfs_get_route/',
+        data: {
+            "catalog_id": catalog_id,
+            "date": date,
+            "route": route,
+        },
+        type: "POST",
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            show_data(data.result);
+        }
+        else {
+            //console.log("Error: " + data.error);
+            showError(data.error);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+    });
+}   // getData
+
+
+function show_data(data) {
+    //console.log('show_data', data);
+
+    // удаляем содержимое меню сервисов
+    $("#select_services").empty();
+    // заполняем select_services
+    data.services.forEach((item, index, array) => {
+        $("#select_services").append($('<option>', {value:`${item.service_id}`, text:`${item.service_id}`}));
+    });
+
+    show_service(data);
+}   // show_data
+
+
+function shapesModeChange(scale) {
+    let line_dot = $("#linedot").val();
+    let dirs = $("#direction").val();
+    mobj.show(parseInt(line_dot), dirs, scale);
+}
+
+
+// вывод на карту выбранного в меню шейпа (в виде точки)
+function select_shapes_change(value) {
+    let a = value.split('_')
+    let dir = a[0]; // направление
+    let index = parseInt(a[1]); // индекс в масииве mobj.shapes.points[dir].obj.data.features
+
+    // проверяем шейп
+    src = ml_map.getSource(mobj.shapes.current.id);
+    if( !src ) {
+        // если нет, создаем
+        ml_map.addLayer({
+            'id': mobj.shapes.current.id,
+            'source': {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Point',
+                    'coordinates': mobj.shapes.points[dir].obj.data.features[index].geometry.coordinates
+                }
+            },
+            'type': 'circle',
+            'paint': {
+                'circle-radius': 10,
+                'circle-color': mobj.colors[dir],  // '#007cbf'
+                'circle-stroke-color': 'black',
+                'circle-stroke-width': 1,
+            }
+        });
+    }
+    else {
+        // если есть, меняем позицию
+        // https://maplibre.org/maplibre-gl-js-docs/api/sources/#geojsonsource#setdata
+        src.setData({
+            'type': 'Point',
+            'coordinates': mobj.shapes.points[dir].obj.data.features[index].geometry.coordinates
+        });
+        // меняем цвет на соответствующий напрвавлению
+        // https://maplibre.org/maplibre-gl-js-docs/api/map/#map#setpaintproperty
+        ml_map.setPaintProperty(mobj.shapes.current.id, 'circle-color', mobj.colors[dir]);
+    }
+}   // select_shapes_change
+
+
+function select_services_change(service_id) {
+    if( service_id ) {
+        let catalog_id = $("#select_feed").val();
+        let date = $("#date").val();
+        let route_id = $("#select_route").val();
+
+        //console.log('select_services_change', date, service_id, route_id);
+
+        $("#checkbox_services").prop('checked', true);
+        $("#checkbox_trips").prop('checked', false);
+
+        $.ajax({
+            url: '/ajax/gtfs_get_service/',
+            data: {
+                "catalog_id": catalog_id,
+                "date": date,
+                "service_id": service_id,
+                "route_id": route_id,
+            },
+            type: "POST",
+            dataType: "json",
+            cache: false
+        }).done(function (data) {
+            if(!data.error) {
+                //console.log("select_services_change:", data);
+                show_service(data.result);
+            }
+            else {
+                //console.log("Error: " + data.error);
+                showError(data.error);
+            }
+        }).fail(function (xhr, status, errorThrown) {
+            showError(errorThrown);
+        });
+    }   // if( service_id )
+}   // select_services_change
+
+
+function show_service(data) {
+    //console.log("show_service: ", data);
+
+    // удаляем содержимое меню трипов
+    $("#select_trips").empty();
+    // заполняем select_trips
+    for (let key in data.trips) {
+        data.trips[key].trips.forEach((item, index, array) => {
+            $("#select_trips").append($('<option>', {value:`${item.trip_id}`, text:`${key}-${item.trip_id}-${item.service_id}`}));
+        });
+    }
+
+    show_shapes(data);
+}   // show_service
+
+
+function checkbox_services_change() {
+    //console.log('checkbox_services_change', $("#checkbox_services").is(':checked'));
+    if( !$("#checkbox_services").is(':checked') ) {
+        $("#select_services").val("");
+        getData();
+    }
+    else {
+        $("#checkbox_services").prop('checked', false);
+    }
+    $("#checkbox_trips").prop('checked', false);
+}   // checkbox_services_change
+
+
+function checkbox_trips_change() {
+    //console.log('checkbox_trips_change', $("#checkbox_trips").is(':checked'));
+    if( !$("#checkbox_trips").is(':checked') ) {
+        $("#select_trips").val("");
+        select_trips_change($("#select_trips").find("option:first-child").val());
+    }
+    $("#checkbox_trips").prop('checked', false);
+}   // checkbox_trips_change()
+
+
+function select_trips_change(trip_id) {
+    let catalog_id = $("#select_feed").val();
+    let date = $("#date").val();
+    let route_id = $("#select_route").val();
+
+    //console.log('select_trips_change', date, trip_id, route_id);
+    $("#checkbox_trips").prop('checked', true);
+
+    $.ajax({
+        url: '/ajax/gtfs_get_trip/',
+        data: {
+            "catalog_id": catalog_id,
+            "date": date,
+            "trip_id": trip_id,
+            "route_id": route_id,
+        },
+        type: "POST",
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            //console.log("select_trips_change:", data);
+            show_shapes(data.result);
+        }
+        else {
+            //console.log("Error: " + data.error);
+            showError(data.error);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+    });
+}   // select_trips_change
+
+
+function show_shapes(data) {
+    //console.log("show_shapes: ", data);
+    // удаляем старые данные
+    mobj.clear();
+
+    // удаляем содержимое меню шейпов
+    $("#select_shapes").empty();
+
+    // заготовки для объектов
+    let points = {
+        'type': 'geojson',
+        'data': {
+            'type': 'FeatureCollection',
+            'features': []
+        }
+    };
+
+    let line = {
+        'type': 'geojson',
+        'data': {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': []
+            }
+        }
+    };
+
+    // перебираем все направления и создаём для каждого направления 2 типа объектов: набор точек points и линию
+    for (let key in data.shapes) {
+        // чистим
+        points['data']['features'] = [];
+        line['data']['geometry']['coordinates'] = [];
+
+        data.shapes[key].forEach((item, index, array) => {
+            // заполняем points
+            points['data']['features'].push(
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': item.shape_pt_loc
+                    },
+                    'properties': {
+                        'label': `${item.shape_id}: ${item.shape_pt_sequence}, dir:${key}`,
+                    }
+                }
+            );
+
+            // заполняем line
+            line['data']['geometry']['coordinates'].push(item.shape_pt_loc);
+
+            // заполняем меню shapes
+            $("#select_shapes").append($('<option>', {value:`${key}_${index}`, text:`${key}-${item.shape_id}-${item.shape_pt_sequence}`}));
+        }); // forEach
+
+        line['data']['properties'] = {
+            'direction': key
+        };
+
+        mobj.shapes.points.push({
+            'id': key,
+            'obj': JSON.parse(JSON.stringify(points))
+        });
+
+        mobj.shapes.lines.push({
+            'id': key,
+            'obj': JSON.parse(JSON.stringify(line))
+        });
+    }   // for (let key in data.shapes)
+
+    // массив объектов остановок будем хранить и отображать по-другому, потому, что потому
+    if( data.stops ) {
+        mobj.stops = JSON.parse(JSON.stringify(data.stops))
+    }
+
+    // выводим на карту
+    shapesModeChange(true);
+}   // show_shapes
+
+
+// ### admin_gtfs_tools.html ###
+function test_fid() {
+    $("#test_result").html('');
+    $("#map_message").addClass("hidden");
+    $("#test_result_header").html('');
+
+    let url = $("#url").val();
+    var file = $("#file").val();
+
+    tools_controls_disabled(true);
+
+    let formData = new FormData();
+    formData.append('url', url);
+    formData.append('file', $('#file')[0].files[0]);
+
+    $.ajax({
+        url: '/ajax/gtfs_test_trip/',
+        data: formData,
+        type: "POST",
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            //console.log("test_fid:", data);
+        }
+        else {
+            showError(data.error);
+            tools_controls_disabled(false);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+        tools_controls_disabled(false);
+    });
+}   // test_fid
+
+function ws_router(event) {
+    if( event.note ) {
+        // message
+        let html = $(`#${event.element}`).html();
+        if( html ) {
+            if( html.lastIndexOf("<br>") > 0
+                    && (event.note.lastIndexOf("uploaded") === 0
+                        || event.note.lastIndexOf("downloaded") === 0
+                        || event.note.lastIndexOf("readed") === 0)
+            ) {
+                html = html.split('<br>').slice(0,-1).join('<br>');
+            }
+            $(`#${event.element}`).html(`${html}<br>${event.note}`);
+        }
+        else
+            $(`#${event.element}`).html(event.note);
+    }
+    else if( event.call ) {
+        // function call
+        if (typeof window[event.call] === "function") {
+            window[event.call](event.argument);
+        }
+    }
+}   // ws_router
+
+// admin_gtfs_test_rt.html
+function test_rt() {
+    $("#test_result").html('');
+    $("#map_message").addClass("hidden");
+    $("#test_result_header").html('');
+
+    tools_controls_disabled(true);
+
+    let formData = new FormData();
+    formData.append('url', $("#url_rt").val());
+    formData.append('file', $('#file_rt')[0].files[0]);
+
+    $.ajax({
+        url: '/ajax/gtfs_test_rt/',
+        data: formData,
+        type: "POST",
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            //console.log("test_rt:", data);
+        }
+        else {
+            showError(data.error);
+            tools_controls_disabled(false);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+        tools_controls_disabled(false);
+    });
+}   // test_rt
+
+
+// add feed to catalog
+function append_catalog() {
+    let name = $("#fname").val();
+    let description = $("#fdescription").val();
+    let active = $("#factive").is(":checked");
+    let url_schedule = $("#url").val();
+    let url_rt_positions = $("#url_rt").val();
+
+    if( name.length == 0 ) {
+        alert("Fill name");
+        return;
+    }
+
+    if( !url_schedule ) {
+        alert("Fill schedule URL");
+        return;
+    }
+
+    if( !url_rt_positions ) {
+        alert("Fill positions URL");
+        return;
+    }
+
+    tools_controls_disabled(true);
+
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('active', active);
+    formData.append('url_schedule', url_schedule);
+    formData.append('url_rt_positions', url_rt_positions);
+
+    $.ajax({
+        url: '/ajax/gtfs_append_feed/',
+        data: formData,
+        type: "POST",
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            $("#fname").val('');
+            $("#fdescription").val('');
+            $("#factive").prop('checked', false);
+
+            // admin_gtfs_map.html
+            $('#select_feed').append(
+                $(`<option data-label='${data.result.url_schedule}'></option>`)
+                    .attr("value", data.result.id)
+                    .text(`${data.result.id} ${data.result.name}`)
+            );
+
+            // admin_gtfs_load.html
+            $('#select_feed1').append(
+                $(`<option data-label='${data.result.url_schedule}'></option>`)
+                    .attr("value", data.result.id)
+                    .text(`${data.result.id} ${data.result.name}`)
+            );
+
+            // admin_gtfs_import.html
+            $('#select_feed2').append(
+                $(`<option data-label='${data.result.url_schedule}'></option>`)
+                    .attr("value", data.result.id)
+                    .text(`${data.result.id} ${data.result.name}`)
+            );
+
+            alert(`Feed ${data.result.id} ${data.result.name} created`);
+        }
+        else {
+            showError(data.error);
+        }
+
+        tools_controls_disabled(false);
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+        tools_controls_disabled(false);
+    });
+}   // append_catalog
+
+function tools_controls_disabled(variant) {
+    $("#button_test").prop("disabled", variant);
+    $("#button_test_rt").prop("disabled", variant);
+    $("#button_append").prop("disabled", variant);
+}   // tools_controls_disabled
+
+
+// ### admin_gtfs_load.html ###
+function select_feed1_change() {
+    let label = $('option:selected', $("#select_feed1")).data("label");
+    $("#load_url").html(label);
+
+    let catalog_id = $("#select_feed1").val();   // admin_gtfs_load.html
+
+    $("#link_catalog_edit1").attr("href", "/wiki/bustime/gtfscatalog/"+catalog_id+"/change/");   // admin_gtfs_load.html
+    $("#test_result_header1").html('');
+    $("#load_result").html('');
+}   // select_feed1_change
+
+function load_schedule() {
+    $("#load_result").html('');
+    $("#map_message").addClass("hidden");
+    $("#test_result_header1").html('');
+
+    let catalog_id = $("#select_feed1").val();
+
+    load_controls_disabled(true);
+
+    let formData = new FormData();
+    formData.append('catalog_id', catalog_id);
+
+    $.ajax({
+        url: '/ajax/gtfs_load_schedule/',
+        data: formData,
+        type: "POST",
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+        }
+        else {
+            showError(data.error);
+            load_controls_disabled(false);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+        load_controls_disabled(false);
+    });
+}   // load_schedule()
+
+function load_controls_disabled(variant) {
+    $("#button_load").prop("disabled", variant);
+    $("#select_feed1").prop("disabled", variant);
+}   // load_controls_disabled
+
+
+// ### admin_gtfs_import.html ###
+function select_feed2_change() {
+    let label = $('option:selected', $("#select_feed2")).data("label");
+    $("#import_url").html(label);
+
+    let catalog_id = $("#select_feed2").val();   // admin_gtfs_import.html
+    $("#link_catalog_edit2").attr("href", "/wiki/bustime/gtfscatalog/"+catalog_id+"/change/");   // admin_gtfs_import.html
+
+    $("#select_import_route").empty();
+    $("#select_import_route").dropdown('clear', true);
+    $.ajax({
+        url: '/ajax/gtfs_get_route/',
+        data: {
+            "catalog_id": catalog_id,
+        },
+        type: "POST",
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        if(!data.error) {
+            if( data.result.routes ) {
+                $("#select_import_route").append($('<option>', {value:'', text:'&nbsp;'}));
+                data.result.routes.forEach((item, index, arr) => {
+                    let route_name = item.route_short_name.length > 0 ? item.route_short_name : item.route_long_name;
+                    $("#select_import_route").append($('<option>', {value:`${route_name}`, text:`${route_name}`}));
+                });
+            }
+        }
+        else {
+            //console.log("Error: " + data.error);
+            showError(data.error);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+    });
+
+
+    $("#test_result_header2").html('');
+    $("#import_result").html('');
+}   // select_feed2_change
+
+function import_schedule() {
+    $("#import_result").html('');
+    $("#map_message").addClass("hidden");
+    $("#test_result_header2").html('');
+
+    let catalog_id = $("#select_feed2").val();
+    let bus = $("#select_import_route").val();
+    let opt = $("#opt_import").val();
+
+    import_controls_disabled(true);
+
+    let formData = new FormData();
+    formData.append('catalog_id', catalog_id);
+    formData.append('bus', bus);
+    formData.append('opt', opt);
+
+    $.ajax({
+        url: '/ajax/gtfs_import_schedule/',
+        data: formData,
+        type: "POST",
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        dataType: "json",
+        cache: false
+    }).done(function (data) {
+        //console.log(data);
+        if(!data.error) {
+        }
+        else {
+            showError(data.error);
+            import_controls_disabled(false);
+        }
+    }).fail(function (xhr, status, errorThrown) {
+        showError(errorThrown);
+        import_controls_disabled(false);
+    });
+}   // import_schedule
+
+function import_controls_disabled(variant) {
+    $("#button_import").prop("disabled", variant);
+    $("#select_feed2").prop("disabled", variant);
+    $("#select_import_route").prop("disabled", variant);
+}   // load_controls_disabled
+
+// обновление статистики
+function stat_refresh() {
+    $("#map_message").addClass("hidden");
+
+    if( $('[data-tab="stat"]').hasClass("active") ) {
+        $.ajax({
+            url: '/ajax/gtfs_stat_refresh/',
+            data: new FormData(),
+            type: "POST",
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+            dataType: "json",
+            cache: false,
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        }).done(function (data) {
+            if(!data.error) {
+                let html = "";
+                data.result.forEach((item, index, array) => {
+                    html += `<div class="column"><pre style="width:100%;height:300px;overflow:auto;border:1px solid #C9CACA;border-radius:8px;background-color:#F8F8F9;padding:2px;">${item}</pre></div>`;
+                });
+                $('#gtfs_stat_grid').html(html);
+            }
+            else {
+                showError(data.error);
+            }
+        }).fail(function (xhr, status, errorThrown) {
+            showError(errorThrown);
+        });
+    }
+}   // stat_refresh
+</script>
+{% endblock body_end %}

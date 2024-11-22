@@ -1,0 +1,190 @@
+{# см. admin_load_gtfs.html #}{% load i18n %}
+    <div class="ui stackable two column grid">
+        <div class="seven wide column">
+            <div class="ui form">
+                    <div class="fields">
+                        <div class="inline field">
+                            <label>View</label>
+                            <select id="linedot" class="ui dropdown" onchange="shapesModeChange(false)" autocomplete="off">
+                                <option value="0" selected="selected">dots</option>
+                                <option value="1">lines</option>
+                            </select>
+                        </div>
+
+                        <div class="inline field">
+                            <label>Direction</label>
+                            <select id="direction" class="ui dropdown" onchange="shapesModeChange(false)" autocomplete="off">
+                                <option value="2" selected="selected">all</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                            </select>
+                        </div>
+                    </div>
+            </div>
+            <!--maplibre-->
+            <div id="maplibre1">
+                <pre id="lonlatinfo"></pre>
+            </div>
+        </div>{# six wide column #}
+
+        <div class="nine wide column">
+            <div class="ui form">
+                <div class="fields">
+                    <div class="fifteen wide field">
+                        <label><a href="/wiki/bustime/gtfscatalog/" target="_blank">GtfsCatalog</a></label>
+
+                        <select id="select_feed" class="ui dropdown" onchange="select_feed_change()" autocomplete="off">
+                            {% for x in feeds %}
+                            <option data-label="{{x.url_schedule}}" value="{{x.id}}" {% if catalog_id == x.id %}selected{% endif %}>
+                                {{x.id}} {{x.name}}
+                            </option>
+                            {% endfor %}
+                        </select>
+
+                        <span id="feed_url" class="ui small grey text"></span>
+                    </div>
+
+                    <div class="field">
+                        <label>&nbsp;</label>
+                        <a id="link_catalog_edit"
+                            href="/wiki/bustime/gtfscatalog/{% if catalog_id %}{{catalog_id}}/change/{% endif %}"
+                            target="_blank">edit</a>
+                    </div>
+                </div>
+
+                <div class="ui accordion">
+                    <div class="title">
+                        <i class="dropdown icon"></i>
+                        <b>calendar</b>
+                    </div>
+                    <div class="content">
+                        <div class="field">
+                            <table id="table_calendar" class="ui unstackable celled short scrolling table">
+                                <thead>
+                                    <tr>
+                                        <th>start</th>
+                                        <th>end</th>
+                                        <th>mo</th>
+                                        <th>tu</th>
+                                        <th>we</th>
+                                        <th>th</th>
+                                        <th>fr</th>
+                                        <th>sa</th>
+                                        <th>su</th>
+                                        <th>service</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for x in calendar %}
+                                    <tr>
+                                        <td data-label="start">{{x.start_date|date:'Y-m-d'}}</td>
+                                        <td data-label="end">{{x.end_date|date:'Y-m-d'}}</td>
+                                        <td data-label="mo">{{x.monday}}</td>
+                                        <td data-label="tu">{{x.tuesday}}</td>
+                                        <td data-label="we">{{x.wednesday}}</td>
+                                        <td data-label="th">{{x.thursday}}</td>
+                                        <td data-label="fr">{{x.friday}}</td>
+                                        <td data-label="sa">{{x.saturday}}</td>
+                                        <td data-label="su">{{x.sunday}}</td>
+                                        <td data-label="service">{{x.service_id}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="title">
+                        <i class="dropdown icon"></i>
+                        <b>calendar_dates</b>
+                    </div>
+                    <div class="content">
+                        <div class="field">
+                            <table id="table_calendar_dates" class="ui unstackable celled short scrolling table">
+                                <thead>
+                                    <tr>
+                                        <th>date</th>
+                                        <th>service</th>
+                                        <th>exception</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for x in calendar_dates %}
+                                    <tr>
+                                        <td data-label="date">{{x.date|date:'Y-m-d'}}</td>
+                                        <td data-label="service">{{x.service_id}}</td>
+                                        <td data-label="exception">
+                                            {{x.exception_type}} {% if x.exception_type == 2 %}не {% endif %}действует
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>{# accordion #}
+
+                <div class="field">
+                    <label>agency</label>
+                    <select id="select_agency" class="ui dropdown" onchange="select_agency_change()" autocomplete="off">
+                        {% for x in agency %}<option value="{{x.agency_id}}">{{x.agency_name}}</option>{% endfor %}
+                    </select>
+                </div>
+
+                <div class="fields">
+                    <div class="four wide field">
+                        <label>Select date</label>
+                        <div class="ui calendar" id="date_calendar">
+                            <div class="ui input left icon">
+                                <i class="calendar icon"></i>
+                                <input id="date" type="text" placeholder="Date" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="twelve wide field">
+                        <label>Select route</label>
+                        <select id="select_route" class="ui dropdown" onchange="getData()" autocomplete="off">
+                            <option value="" selected="selected">&nbsp;</option>
+                            {% for x in routes %}
+                            <option value="{{x.route_id}}">
+                                {{x.route_short_name|default:x.route_long_name}}*{{x.route_type}}({{x.route_id}})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="three fields">
+                    <div class="field">
+                        <label>
+                            <div class="ui checkbox" style="margin-top: 0;">
+                              <input type="checkbox" id="checkbox_services" onchange="checkbox_services_change()" autocomplete="off">
+                              <label>services</label>
+                            </div>
+                        </label>
+                        <select id="select_services" size="15" onchange="select_services_change(this.value)" autocomplete="off">
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            <div class="ui checkbox" style="margin-top: 0;">
+                              <input type="checkbox" id="checkbox_trips" onchange="checkbox_trips_change()" autocomplete="off">
+                              <label>trips</label>
+                            </div>
+                        </label>
+                        <select id="select_trips" size="15" onchange="select_trips_change(this.value)" autocomplete="off">
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>shapes</label>
+                        <select id="select_shapes" size="15" onchange="select_shapes_change(this.value)" autocomplete="off">
+                        </select>
+                    </div>
+                </div>
+
+            </div>{# ui form #}
+        </div>{# ten wide column #}
+    </div>{# two column grid #}

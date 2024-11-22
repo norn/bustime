@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block extra_head %}
+{% include "_open-letter-for-transport-data.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Открытое письмо к транспортным предприятиям и администрациям городов" %}</span>
+</div>
+
+
+<div class="ui container text segment">
+            <p>Dear Leaders and City Transport Departments,</p>
+            <p>We appeal to you to take a step towards the future of public transportation by ensuring access to real-time information about the current location of public transport online. In the era of digital technologies, data transparency not only improves the quality of life for citizens but also enhances their trust and satisfaction with public services.</p>
+            <p>Access to real-time transport location data can drastically improve trip planning for all users, reduce waiting times at stops, and increase the overall attractiveness of using public transport. It also helps reduce congestion and environmental pollution by optimizing routes and schedules.</p>
+            <p>We urge you to consider implementing a system that not only meets the current needs of residents but also demonstrates your commitment to innovation and transparency in city resource management.</p>
+            <p>Thank you for your attention to this important issue, and we look forward to your support in creating a more open, accessible, and convenient public transportation system.</p>
+            <p>Sincerely,</p>
+        <p><strong>Andrey Perliev</strong></p>
+        <p>Founder</p>
+        <p>Bustime ULDA</p>
+        <p>andrey@bustime.loc</p>
+
+</div>
+
+{% endblock %}

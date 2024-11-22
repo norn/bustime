@@ -1,0 +1,29 @@
+/* --------------
+   Spacing Fix
+--------------- */
+
+/* dropdown arrows are to the right */
+i.dropdown.icon {
+    margin: 0 0 0 0.5em;
+}
+
+/* stars are usually consecutive */
+i.icon.star {
+    width: auto;
+    margin: 0;
+}
+
+/* left side basic.icons */
+i.icon.left {
+    width: auto;
+    margin: 0 0.5em 0 0;
+}
+
+/* right side basic.icons */
+i.icon.search,
+i.icon.up,
+i.icon.down,
+i.icon.right {
+    width: auto;
+    margin: 0 0 0 0.5em;
+}

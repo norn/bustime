@@ -1,0 +1,8 @@
+<html>
+<head></head>
+<body>t="{{now|date:"d/m/Y H:i:s"}}"
+n="№1;№1;22м"
+{% for b in stop.bdata %}n="№{{b.n}};№{{b.n}};{{b.cdown}}м"
+{% endfor %}s=5,"Мониторинг общественного транспорта bustime.ru"
+</body>
+</html>

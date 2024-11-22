@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load i18n %}
 
 {% block content %}
-<h1 class="ui header">Ощибка 404
-<div class="sub header">не найдено</div></h1>
+<h1 class="ui header">{% trans "Ошибка 404" %}
+<div class="sub header">{% trans "не найдено" %}</div></h1>
 
 <center>
-<div class="ui huge warning message">Нет такого файла здесь</div>
-<img src="/static/img/zombie1.png">
+<div class="ui huge warning message">{% trans "Нет такого файла здесь" %}</div>
+<img src="https://cdn.bustime.loc/static/img/zombie1.png">
 </center>
 {% endblock %}

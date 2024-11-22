@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Лучший транспорт города" %} {{for_year}}, {{place.name}}{% endblock %}
+{% block meta_descr %}{% trans "Рейтинг транспорта в г." %} {{place.name}}. {% trans "Поставьте оценку и комментарий после поездки и повлияйте на ежемесячный рейтинг" %}.{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url}}top/{{for_year}}/page-{{page}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url}}top/{{for_year}}/page-{{page}}/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url}}top/{{for_year}}/page-{{page}}/" />
+{% endfor %}
+
+{% endblock %}
+
+{% block nav_rating %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/top/">{% trans "Рейтинг" %}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{place.slug}}/top/{{for_year}}/">{{for_year}}</a>
+   <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Страница" %} {{page}}</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui column grid">
+  <div class="center aligned column">
+    <h1 class="ui header">{% trans "Лучший транспорт города" %}</h1>
+  </div>
+</div>
+<!-- year selector -->
+<div class="ui three column grid">
+  <div class="column">
+  {% if prev_year %}
+  <a class="ui labeled icon button" href="/{{place.slug}}/top/{{prev_year}}/">
+    <i class="fa-caret-left icon"></i>
+    {{prev_year}}
+  </a>
+  {% endif %}
+  </div>
+
+  <div class="column center aligned">
+    <h1 class="ui header">{{for_year}}</h1>
+  </div>
+
+  <div class="column right aligned">
+  {% if next_year %}
+  <a class="ui right labeled icon button" href="/{{place.slug}}/top/{{next_year}}/">
+    <i class="fa-caret-right icon"></i>
+    {{next_year}}
+  </a>
+  {% endif %}
+  </div>
+
+</div>
+<!-- year selector end -->
+
+<div class="ui grid"><div class="column">
+  <div class="ui pagination right menu">
+  {% for p in vehicles.paginator.page_range %}
+  <a class="{% if p == vehicles.number %}active {%endif%}item" href="/{{place.slug}}/top/{{for_year}}/page-{{p}}/">{{p}}</a>
+  {% endfor %}
+</div>
+</div></div>
+
+<table class="ui celled table">
+<thead><tr>
+            <th>{% trans "место" %}</th>
+            <th>{% trans "гос. номер транспорта" %}</th>
+            <th>{% trans "рейтинг" %}<br/>{% trans "комментарии" %}</th>
+</tr></thead>
+
+{% for d in vehicles.object_list %}
+<tr>
+ <td  class="center aligned">
+    <div class="small ui statistic">
+  <div class="value">
+     {{ d.place }}
+  </div>
+  <div class="label">
+    {% trans "место" %}
+  </div>
+{% if d.place <= 3%}<i class="fa fa-trophy" style="color:{%if d.place == 1%}#ffe216{%elif d.place == 2%}#deddd4{%elif d.place == 3%}#c6ac8b{%endif%}"></i>{%endif%}
+{% if d.rating_wilson_human %}{{d.rating_wilson_human}}{%else%}0{%endif%} / 5
+</div>
+  </td>
+
+ <td class="center aligned">
+  <!-- <img src="https://cdn.bustime.loc/static/img/ava/{{d.driver_ava}}.jpg" style="height:100px"><br/> -->
+{% if d.gosnum_img %}<img src="{{d.gosnum_img}}" /><br/>{% endif %}
+    <div class="tiny ui statistic">
+  <div class="value">
+     {{d.gosnum}}
+  </div>
+  <div class="label">
+    <a href="{{d.bus.get_absolute_url}}">{{d.bus}} {% trans "маршрут" %}</a>
+  </div>
+
+  <!-- class="{{d.bus.ttype_slug}} offline" title="{{d.bus.ttype_name}} офлайн"}> -->
+  <a href="{{d.bus.get_online_url}}" class="{{d.status}}">
+  {% if d.status == 'online' %}
+    {% trans "онлайн" %}
+  {% elif d.status == 'zombie' %}
+    {% trans "зомби" %}
+  {% elif d.status == 'sleeping' %}
+    {% trans "на перерыве" %}
+  {% else %}
+    {% trans "оффлайн" %}
+  {% endif %}</a><br/>
+  <a href="{{d.bus.provider.get_absolute_url}}">{% if d.bus.provider %}{{d.bus.provider.name}}{% endif %}
+  </td><td>
+<div class="ui list">
+  {%for v in d.messages%}
+  <div class="item" style="color:rgba(0,0,0,0.6);margin-bottom:3px">
+    {% if v.stars %}
+      {% for s in v.stars_as_list %}<i class="fa fa-star"></i>{% endfor %}
+    {% else %}
+      {% if v.positive%}
+      <i class="fa-thumbs-o-up icon"></i>
+      {%else%}
+      <i class="fa-thumbs-o-down icon"></i>
+      {% endif%}
+    {% endif %}
+
+    <div class="content">
+      <div class="header">{{v.ctime.date}} {{v.ctime.time}}</div>
+      <div class="description">{{v.comment}}{% if v.name %} ({{v.name}}){%endif%}</div>
+    </div>
+  </div>
+
+  {% endfor %}
+  </div>
+
+ </td>
+</tr>
+{% endfor %}
+</table>
+
+<div class="ui grid"><div class="column">
+  <div class="ui pagination right menu">
+  {% for p in vehicles.paginator.page_range %}
+  <a class="{% if p == vehicles.number %}active {%endif%}item" href="/{{place.slug}}/top/{{for_year}}/page-{{p}}/">{{p}}</a>
+  {% endfor %}
+</div>
+</div></div>
+
+<br/>
+
+{% endblock %}

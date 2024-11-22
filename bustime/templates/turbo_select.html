@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% if LANGUAGE_CODE == "ru" %}Время Автобуса{% else %}Bustime - {% trans "общественный транспорт онлайн" %}{% endif %}{% endblock %}
+{% block meta_descr %}{% trans "Онлайн автобусы, троллейбусы и трамваи по данным GPS"%}. {% trans "Маршруты, расписание в реальном времени и поиск проезда на общественном транспорте" %}.{% endblock %}
+
+{% block nav_select %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/" />
+{% endfor %}
+
+<script>us_id = {{ us.id }};</script>
+<style>
+.ui.search {
+    margin-bottom: 10px;
+}
+.ui.search > .results {
+    display: none !important;
+}
+@media screen and (max-width: 600px) {
+    .ui.search > .ui.input {
+        width: 100% !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% comment %}
+<div class="ui container" style="margin-top: 10px; margin-bottom:0.2rem">
+    <div class="ui center aligned header">
+        <h1 class="ui header">{% trans "Будь в курсе с актуальными данными о транспорте " %}</h1>
+        <p>{% trans "Получай мгновенную и точную информацию о городском транспорте, чтобы планировать свои поездки легко и уверенно" %}.</p>
+    </div>
+</div>
+{% endcomment %}
+
+  <div class="ui search">
+    <div class="ui icon input">
+      <input class="prompt" type="text" autocomplete="off" placeholder="{% trans "Название населённого пункта" %}" autofocus>
+      <i class="search icon"></i>
+    </div>
+  </div>
+
+<div class="search_results"></div>
+
+
+<div class="ui styled fluid accordion">
+  {% for country in countries_list %}
+  <div class="title {% if forloop.counter0 == 0 %}active{% endif %}">
+    <i class="right dropdown icon"></i>
+    <i class="{{country.code}} flag"></i>
+    {{country.name}}
+  </div>
+
+  <div class="content {% if forloop.counter0 == 0 %}active{% endif %}">
+    <div class="ui four column stackable grid">
+      {% for chunk in country.cities %}
+      <div class="column">
+        <div class="ui fluid vertical menu">
+          {% for c in chunk %}
+          <a class="{% if c.id == place_default.id %}active {% endif %}item" href="/{{c.slug}}/"
+            title="{{c.name}}, {{c.amount}} {% trans 'транспортных средств онлайн' %}">{{ c.name|truncatechars:20 }}<div
+              class="ui {% if c.amount == 0 %} {% else %}orange{% endif %} label fl" id="{{c.id}}">{{c.amount}}</div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p> -->
+  </div>  
+  {% endfor %}
+</div>
+<!-- {% for country in countries_list %}
+<h2>{{country.name}}</h2>
+<div class="ui four column stackable grid">
+  {% for chunk in country.cities %}
+  <div class="column">
+    <div class="ui fluid vertical menu">
+      {% for c in chunk %}
+      <a class="{% if c.id == us.city.id %}active {% endif %}item" href="https://{{ LANGUAGE_CODE }}.bustime.loc/{{c.slug}}/"
+        title="{{c.name}}, {{c.nearest}} {% trans 'транспортных средств онлайн' %}">{{c.name}}<div
+          class="ui {% if c.nearest == 0 %} {% else %}orange{% endif %} label fl" id="{{c.id}}">{{c.nearest}}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endfor %} -->
+
+<br /><br /><br />
+
+<script>
+function js_page_extra() {
+    $('.ui.accordion').accordion();
+
+    var content = $('.content').find('a').map(function() {
+        var name = $(this).contents().filter(function() {
+            return this.nodeType === 3; // берем только текстовые узлы
+        }).first().text();
+        var amount = $(this).find('.ui.label').text();
+        return { title: name, amount: amount, slug: $(this).attr('href'), id: $(this).find('.ui.label').attr('id') };
+    }).get();
+
+    $('.ui.search input').on('input', function() {
+        if (!$(this).val()) {
+            $('.accordion').css('display', 'block');
+            $('.search_results').css('display', 'none');
+        }
+    });
+
+    $('.ui.search').search({
+        source: content,
+        minCharacters: 1,
+        searchFullText: false,
+        maxResults: false,
+        onResultsAdd: function(html) {
+            $('.accordion').css('display', 'none');
+            $('.search_results').css('display', 'block');
+            var customResults = '<div class="content active"><div class="ui four column stackable grid"><div class="column"><div class="ui fluid vertical menu">';
+
+            var titles = {};
+            var unique_titles = [];
+            $(html).find('.title').each(function() {
+                var title = $(this).text();
+                if (!titles[title]) {
+                    titles[title] = true;
+                    unique_titles.push(title);
+                }
+            });
+            if (unique_titles.length === 0) {
+                customResults += '<div class="item">Результатов не найдено</div>';
+            } else {
+                unique_titles.forEach(function(title) {
+                    for (var i = 0; i < content.length; i++) {
+                        if (content[i].title === title) {
+                            customResults += '<a class="item" href="' + content[i].slug  + '" title="' + content[i].title + ', ' + content[i].amount + ' {% trans "транспортных средств онлайн" %}">' + content[i].title + '<div class="ui ';
+                            if (content[i].amount > 0) {
+                                customResults += 'orange ';
+                            }
+                            customResults += 'label fl" id="' + content[i].id + '">' + content[i].amount + '</div></a>';
+                        }
+                    }
+                });
+            }
+            customResults += '</div></div></div></div>';
+            $('.search_results').html(customResults);
+        }
+    });
+
+
+
+    socket = io(); // nice
+
+    // http://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-ha
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+
+
+    socket.on('connect', function() {
+        var d = new Date();
+        console.log(d + ": Socket connected");
+        socket.emit('authentication', {username: us_id, password: "", os:"web"});
+        // socket.emit('join', "ru.bustime.nearest_for_select");
+    });
+
+    socket.on("*",function(event,data) {
+        update_nearest(data);
+    });
+
+    socket.on('disconnect', function() {
+        console.log("Disconnect");
+    });
+
+
+    function update_nearest(data) {
+        var dat = data['nearest_for_select'];
+        var d;
+        for(var key in dat) {
+            d = data['nearest_for_select'][key];
+            $("#" + key).html(d);
+            if ($("#" + key).hasClass("orange")) {
+                $("#" + key).removeClass("orange").addClass('blue');
+            }
+        }
+        setTimeout(function() {
+            $(".fl.blue").removeClass('blue').addClass("orange");
+        }, 800);
+    }
+
+}
+</script>
+
+{% endblock %}
+
+
+<!-- <html lang="{{LANGUAGE_CODE}}">
+<head>
+<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/semantic-full.css" type="text/css" />
+<link rel="preload" as="script" href="https://cdn.bustime.loc/static/js/semantic.js" type="text/css" />
+</head>
+<body>
+links: <a href="?gmt=1">list of cities by GMT</a>
+<table class="ui sortable celled table">
+  <thead><tr><th>num</th>
+      <th>TimeZone</th>
+      <th>Name</th>
+      <th>Time</th>
+      <th>Events</th>
+      <th>Routes</th>
+      <th>Stops</th>
+      <th>OSM</th>
+      <th>info</th>
+    </tr></thead>
+{% for pa in pas %}
+    <tr>
+      <td data-label="num">{{forloop.counter}}</td>
+      <td data-label="TimeZone">{{pa.timezone}}</td>
+      <td data-label="Name"><a href="./{{pa.osm_id}}/">{{pa.name}}</a></td>
+      <td data-label="Time">{{pa.now}}</td>
+      <td data-label="Events"> {{pa.amount}}</td>
+      <td data-label="Routes"> {{pa.buses_count}}</td>
+      <td data-label="Stops"> {{pa.stops_count}}</td>
+      <td data-label="OSM"> <a href='https://www.openstreetmap.org/relation/{{pa.osm_id}}/'>{{pa.osm_id}}</a></td>
+      <td data-label="info">{{pa.admin_level}} {{pa.type}}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+</body></html> -->

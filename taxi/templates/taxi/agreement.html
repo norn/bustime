@@ -1,0 +1,70 @@
+{% extends "base.html" %}{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Такси" %}{% endblock %}
+
+{% block meta_descr %}
+{% trans "Пользовательское соглашение использования сервиса bustime-такси" %}.
+{% endblock meta_descr %}
+
+{% block nav_help %}active{%endblock%}
+
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% block content %}
+
+<div class="ui breadcrumb">
+    <a class="section" href="/{{request.session.city.slug}}/">{{request.session.city.name}}</a>
+    <i class="right angle icon divider"></i>
+    <div class="active section">{% trans "Такси" %}</div>
+</div>
+<div class="ui divider"></div>
+
+<h2 class="ui header" >
+    {% trans "Пользовательское соглашение использования сервиса bustime-такси" %}
+</h2>
+
+<div style="background-color:#F2F2F2; padding:1.5em 1em;">
+    <h4>{% trans "bustime.loc не является интегратором такси, не имеет в штате водителей и парка машин" %}</h4>
+    {% trans "Мы только связываем пассажира и водителя такси. Все остальные вопросы, касающиеся поездки пассажир и водитель такси должны решать по обоюдному согласию" %}.
+
+    <h4>{% trans "Для использования сервиса bustime-такси Вы должны согласиться со следующим:" %}</h4>
+    <ol class="ui list">
+        <li>Все параметры поездки являются добровольным соглашением между пассажиром и водителем такси.</li>
+        <li>bustime.loc не несёт прямой или косвенной ответственности за результат использования сервиса bustime-такси как перед пассажиром, так и перед водителем такси.</li>
+        <li>bustime.loc не является стороной возможных конфликтов между пассажиром и водителем такси и не принимает претензий, касающихся любых аспектов использования сервиса bustime-такси.</li>
+        <li>Пассажир и водитель такси принимают на себя все возможные риски, касающиеся поездки.</li>
+    </ol>
+</div>
+
+<div style="padding:1.5em 1em; margin-top:1em;">
+    <h4>{% trans "Используйте сервис bustime-такси только если Вы согласны с условиями выше" %}</h4>
+
+    <form class="ui form" method="POST">{% csrf_token %}
+        <div class="inline field">
+            <div class="ui checkbox">
+                <input name="agreement" type="checkbox" tabindex="0" class="hidden">
+                <label>{% trans "Установив этот флажок, Вы даёте согласие на условия, описанные выше" %}</label>
+            </div>
+        </div>
+
+        <button class="ui button" type="submit" style="background-color:#FFDF32; color:black; padding: 1.5em 2.5em;">
+            {% trans "Я прочитал условия" %}
+        </button>
+    </form>
+</div>
+{% endblock content %}
+
+{% block body_end %}
+<script>
+document.onreadystatechange = function () {
+    if (document.readyState == "complete") {
+        // для гарантированной подгрузки jQuery:
+        setTimeout(function(){
+            $('.ui.checkbox').checkbox();
+        },
+        1000);
+   }
+}
+</script>
+{% endblock body_end %}

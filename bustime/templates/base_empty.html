@@ -1,0 +1,161 @@
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% spaceless %}<!doctype html>{% with js_ver="47" css_ver="10" %}
+<html lang="{{LANGUAGE_CODE}}">
+<head>
+  <meta charset="UTF-8"/>
+  <title>{% block titlee %}{% trans "Время Автобуса" %}{% endblock %}</title>
+
+  {% if main_page %}
+    <meta property="og:url" content="https://{{domain}}/">
+  {% endif %}
+  <meta property="og:title" content="{% block title %}{% trans "Время Автобуса" %}{% endblock %}">
+  <meta property="og:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta property="vk:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#b30000">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="image_src" href="https://{{domain}}/static/img/bustime-2.0.png">
+  <link rel="apple-touch-icon" href="https://cdn.bustime.loc/static/img/icon_60px.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="https://cdn.bustime.loc/static/img/icon_76px.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="https://cdn.bustime.loc/static/img/icon_120px.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="https://cdn.bustime.loc/static/img/icon_152px.png" />
+  <!-- <link rel="icon" sizes="192x192" href="https://cdn.bustime.loc/static/img/icon_192.png"> -->
+
+  {% if test %}
+    <!-- <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/semantic-full.min.css" type="text/css" /> -->
+    <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/font-awesome.min.css">
+    {% if main_page %}
+        <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/semantic-main.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-page.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-main.css" type="text/css" />
+    {% else %}
+        <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/semantic-page.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-page.css" type="text/css" />
+    {% endif %}
+    <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/jquery.modal.min.css" type="text/css" />
+  {% else %}
+    <link rel="preload" as="script" href="https://cdn.bustime.loc/static/js/system.min.js">
+    <link rel="preload" as="script" href="https://cdn.bustime.loc/static/js/bundle-built-{{ js_ver }}.js">
+    <link rel="preload" as=script href="https://cdn.bustime.loc/static/js/howler.min.js">
+    <link rel="preload" href="https://cdn.bustime.loc/static/fonts/fontawesome-webfont.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://cdn.bustime.loc/static/css/base-union-{{css_ver}}.css" as="style">
+    <link rel="stylesheet" href="https://cdn.bustime.loc/static/css/base-union-{{css_ver}}.css" type="text/css" />
+    {% if main_page %}
+      <!--<link rel=preload as=script href="https://cdn.bustime.loc/static/js/main-built-{% if not us.sound %}nosound-{%endif%}{%if us.premium%}{{js_ver}}{%else%}{{js_ver}}{%endif%}.js">-->
+      <link rel="preload" as="script" href="https://cdn.bustime.loc/static/js/city-{{us.city.id}}-{{us.city.rev}}.js">
+    {% else %}
+      <!--<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/base-page-{{css_page_ver}}.css" type="text/css" />-->
+    {% endif %}
+  {% endif %}
+
+  {% if us.theme %}<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-theme-{{us.theme}}.css" type="text/css" />{% endif %}
+  {% if us.premium and main_page and us.vip %}<link rel="stylesheet" href="https://cdn.bustime.loc/static/css/bustime-premium-vip.css" type="text/css" />{% endif %}
+
+  {% if us.font_big %}<!-- mmm, sexy -->
+  <style>html,body {font-size:15px;}
+    @font-face {
+    font-family: 'PT Sans';
+    src: url('https://cdn.bustime.loc/static/fonts/PTS55F_W.eot');
+    src:
+    url('https://cdn.bustime.loc/static/fonts/PTS55F_W.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.bustime.loc/static/fonts/PTS55F_W.woff') format('woff'),
+    url('https://cdn.bustime.loc/static/fonts/PTS55F_W.ttf') format('truetype'),
+    url('https://cdn.bustime.loc/static/fonts/PTS55F_W.svg#PTSans-Regular') format('svg');
+    font-weight: 400;
+    font-style: normal;
+  } @font-face {
+    font-family: 'PT Sans';
+    src: url('https://cdn.bustime.loc/static/fonts/PTS75F_W.eot');
+    src:
+    url('https://cdn.bustime.loc/static/fonts/PTS75F_W.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.bustime.loc/static/fonts/PTS75F_W.woff') format('woff'),
+    url('https://cdn.bustime.loc/static/fonts/PTS75F_W.ttf') format('truetype'),
+    url('https://cdn.bustime.loc/static/fonts/PTS75F_W.svg#PTSans-Bold') format('svg');
+    font-weight: 700;
+    font-style: normal;
+  }</style>{% endif %}
+  <style>.weather_t {margin: 0px 6px;font-weight:bold;}</style>
+
+  {% if us.speed_show and main_page %}
+  <script src="https://cdn.bustime.loc/static/js/raphael-2.1.4.min.js"></script>{% endif %}
+  {% block extra_head %}{% endblock %}
+</head>
+
+{% block body %}<body>
+
+  {% block content %}{% endblock %}
+
+
+
+
+  {% if not test and not noga %}<script>
+  if (!window.console) console = {log: function() {}};
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+   ga('create', 'UA-6092635-2', 'auto');
+   ga('send', 'pageview');</script>{%endif%}
+  <script>{% include "_js_init.html" %}</script>
+  {% block js_extra %}{% endblock %}
+  {% block js %}
+      <script src="https://cdn.bustime.loc/static/js/system.min.js"></script>
+  {% if test %}
+    <script type="systemjs-importmap" src="https://cdn.bustime.loc/static/importmap-test.json"></script>
+    {% if main_page %}
+        <script type="systemjs-importmap">
+        {
+            "imports": {
+                "bundle_built": "https://cdn.bustime.loc/static/js/bustime-main-entry.js",
+                "city_vars": "https://cdn.bustime.loc/static/js/city-{{ us.city.id }}-{{ us.city.rev }}.js"
+            }
+        }
+        </script>
+    {% else %}
+        <script type="systemjs-importmap">
+        {
+            "imports": {
+                "bundle_built": "https://cdn.bustime.loc/static/js/bustime-main-entry.js",
+                "city_vars": "https://cdn.bustime.loc/static/js/city-{{ us.city.id }}-{{ us.city.rev }}.js"
+            }
+        }
+        </script>
+    {% endif %}
+    <script type="systemjs-module" src="import:bundle_built"></script>
+  {%else%}
+    <script type="systemjs-importmap" src="https://cdn.bustime.loc/static/importmap.json"></script>
+    {% if main_page %}
+        <script type="systemjs-importmap">
+        {
+            "imports": {
+                "bundle_built": "https://cdn.bustime.loc/static/js/bundle-built-{{ js_ver }}.js",
+                "city_vars": "https://cdn.bustime.loc/static/js/city-{{ us.city.id }}-{{ us.city.rev }}.js"
+            }
+        }
+    {% else %}
+        <script type="systemjs-importmap">
+        {
+            "imports": {
+                "bundle_built": "https://cdn.bustime.loc/static/js/bundle-built-{{ js_ver }}.js",
+                "city_vars": "https://cdn.bustime.loc/static/js/city-{{ us.city.id }}-{{ us.city.rev }}.js"
+            }
+        }
+        </script>
+    {% endif %}
+    <script type="systemjs-module" src="import:bundle_built"></script>
+  {%endif%}
+  {% endblock %}
+
+{% block body_end %}{% endblock %}
+</body>
+{% endblock %}
+</html>{% endwith %}{% endspaceless %}

@@ -1,0 +1,52 @@
+{% extends "admin/change_list.html" %}
+{# see: /mnt/reliable/repos/bustime/bustime/.venv/lib/python3.10/site-packages/django/contrib/admin/templates/admin|change_list.html #}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+function callSupervisorConfig() {
+    let data = {
+        "test": "test"
+    };
+    fetch('/ajax/admin_gtfs_supervisor_config/', {
+      method: 'POST',
+      headers: {'X-CSRFToken': '{{csrf_token}}'},
+      body: JSON.stringify(data)
+    })
+     .then(response => response.json())
+     .then(result => alert(result.result));
+}   // callSupervisorConfig
+
+
+function buttons_switcher(data_tab, city_slug, catalog_id) {
+    let form = document.getElementById("changelist-form");
+    form.setAttribute("action", "/"+city_slug+"/admin/load-gtfs/");
+    form.setAttribute("target", "_blank");
+
+    let input = document.createElement('input');
+    input.setAttribute('name', 'data_tab');
+    input.setAttribute('value', data_tab);
+    input.setAttribute('type', 'hidden');
+    form.appendChild(input);
+
+    input = document.createElement('input');
+    input.setAttribute('name', 'catalog_id');
+    input.setAttribute('value', catalog_id);
+    input.setAttribute('type', 'hidden');
+    form.appendChild(input);
+
+    form.submit();
+}   // buttons_switcher
+</script>
+{% endblock %}
+
+{% block object-tools-items %}
+{% if has_add_permission %}
+<li>
+    <a href="#" onclick="callSupervisorConfig()" style="background-color: #FF6666">
+      Перезапустить обработчики
+    </a>
+</li>
+{% endif %}
+{{ block.super }}
+{% endblock %}

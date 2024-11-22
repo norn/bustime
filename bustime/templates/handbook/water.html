@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Водный автобус" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/water-1.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Водный автобус — это пассажирское судно, предназначенное для регулярных перевозок по водным маршрутам в пределах города или между прибрежными районами. Оно действует по аналогии с наземным общественным транспортом, обеспечивая частые и удобные рейсы для пассажиров." %}</p>
+</div>
+<br/><br/>
+{% endblock %}

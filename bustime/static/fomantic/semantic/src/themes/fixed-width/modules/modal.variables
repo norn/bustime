@@ -1,0 +1,35 @@
+/* Responsive Widths */
+@modalComputerWidth: 700px;
+@modalLargeMonitorWidth: 800px;
+@modalWidescreenMonitorWidth: 850px;
+
+@modalComputerMargin: 0 0 0 -(@modalComputerWidth / 2);
+@modalLargeMonitorMargin: 0 0 0 -(@modalLargeMonitorWidth / 2);
+@modalWidescreenMonitorMargin: 0 0 0 -(@modalWidescreenMonitorWidth / 2);
+
+/* -------------------
+      Variations
+-------------------- */
+
+/* Sizes */
+@modalSmallRatio: 0.6;
+@modalLargeRatio: 1.2;
+
+/* Derived Responsive Sizes */
+@modalSmallHeaderSize: 1.3em;
+@modalSmallComputerWidth: (@modalComputerWidth * @modalSmallRatio);
+@modalSmallLargeMonitorWidth: (@modalLargeMonitorWidth * @modalSmallRatio);
+@modalSmallWidescreenMonitorWidth: (@modalWidescreenMonitorWidth * @modalSmallRatio);
+
+@modalSmallComputerMargin: 0 0 0 -(@modalSmallComputerWidth / 2);
+@modalSmallLargeMonitorMargin: 0 0 0 -(@modalSmallLargeMonitorWidth / 2);
+@modalSmallWidescreenMonitorMargin: 0 0 0 -(@modalSmallWidescreenMonitorWidth / 2);
+
+@modalLargeHeaderSize: 1.3em;
+@modalLargeComputerWidth: (@modalComputerWidth * @modalLargeRatio);
+@modalLargeLargeMonitorWidth: (@modalLargeMonitorWidth * @modalLargeRatio);
+@modalLargeWidescreenMonitorWidth: (@modalWidescreenMonitorWidth * @modalLargeRatio);
+
+@modalLargeComputerMargin: 0 0 0 -(@modalLargeComputerWidth / 2);
+@modalLargeLargeMonitorMargin: 0 0 0 -(@modalLargeLargeMonitorWidth / 2);
+@modalLargeWidescreenMonitorMargin: 0 0 0 -(@modalLargeWidescreenMonitorWidth / 2);

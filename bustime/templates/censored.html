@@ -1,0 +1,140 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+
+{% block extra_head %}
+<style>
+.ui.small.images img {
+    height: 100px !important;
+    object-fit: cover !important;
+}
+</style>
+{% endblock %}
+
+{% block nav_main %}active{%endblock%}
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="section" href="/{{place.slug}}/admin/">Администратор</a>
+  <i class="right angle icon divider"></i>
+  <div class="active section">Цензура</div>
+</div>
+<div class="ui divider"></div>
+
+<div class="ui small images">
+    {% for ph in photo %}
+        <img class="size_img" src="{{ph.0}}" title="{{ph.1}}" onclick="del_photo('{{ph.0}}')">
+    {% endfor %}
+</div>
+
+<!--для компьютеров-->
+{% if not device %}
+<div class="ui grid" style="margin-top:1em">
+    <div class="column" style="text-align: center;">
+        <div class="ui pagination right menu">
+
+            <!--кнопки 1ая и следующая страница-->
+            {% if photo.has_previous %}
+            <a class="item" href="/{{place.slug}}/admin/censored/page-{{photo.previous_page_number}}/"><i class="arrow left icon" style="color:#81899E;"></i></a>
+            {% endif %}
+
+            {% if photo.next_page_number > 11 or not photo.has_next and photo.number > 11  %}
+            <a class="item" href="/{{place.slug}}/admin/censored/page-1/">1</a>
+            <div class="disabled item">...</div>
+            {% endif %}
+
+            <!--основное постраничное меню-->
+            {% for p in photo.paginator.page_range %}
+                {% if p == photo.number %}
+                <a class="current active item" href="/{{place.slug}}/admin/censored/page-{{p}}/"><b>{{p}}</b></a>
+
+                {% elif photo.number < 10 and p < 20 %}
+                <a class="item" href="/{{place.slug}}/admin/censored/page-{{p}}/"> {{p}} </a>
+
+                {% elif photo.number|add:'10' > photo.paginator.num_pages and p > photo.paginator.num_pages|add:'-20' %}
+                <a class="item" href="/{{place.slug}}/admin/censored/page-{{p}}/"> {{p}}</a>
+
+                {% elif p > photo.number|add:'-10' and p < photo.number|add:'10' %}
+                <a class="item" href="/{{place.slug}}/admin/censored/page-{{p}}/"> {{p}} </a>
+                {% endif %}
+            {% endfor %}
+            <!--кнопки следующая и последняя страница-->
+            {% if photo.number|add:'9' < photo.paginator.num_pages %}
+            <div class="disabled item">...</div>
+            <a class="item" href="/{{place.slug}}/admin/censored/page-{{photo.paginator.num_pages}}/">{{photo.paginator.num_pages}}</a>
+            {% endif %}
+
+            {% if photo.has_next %}
+            <a class="item" href="/{{place.slug}}/admin/censored/page-{{photo.next_page_number}}/"><i class="arrow right icon" style="color:#81899E;"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!--для мобильных-->
+{% if device %}
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right mini menu">
+        <!--кнопки 1ая и следующая страница-->
+            {% if photo.has_previous %}
+            <a class="item" href="/{{place.slug}}/admin/censored/page-{{photo.previous_page_number}}/"><i class="arrow left icon" style="color:#81899E; width:3px;"></i></a>
+            {% endif %}
+
+            {% if photo.next_page_number > 3 or not newa.has_next and photo.number > 3 %}
+            <a class="item" href="/{{place.slug}}/admin/censored/page-1/">1</a>
+            <div class="disabled item">...</div>
+            {% endif %}
+
+            <!--основное постраничное меню-->
+            {% for p in photo.paginator.page_range %}
+                {% if p == photo.number %}
+                <a class="current active item" href="/{{place.slug}}/admin/censored/page-{{p}}/"><b>{{p}}</b></a>
+
+                {% elif photo.number < 2 and p < 5 %}
+                <a class="item" href="/{{place.slug}}/admin/censored/page-{{p}}/"> {{p}} </a>
+
+                {% elif photo.number|add:'2' > photo.paginator.num_pages and p > photo.paginator.num_pages|add:'-3' %}
+                <a class="item" href="/{{place.slug}}/admin/censored/page-{{p}}/"> {{p}}</a>
+
+                {% elif p > photo.number|add:'-2' and p < photo.number|add:'2' %}
+                <a class="item" href="/{{place.slug}}/admin/censored/page-{{p}}/"> {{p}} </a>
+                {% endif %}
+            {% endfor %}
+            <!--кнопки следующая и последняя страница-->
+            {% if photo.number|add:'1' < photo.paginator.num_pages %}
+            <div class="disabled item">...</div>
+            <a class="item" href="/{{place.slug}}/admin/censored/page-{{photo.paginator.num_pages}}/">{{photo.paginator.num_pages}}</a>
+            {% endif %}
+
+            {% if photo.has_next %}
+            <a class="item" href="/{{place.slug}}/admin/censored/page-{{photo.next_page_number}}/"><i class="arrow right icon" style="color:#81899E; width:3px;"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<script>
+function del_photo(dir_photo) {
+    let agree = confirm("Удалить фото?");
+    if (agree) {
+        $.ajax({
+            url: "/ajax/ajax_censored/",
+            type: "GET",
+            data: {
+             dir_photo: dir_photo, csrfmiddlewaretoken: '{{csrf_token}}'
+            },
+            success: function(data, textStatus, jqXHR) {
+                $('[src = "' + dir_photo + '"]').css("opacity", ".1");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+    }
+}
+</script>
+
+{% endblock %}

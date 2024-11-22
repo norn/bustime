@@ -1,33 +1,41 @@
-DEBUG = False
+from __future__ import absolute_import
 
-from bustime.local_settings import *
+import io
+import os
+import sys
+import openai
+import socket
+
+from django.utils.translation import gettext_lazy as _
+from bustime.settings_local import *
+
+if not os.environ.get('BUSTIME_DOCKER_CONTAINER', False):
+    from gevent import monkey
+    monkey.patch_all(select=False, thread=False)
+
+TIME_ZONE = 'Asia/Krasnoyarsk'
+ALLOWED_HOSTS = ['192.168.168.250', 'bustime.loc']
+LANGUAGE_CODE = 'ru'
+SITE_ID = 1
+
+SUBDOMAIN_DOMAIN = "192.168.168.250"
+SUBDOMAIN_IGNORE_HOSTS = ["bustime.ru", "bustime.loc"]
+LANGUAGE_COOKIE_NAME = "_language"
+LANGUAGE_COOKIE_DOMAIN = ".192.168.168.250"
+SESSION_COOKIE_DOMAIN = '.192.168.168.250'
+CSRF_COOKIE_DOMAIN = ".192.168.168.250"
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880   # 5mb, default 2621440 (2mb)
 
 TEMPLATE_DEBUG = DEBUG
 PROJECT_ROOT = PROJECT_DIR
 
-import djcelery
-djcelery.setup_loader()
-
 ADMINS = (
-    ('Andrey Perliev', 'andrey.perliev@gmail.com'),
+    ('Main Admin', 'admin@mail.address'),
 )
-
 MANAGERS = ADMINS
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'bustime',                      # Or path to database file if using sqlite3.
-        'USER': 'norn',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '10.0.3.12',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
 
-TIME_ZONE = 'Asia/Krasnoyarsk'
-ALLOWED_HOSTS = ['www.bustime.ru']
-LANGUAGE_CODE = 'ru-ru'
-SITE_ID = 1
+REDIS_EVENTS_STREAM = "events_stream"
+
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -40,18 +48,35 @@ USE_L10N = True
 #USE_L10N = False
 #DECIMAL_SEPARATOR = '.'
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('es', 'Español'),
+    ('et', 'Eesti'),
+    ('fi', 'Suomen'),
+    ('it', 'Italiano'),
+    ('pl', 'Polski'),
+    ('pt', 'Português'),
+    ('be', 'Беларуская'),
+    ('ru', 'Русский'),
+    ('uk', 'Українська'),
+    ('lt', 'Lietuvių'),
+    ('lv', 'Latviešu'),
+    ('nl', 'Nederlands'),
+    ('cs', 'Čeština'),
+    ('hu', 'Magyar'),
+    ('de', 'Deutsch'),
+    ('fr', 'Français'),
+    ('da', 'Dansk'),
+]
+
+EXCLUDED_PLACES = []
+
 # If you set this to False, Django will not use timezone-aware datetimes.
 #USE_TZ = True
 USE_TZ = False
 
 DATE_FORMAT = "Y-m-d"
 TIME_FORMAT = "H:i"
-
-
-MEDIA_ROOT = '/mnt/reliable/repos/bustime/bustime/static_user'
-MEDIA_URL = '/media/'
-STATIC_ROOT = '/mnt/reliable/repos/bustime/bustime/static'
-STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -65,132 +90,115 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-#    'djangobower.finders.BowerFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-# SECRET_KEY = ''
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #'bustime.tmiddleware.TestoMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'subdomains.middleware.SubdomainURLRoutingMiddleware',
+    'bustime.middleware.BustimeLocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 )
 
+SUBDOMAIN_URLCONFS = {
+    None: "bustime.urls",
+}
+
+LEAFLET_CONFIG = {
+    "PLUGINS": {
+        "Leaflet.fullscreen": {
+            "css": [STATIC_URL + "css/leaflet.fullscreen.css"],
+            "js": [STATIC_URL + "js/Leaflet.fullscreen.min.js"],
+            'auto-include': True,
+        }
+    }
+}
+
+LOCALE_PATHS = (
+    PROJECT_DIR+'/locale',
+)
 ROOT_URLCONF = 'bustime.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'bustime.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    '/mnt/reliable/repos/bustime/lib/python2.7/site-packages/django/contrib/gis/templates/',
-)
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.contrib.auth.context_processors.auth',
+            "django.template.context_processors.debug",
+            "django.template.context_processors.static",
+            'django.template.context_processors.request',
+            'django.contrib.messages.context_processors.messages',
+            'bustime.context_processors.settings_dev'
+        ],
+    },
+}]
 
 INSTALLED_APPS = (
-#    'admin_tools.theming',
-#    'admin_tools.menu',
-#    'admin_tools.dashboard',
-
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    #'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'modeltranslation',
     'django.contrib.admin',
-    #'django.contrib.gis',
+    'django.contrib.messages',
+    'django.contrib.gis',
     'bustime',
-    'djcelery',
-    'app_metrics',
     'backoffice',
-#    'djangobower',  
-
-#    'sape',
+    'djantimat',
+    'sorl.thumbnail',
+    'leaflet',
+    'reversion',
+    'reversion_compare',
+    'rosetta',
+    'taxi',
+    'debug_toolbar',
+    "phonenumber_field",
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+DEFAULT_FROM_EMAIL="noreply@mail.address"
+SERVER_EMAIL="noreply@mail.address"
+EMAIL_HOST = DEFAULT_HOST
 
-DEFAULT_FROM_EMAIL="noreply@bustime.ru"
-SERVER_EMAIL="noreply@bustime.ru"
-EMAIL_HOST="10.0.3.16"
-CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
+VACUUM_MILL_COUNT = 1
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
+BROKER_URL = "redis://{}:{}/1".format(REDIS_HOST_W, REDIS_PORT_W)
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
+        "LOCATION": [
+            "redis://{}:{}/2".format(REDIS_HOST_W, REDIS_PORT_W), # master for writes
+            "redis://{}:{}/2".format(REDIS_HOST, REDIS_PORT), # read-replica 1
+        ],
         'TIMEOUT': 60*60*24,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # "IGNORE_EXCEPTIONS": True,
-            # "COMPRESS_MIN_LEN": 10,
-            
         }
     }
 }
-#SESSION_SAVE_EVERY_REQUEST=True
+
 SESSION_COOKIE_AGE=60*60*24*365*10 # 365 days in seconds
-# http://niwinz.github.io/django-redis/latest/
-#SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-#SESSION_CACHE_ALIAS = "default"
 
-#POSTGIS_VERSION = (2, 0, 3)
-BROKER_URL = 'redis://localhost:6379/1'
-
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
 PATH_TO_LOG = '/var/log/bustime'
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'fmt': {
-            'format':'%(asctime)s %(levelname)-5s (%(name)s) %(message)s',
+            'format':'%(asctime)s %(levelname)s (%(name)s) %(message)s',
             'datefmt':'%Y-%m-%d %H:%M:%S'
         }
     },
@@ -200,6 +208,11 @@ LOGGING = {
         }
     },
     'loggers': {
+        'django': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
@@ -215,6 +228,16 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'utils.mobile_dump_update': {
+            'handlers': ["console"],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'socketoto': {
+            'handlers': ["console"],
+            'level': 'WARNING',
+            'propagate': True
+        },
         '__main__': {
             'handlers': ['informator', 'warnator', 'errormator'],
             'level': 'INFO',
@@ -224,8 +247,7 @@ LOGGING = {
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'bustime.limit_email.ThrottledAdminEmailHandler'
         },
         'informator': {
             'level': 'INFO',
@@ -245,17 +267,55 @@ LOGGING = {
             'filename':'%s/error.log'%PATH_TO_LOG,
             'formatter':'fmt'
         },
-
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'fmt'
+        },
+        'memory_buffer': {
+            'level': 'INFO',
+            'class': 'logging.handlers.MemoryHandler',
+            'capacity': 1024 * 10,
+            'formatter': 'fmt'
+        },
     }
 }
-# How to throttle Django error emails
-# http://stackoverflow.com/questions/2052284/how-to-throttle-django-error-emails
 
-# Specifie path to components root (you need to use absolute path)
-#BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_DIR, 'components')
-#BOWER_INSTALLED_APPS = (
-#    'jquery#2.0.3',
-#    'jquery-ui#~1.10.3',
-#    'd3#3.3.6',
-#    'nvd3#1.1.12-beta',
-#)
+# QIWI
+QIWI_PULL_PASS = "QIWI_PULL_PASS"
+QIWI_PROJECT_ID = 000000
+
+# MAP SERVERS, register please
+TILE_SERVER = 'https://tile.nextzen.org'
+NOMINATIM_SERVER = 'https://nominatim.openstreetmap.org'
+GH_SERVER =   'https://www.graphhopper.com/products/'
+GRAPH_PATH = f"{PROJECT_DIR}/bustime/static/other/graph/"
+GRAPH_SERVER_PATH = "https://www.graphhopper.com/products/"
+
+# LOGIN
+LOGIN_URL = '/register/'
+LOGIN_REDIRECT_URL = '/'
+
+# REGISTER_PHONE
+DEFAULT_REGISTER_PHONE = '+71111111111'
+DEFAULT_REGISTER_PHONE_EUROPE = '+31111111111'
+PHONENUMBER_DEFAULT_REGION = 'RU'
+
+# Model translations
+TRANSLATABLE_MODEL_MODULES = ["bustime.models"]
+
+# Rosetta
+ROSETTA_MESSAGES_PER_PAGE = 50
+
+TURBO_MILL_COUNT = 12
+
+GIT_WEBHOOK_MF = '111111111111'
+
+OPENAI_API_KEY = 'OPENAI_API_KEY'
+openai.api_key = OPENAI_API_KEY
+
+OPENWEATHERMAP_KEY = 'OPENWEATHERMAP_KEY'
+
+if DEV:
+    from bustime.settings_dev import *

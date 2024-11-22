@@ -1,0 +1,318 @@
+{# контролы отсановок from/to для поиска маршрутов #}
+{% load i18n %}
+
+{# по дизайну на маленьких экранах блок поиска сильно отличается #}
+{% if device %}
+    <div class="ui very compact middle aligned grid" style="margin:8px 0;">
+        <div class="row">
+            <div class="fourteen wide column">
+                <div class="ui two column very compact stackable grid">
+                    <div class="column">
+                        <div class="ui left action icon input large fluid" style="margin-top:4px; margin-bottom:4px;">
+                            <button id="stops_position" class="ui icon button" title="Где я" onclick="start_location_service(force=1);">
+                                <i class="fa-map-marker icon"></i>
+                            </button>
+                            {% comment %} type="search" а не text
+                            чтобы на мобильной клавиатуре не появлялась строка с предложением вставить сохранённый пароль.
+                            Но для поля с type="search" мобильные браузеры добавляют иконку X для стирания введенного значения,
+                            эта проблема решается стилем в index.html для input[type="search"]
+                            {% endcomment %}
+                            <input type="search" id="id_stops" value="{{stop_from|safe}}" placeholder="{% trans " откуда " %}" autocomplete="off">
+                            <i class="times link icon" style="color:rgba(0,0,0,0.5);" onclick="id_stops.value='';"></i>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="ui left action large icon input fluid" style="margin-top:4px; margin-bottom:4px;">
+                            <button id="search_trip" class="ui icon button" title="{% trans "Найти маршрут" %}" onclick="request_bus_trip(us_city);">
+                                <i class="fa-search icon"></i>
+                            </button>
+                            <input type="search" id="id_stops2" value="{{stop_to|safe}}" placeholder="{% trans " куда " %}" autocomplete="off">
+                            <i class="times link icon" style="color:rgba(0,0,0,0.5);" onclick="id_stops2.value='';"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two wide column" style="padding-left: 0;">
+                <button class="ui icon button" style="width: 38px;" onclick="swapStops(us_city)" aria-label="{% trans "Поменять остановки местами" %}">
+                    <i class="fa fa-arrows-v" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div><!--row-->
+    </div><!--grid-->
+{% else %}
+    <div class="ui stackable two column grid" style="margin: 18px 0;">
+        <div class="four column centered row" style="padding-bottom: 0; padding-top: 3px;"><!-- если убрать этот контейнер, инпуты станут шире и покажут длинное название остановки -->
+            <div class="column">
+                <div class="ui left action icon input large fluid">
+                    <button id="stops_position" class="ui icon button" title="Где я" onclick="start_location_service(force=1);">
+                        <i class="fa-map-marker icon"></i>
+                    </button>
+                    <input type="search" id="id_stops" value="{{stop_from|safe}}" placeholder="{% trans " откуда " %}" autocomplete="off">
+                    <i class="times link icon" style="color:rgba(0,0,0,0.5);" onclick="id_stops.value='';"></i>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui right action large icon input fluid">
+                    <input type="search" id="id_stops2" value="{{stop_to|safe}}" placeholder="{% trans " куда " %}" autocomplete="off">
+                    <i class="times link icon" style="right:36px; color:rgba(0,0,0,0.5);" onclick="id_stops2.value='';"></i>
+                    <button id="search_trip" class="ui icon button" title="Найти маршрут" onclick="request_bus_trip(us_city);">
+                        <i class="fa-search icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div><!--grid-->
+{% endif %}
+
+<div id="search_error" class="ui {% if not device %}huge{% endif %} error message"
+                        style="{% if not error %}display:none;{% endif %} width: 80%; margin: 0 auto 2em auto;">
+   {{ error|safe }}
+</div>
+
+<script>
+var taxi_path = {% if taxi_path %}JSON.parse("{{taxi_path|escapejs}}"){% else %}null{% endif %};   // объект - поездка на такси по заданным конечным
+var trips_set = ''; // html маршрутов поездки по заданным конечным
+
+
+function fromToInit() {
+    function autocomplete_enter(name, target) {
+        console.log('autocomplete_enter', name, target);
+        var lname = name.toLowerCase();
+        for (let i = 0; i < stops.length; i++) {
+            let o = stops[i];
+            $(target).val(o.value);
+            stop_ids([o.data[1], o.data[2]]);
+            request_bus_trip(us_city);
+            return;
+        }
+        alert('Остановка не найдена');
+    }   // autocomplete_enter
+
+    let all_stops = Object.values(dbgetsafe('nbusstop')).map(function(elem, index) {
+        return {"value": elem[0], "data": elem};
+    });
+
+    let stops = all_stops.reduce(function (p, c) {
+        if (!p.some(function (el) { return el.value === c.value; })) p.push(c);
+          return p;
+    }, []);
+
+    $("#id_stops").autocomplete({
+        minLength: 3,
+        source: stops,
+        select: function(e, o) {
+            let selector = $('#id_stops');
+            selector.val(o.item.value);
+            selector.data({"stop": o.item.data})
+            NO_MORE_USE_POSITION = 1;   // usePosition() перестаёт работать
+            stop_ids([o.item.data[1], o.item.data[2]]);
+            request_bus_trip();
+        }
+    })/*.keypress(function(e) {
+        if (e.keyCode === 13) {
+            NO_MORE_USE_POSITION = 1;
+            autocomplete_enter(this.value, "#id_stops");
+        }
+    })*/;
+    $("#id_stops2").autocomplete({
+        minLength: 3,
+        source: stops,
+        select: function(e, o) {
+            let selector = $('#id_stops2');
+            selector.val(o.item.value);
+            selector.data({"stop": o.item.data})
+            //stop_destination_save(b.item.ids);
+            stop_ids([o.item.data[1], o.item.data[2]]);
+            request_bus_trip();
+        }
+    })/*.keypress(function(e) {
+        if (e.keyCode === 13) {
+            autocomplete_enter(this.value, "#id_stops2");
+        }
+    })*/;
+}   // fromToInit
+
+// перемена местами остановок в полях поиска маршрута
+function swapStops(city_id){
+    let stop_from = document.getElementById("id_stops").value;
+    let stop_to  = document.getElementById("id_stops2").value;
+    if( stop_from.length > 0 && stop_to.length > 0 ){
+        document.getElementById("id_stops").value = stop_to;
+        document.getElementById("id_stops2").value = stop_from;
+        request_bus_trip(city_id);
+    }
+    else {
+        // ?
+    }
+}   // swapStops
+
+// поиск маршрутов поездки по заданным конечным
+function request_bus_trip() {
+    NO_MORE_USE_POSITION = 1;
+    $("#stops_position").prop('disabled', true);
+    $("#search_trip").prop('disabled', true);
+
+    taxi_path = null;
+
+    let stop1 = $("#id_stops").data('stop');
+    let stop2 = $("#id_stops2").data('stop');
+    if (!stop1 || !stop2) { return; }
+    // let stop_from = encodeURIComponent(document.getElementById("id_stops").value);
+    // let stop_to  = encodeURIComponent(document.getElementById("id_stops2").value);
+    //window.location.href = `/${us_city_slug}/bus_trip?stop_from=${stop_from}&stop_to=${stop_to}`; // переход на страницу с результатом поиска
+    let stop_from = stop1[6];
+    let stop_to = stop2[6];
+    // вывод результата поиска на текущей странице
+    let url = `/ajax/find_trips?stop_from=${stop_from}&stop_to=${stop_to}&json=1`
+    // console.log(`request_bus_trip url=${url}`);
+
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function(data) {
+        $("#stops_position").prop('disabled', false);
+        $("#search_trip").prop('disabled', false);
+        if(data.error){
+            $("#search_error").html(data.error);
+            $("#search_error").show();
+            $("#pass_message1").show(); // Введите откуда и куда, чтобы поиск сработал, index.html
+        }
+        else {
+            if(!data.html){
+                $("#search_error").html('Результатов нет');
+                $("#search_error").show();
+                $("#pass_message1").show();
+            }
+            else {
+                if(data.taxi_path && Object.keys(data.taxi_path).length > 0 ){
+                    taxi_path = data.taxi_path;
+                }
+                $("#search_error").hide();
+                $("#search_result").html(data.html);
+                $("#pass_message1").hide();
+            }
+        }   // else if(data.error)
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        $("#stops_position").prop('disabled', false);
+        $("#search_trip").prop('disabled', false);
+        console.log("request_bus_trip error:", errorThrown);
+    });
+}   // request_bus_trip
+
+
+// отображение маршрута после клика по варианту поездки
+function bus_trip_click(stop1, stop2, trip){
+    $("#stops_position").prop('disabled', true);
+    $("#search_trip").prop('disabled', true);
+
+    saveTrips();
+
+    if( !stop1 ){
+        stop1 = $("id_stops").val();
+    }
+
+    if( !stop2 ){
+        stop2 = $("id_stops2").val();
+    }
+
+    let stop_from = encodeURIComponent(stop1);
+    let stop_to  = encodeURIComponent(stop2);
+    $.ajax({
+        method: "GET",
+        url: `/ajax/find_trips?stop_from=${stop_from}&stop_to=${stop_to}&trip=${trip}&json=1`
+        // url: `/${us_city_slug}/busstops_trip?stop_from=${stop_from}&stop_to=${stop_to}&trip=${trip}&json=1`
+    })
+    .done(function(data) {
+        console.log("bus_trip_click data:", data);
+
+        $("#stops_position").prop('disabled', false);
+        $("#search_trip").prop('disabled', false);
+
+        if(!data.html){
+            $("#search_error").html('Результатов нет');
+            $("#search_error").show();
+        }
+        else {
+            $("#search_error").hide();
+            $("#search_result").html(data.html);
+        }
+    })  // done
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        $("#stops_position").prop('disabled', false);
+        $("#search_trip").prop('disabled', false);
+        console.log("bus_trip_click error:", errorThrown);
+    });
+}   // bus_trip_click
+
+
+function saveTrips(){
+    trips_set = $("#search_result").html();
+}
+
+
+function restoreTrips(){
+    $("#search_result").html(trips_set);
+}
+
+
+function changeTaxiTab(tabClass){
+    //console.log(`changeTaxiTab(${tabClass})`);
+
+    $(".ui.tab").hide();
+    $(`.ui.tab.${tabClass}`).show();
+    $(".trip_menu .item").removeClass('active');
+    $(`.trip_menu .item.${tabClass}`).addClass('active');
+
+    if(tabClass == 'driver'){
+        $("#pass_message1").hide(); // Введите откуда и куда, чтобы поиск сработал, index.html
+    }
+    else if( $(`#${tabClass}`).html().length > 0 ) {
+        $("#pass_message1").hide();
+    }
+    else {
+        $("#pass_message1").show();
+    }
+
+    $('.ui.dropdown').dropdown();
+    $('.ui.radio.checkbox').checkbox();
+    $('.ui.checkbox').checkbox();
+
+
+    // соглашение об использовании такси, пассажир
+    $('[type="checkbox"]').change(function(){
+        var name = $(this).prop("name");
+        var checked = $(this).prop("checked");
+
+        if( checked ) {
+            var taxi_user_name = $("#taxi_user_name").val();
+
+            if( !taxi_user_name ) {
+                $(this).prop('checked', false);
+                alert("Заполните поле Имя");
+                return;
+            }
+
+            if(name == 'taxi_agreement'){
+                $.ajax({
+                    url: "/ajax/ajax_settings1/",
+                    type: "GET",
+                    data: {
+                        name: name,
+                        checked: checked,
+                        taxi_user_name: taxi_user_name,
+                        csrfmiddlewaretoken: '{{csrf_token }}'
+                    },
+                    success: function(result) {
+                        $('#taxi_agreement').css('display', checked ? 'none' : 'block');
+                        $('#taxi_controls').css('display', checked ? 'block' : 'none');
+                        $('div.ui.input').removeClass('disabled');
+                    }   // success
+                });
+            }
+        }   // if( checked )
+    });
+}   // changeTaxiTab
+</script>

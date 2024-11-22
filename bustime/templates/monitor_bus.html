@@ -1,0 +1,125 @@
+{% extends "base.html" %}{% load cache %}{% load l10n %}
+{% block titlee %}Приборы{% endblock %}
+{% block meta_descr %}Летит самолет. Командир штурману:
+    - Штурман, приборы...{% endblock %}
+
+{% block extra_head %}
+    <script src="https://cdn.bustime.loc/static/js/city-{{ us.city.id }}-{{ us.city.rev }}.js" type="text/javascript"></script>
+    <script src="https://cdn.bustime.loc/static/js/monitor_bus.js?v=2" type="text/javascript"></script>
+    <style>
+        #lmap {
+            height: 550px;
+        }
+
+        .emap {
+            width: 290px;
+            height: 290px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <script type="application/javascript">
+        {% include "_js_init.html" %}
+        city_monitor_bus = {{bus.id}};
+        var US_CITY_POINT_X = {{us.city.point.x|stringformat:"f"}};
+        var US_CITY_POINT_Y = {{us.city.point.y|stringformat:"f"}};
+        var vue_data = {events: [], user_points: [], req_key: ""};
+
+        var route0 = [
+            {%for r in route0%}
+                {{r.busstop.id}},
+            {%endfor%}
+        ];
+        var route1 = [
+            {%for r in route1%}
+                {{r.busstop.id}},
+            {%endfor%}
+        ];
+
+        var busstops = {
+        {% for b in busstops %}
+            {{b.id}}: {
+            id: {{b.id}},
+            name:"{{b.name}}", moveto
+        :
+            "{% if b.moveto %}{{b.moveto}}{%endif%}", x
+        :{{b.point.x|unlocalize}},
+            y:{{b.point.y|unlocalize}} },
+        {% endfor %}
+        }
+        ;
+    </script>
+
+    <div id="lmap"></div>
+
+    <div class="ui center aligned grid">
+        <div class="column">
+            <div id="lmapzzz"></div>
+        </div>
+    </div>
+
+
+    <h2 class="ui header">Подробности расчетов автобуса {{ bus }}, {{ bus.city }}.
+        <div class="sub header">bus_get({{ bus.id }})</div>
+    </h2>
+
+
+    <h3>Координаты кликов</h3>
+    <div id="app">
+        <div class="ui list user_points_box">
+            {% verbatim %}
+                <div class="item" v-for="up in vue_data.user_points">
+                    <i class="marker icon"></i>
+                    <div class="content">[[up]]</div>
+                </div>
+            {% endverbatim %}
+        </div>
+        <div class="ui button get_events">get events</div>
+
+        <div class="ui input">
+            <input type="text" placeholder="event key" class="req_key" v-model="vue_data.req_key"/>
+        </div>
+
+        <div class="ui button events_clear">clear events</div>
+        <br/><br/>
+
+        <div></div>
+        {% verbatim %}
+            <div class="ui cards all_events_space">
+                <div class="card" v-for="e in vue_data.events">
+                    <div class="image">
+                        <!-- <img src=""> -->
+                        <div :id="'emap_' + e.k" class="emap"></div>
+                    </div>
+                    <div class="content">
+                        <a class="header" onclick="vue_data['req_key']='{{ e.k }}'">{{ e.gosnum }} {{ e.k }}</a>
+                        <div class="meta">
+                            <span class="date">{{ e.last_changed }}</span>
+                        </div>
+                        <div class="description">
+                            timestamp:{{ e.timestamp }}<br/>
+                            timestamp_prev:{{ e.timestamp_prev }}<br/>
+                            last_changed: {{ e.last_changed }}<br/>
+                            point_update: {{ e.last_point_update }}<br/>
+                            nearest:{{ e.busstop_nearest }}<br/>
+                            nearest_prev:{{ e.busstop_prev }}<br/>
+                            channel: {{ e.channel }}<br/>
+                            channel: {{ e.src }}<br/>
+                            uid_original: {{ e.uid_original }}<br/><br/>
+
+                            speed/heading: {{ e.speed }}/{{ e.heading }}<br/>
+                            ramp/sleep/zomb: {{ e.ramp }}/{{ e.sleeping }}/{{ e.zombie }}<br/>
+                            x,y: {{ e.x }}, {{ e.y }}<br/>
+                            x,y prev: {{ e.x_prev }}, {{ e.y_prev }}<br/>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        dir=[[e.direction]], dchange=[[e.dchange]]
+                    </div>
+                </div>
+            </div>
+        {% endverbatim %}
+        <div class="ui container"></div>
+    </div>
+{% endblock %}

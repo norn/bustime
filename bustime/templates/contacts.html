@@ -1,65 +1,96 @@
 {% extends "base.html" %}
-{% block titlee %}Контакты{% endblock %}
-{% block meta_descr %}Контактная информация для поддержки и связи с администрацией сайта Время Автобуса.{% endblock %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Контакты" %}{% endblock %}
+{% block meta_descr %}{% trans "Контактная информация для поддержки и связи с администрацией сайта Время Автобуса" %}.{% endblock %}
 
 {% block nav_contacts %}active{%endblock%}
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc/contacts/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/contacts/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/contacts/" />
+{% endfor %}
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
 {% block content %}
-<div class="ui breadcrumb">
-  <a class="section" href="/">Главная</a>
-  <div class="ui divider"> / </div>
-  <div class="active section">Контакты</div>
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <div class="active section">{% trans "Контакты" %}</div>
 </div>
 <div class="ui divider"></div>
 
-<div class="ui two column stackable grid"><div class="column">
-<h3 class="ui header">
-  Социальная группа
-  <div class="sub header">новости проекта, поддержка, обсуждения</div>
-</h3>
+<!-- <img src="https://cdn.bustime.loc/static/img/bustime_bus_stop.png"> -->
+<!-- <br/><br/> -->
 
-<i class="fa fa-map-marker icon"></i> Санкт-Петербург<br/>
-<i class="fa fa-vk icon"></i> <a target="_blank" href="http://vk.com/bustimeweb">Bustime - Время автобуса!</a>
+<div class="ui two column stackable grid">
+    <div class="column">
+        {% if msg %}<div class="ui big positive message">
+        {% trans "Ваше сообщение успешно отправлено" %}.</div>
+        {% endif %}
+        {% if captcha_fail %}<div class="ui big megative message">
+        {% trans "Докажите что вы не робот" %}.</div>
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+            <h3 class="ui header">
+                {% trans "Отправить сообщение" %}
+            </h3>
+
+            <form action="./" method="post" class="ui form">{% csrf_token %}
+                <div class="field">
+                    <div class="ui fluid input">
+                        <input type="text" name="from" placeholder="{% trans "Ваш email для ответа" %}">
+                    </div>
+                </div>
+                <div class="field">
+                    <textarea rows="3" name="msg" placeholder="{% trans "Сообщение" %}"></textarea>
+                </div>
+                {% comment %} https://gitlab.com/nornk/bustime/-/issues/2887
+                <div class="field">
+                    <div class="g-recaptcha" data-sitekey="6LdL-uEhAAAAAK_-59eAGZakSo8aNhyhGT4kQi0T"></div>
+                </div>
+                {% endcomment %}
+                <button class="ui orange button" type='submit'>{% trans "отправить" %}</button>
+            </form>
+        {% else %}
+        <h3>
+            {% trans "Отправить сообщение можно только зарегистрированным пользователям" %}
+        </h3>
+        <div style="text-align: center">
+            <a href="/register/">{% trans "Регистрация" %}</a>
+        </div>
+        {% endif %}
+    </div><!--column-->
+
+    <div class="column">
+        <a target="_blank" href="http://vk.com/bustimeweb">
+            <i class="fa-vk icon"></i>  {% trans "Новости проекта, поддержка" %}
+        </a>
+        <br/>
+        <a target="_blank" href="https://www.instagram.com/bustime.ru/">
+            <i class="fa-instagram icon"></i> Instagram
+        </a>
+        <br/>
+        <a target="_blank" href="https://github.com/norn/bustime">
+            <i class="fa-github icon"></i> Github
+        </a>
+        <br/>
+        <a target="_blank" href="mailto:support@bustime.loc">
+            <i class="fa-at icon"></i> {% trans "Поддержка по email" %}
+        </a>
+
+        <h3 class="ui header">
+            {% trans "Остап Остащенко" %}
+            <div class="sub header">{% trans "мобильные приложения Android и iOS" %}</div>
+        </h3>
+        <i class="fa-envelope-o icon"></i> <a href="mailto:ostap.ostaschenko@gmail.com" style="color:red">ostap.ostaschenko@gmail.com</a><br/>
+    </div><!--column-->
+</div><!--ui two column stackable grid-->
 <br/><br/>
-
-
-<h3 class="ui header">
-  Остап Остащенко
-  <div class="sub header">мобильные приложения Android и iOS</div>
-</h3>
-<i class="fa fa-map-marker icon"></i> Красноярск<br/>
-<i class="fa fa-envelope-o icon"></i> <a href="mailto:ostap.ostaschenko@gmail.com" style="color:red">ostap.ostaschenko@gmail.com</a>
-<br/><br/>
-
-
-<h3 class="ui header">
-  Андрей Перлиев
-  <div class="sub header">развитие проекта, другие вопросы</div>
-</h3>
-<i class="fa fa-map-marker icon"></i> Калининград<br/>
-<i class="fa fa-phone icon"></i> +7 (903) 921-4337<br/>
-<i class="fa fa-envelope-o icon"></i> <a href="mailto:andrey.perliev@gmail.com" style="color:red">andrey.perliev@gmail.com</a>
-<br/>
-
-
-</div><div class="column">
-{% if msg %}<div class="ui big positive message">
-Ваше сообщение успешно отправлено.</div>
-{% endif %}
-<h3 class="ui header">
-  Отправить сообщение
-  <div class="sub header">быстрый способ связи с нами</div>
-</h3>
-<form action="./" method="post" class="ui form">{% csrf_token %}
-	<div class="field">
-    <!-- <label>Сообщение</label> -->
-    <textarea rows="3" name="msg" placeholder="Напишите ваше сообщение здесь"></textarea>
-  </div>
-  <button class="ui orange button" type='submit'>отправить</button>
-</form>
-</div></div>
-<br/><br/>
-
-
-
-
 {% endblock %}

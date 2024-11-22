@@ -1,0 +1,5 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+@duration: 50ms;
+@dimmerTransition: 50ms;

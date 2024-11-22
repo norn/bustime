@@ -1,0 +1,191 @@
+{# голосующий пассажир (заказ) в списке голосующих пассажиров (заказов), взаимодействует с экраном пассажира trip_item_pass.html #}
+{% load i18n order_extras %}
+<!-- order_item.html -->
+<div id="order_{{order.id}}" class="column ui unstackable items">
+    <div id="order_{{order.id}}_item" class="item passenger" style="{% if order.trip_status > 0 %}border: 2px solid #FFDF32 !important;{% endif %}">
+        <div class="content">
+            <table style="width: 100%; border-collapse:collapse;">
+                <tr>
+                    <td width="90%" style="font-size:15px;font-weight:bold;">
+                        {{order.wf}}<br>{{order.wh}}
+                    </td>
+                    <td style="white-space: nowrap;vertical-align:top;font-size:14px;">
+                        ~{{order.distance}} км.
+                    </td>
+                </tr>
+            </table>
+
+            <!--order_item.html, либо надпись "предложение сделано", либо карта с пассажиром-->
+            <div style="margin-top:.6em; margin-bottom:1em; display:{% if order.trip_status == 6 %}none{% else %}block{% endif %};">
+                <div id="offer_enabled_{{order.id}}"
+                        style="color: red; display: {% if offers|get_item:order.id or order.trip_status == 1 %}block{% else %}none{% endif %};">
+                    {% if order.trip_status == 0 %}
+                    Предложение сделано. Ожидание ответа <span id="offer_time_{{order.id}}"></span>
+                    {% elif order.trip_status == 1 %}
+                    <!--Пассажир принял ваше предложение и ожидает вас-->
+                    {% endif %}
+                </div>
+                <div id="offer_map_{{order.id}}" style="width:100%; height: 200px; display: none">
+                </div>
+            </div>
+
+                <table style="width:100%; border-collapse:collapse; table-layout:fixed; font-size:14px;">
+                    <tr>
+                        <td rowspan="2" width="100px">
+                            {% if order.passenger.avatar %}
+                            <img class="ui tiny circular image" src="/static/{{order.passenger.avatar}}">
+                            {% else %}
+                            <img class="ui tiny circular image" src="/static/taxi/img/noavatar.jpg">
+                            {% endif %}
+                        </td>
+                        <td style="font-weight:bold; vertical-align:middle;">
+                            {{order.passenger.name|default:'Аноним'}}
+                        </td>
+                        <td style="color:#909090; vertical-align:middle; text-align:center;">
+                            {%trans 'Пассажиров' %}
+                        </td>
+                        <td style="font-size:24px; color:#909090; vertical-align:middle; text-align:center;">
+                            {%trans 'Цена' %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="star yellow icon" style="font-size:16px;"></i>{{order.passenger.passenger_rating}}
+                        </td>
+                        <td style="text-align:center; font-weight:bold;">{{order.passengers}}</td>
+                        <td style="font-size:24px; text-align:center; font-weight:bold;">{{order.price}} ₽</td>
+                    </tr>
+                </table>
+
+            {% if order.note %}
+                <div class="meta">
+                    <span style="font-size:12px;color:#909090">{%trans 'Комментарий' %}</span>
+                </div>
+                <div class="description">
+                    {{order.note}}
+                </div>
+            {% endif %}
+
+            <!--order_item.html, сообщения водителю-->
+            <div id="order_message_{{order.id}}" class="meta" style="text-align:center; display:none;">
+                <p style="line-height:2em;">&nbsp;</p>{# состояние этой надписи не восстанавливается после обновления страницы #}
+            </div>
+
+            <!--order_item.html, кнопки Предложить и Пассажир сел-->
+            {% if order.trip_status < 3 %}
+            <table id="order_buttons_{{order.id}}" style="width:100%; border-collapse:collapse; margin-top: 1em;">
+                <tr>
+                    <td width="50%">
+                        <button id="btn_passenger_sel_{{order.id}}"
+                                onclick="order_trip_start({{order.id}})"  {# in orders.html #}
+                                class="ui button"
+                                style="color:black; background-color:#FFDF32; display:{% if 0 < order.trip_status and order.trip_status < 3 %}block{% else %}none{% endif %};">
+                            Пассажир сел
+                        </button>
+                    </td>
+                    <td width="*" style="text-align:right;">
+                        <button id="btn_offer_{{order.id}}"
+                                onclick="set_offer({{order.id}})"   {# in orders.html #}
+                                class="ui button"
+                                style="color:black; background-color:{% if offers|get_item:order.id %}white{% else %}#FFDF32{% endif %};{% if offers|get_item:order.id %}border:2px solid red;{% endif %}">
+                            {% if offers|get_item:order.id %}{%trans 'Отказать' %}{% else %}{%trans 'Предложить' %}{% endif %}
+                        </button>
+                    </td>
+                </tr>
+            </table>
+            {% endif %}
+
+            <!--order_item.html, кнопка Завершить, class="description" в IE имеет тёмный фон-->
+            <div id="order_order_trip_stop_{{order.id}}"
+                    style="margin-top:.6em; text-align:right; display:{% if order.trip_status == 3 %}block{% else %}none{% endif %};">
+                <p>
+                    <button id="btn_order_trip_stop_{{order.id}}"
+                            onclick="order_trip_stop('driver', {{order.id}})"   {# in orders.html #}
+                            class="ui button"
+                            style="color:black; background-color:#FFDF32;">
+                        {%trans 'Завершить' %}
+                    </button>
+                </p>
+            </div>
+
+            <!--order_item.html, завершение поездки-->
+            <div id="order_status_3_{{order.id}}" class="meta" style="display:none; text-align:center;">
+                <h5>{% trans 'Ваша оценка поездки' %}:&nbsp;<span id="order_rating_number">0</span></h5>
+
+                <div id="order_rating_stars_{{order.id}}" class="ui rating" style="background-color:#F2F2F2;">
+                  <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(0, {{order.id}})"></i>
+                  <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(1, {{order.id}})"></i>
+                  <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(2, {{order.id}})"></i>
+                  <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(3, {{order.id}})"></i>
+                  <i class="star huge icon" style="color:#FFF;" onclick="taxi_star_click(4, {{order.id}})"></i>
+                </div>
+
+                <h5>{% trans 'Оставить отзыв' %}</h5>
+                <div class="ui fluid input">
+                    <input id="order_note_{{order.id}}" type="text">
+                </div>
+                <input id="order_trip_status_{{order.id}}" type="hidden" value="{{order.trip_status}}">
+
+                <button id="btn_order_close_{{order.id}}" class="ui button"
+                        style="width:100% !important; color:black; background-color:#FFDF32; width: 328px; height: 48px; margin: 1em 0;"
+                        onclick="taxi_order_close('driver', {{order.id}})">{# taxi_order_close() in orders.html #}
+                    {% trans 'Оценить поездку' %}
+                </button>
+            </div><!--order_status_3-->
+        </div><!--content-->
+    </div><!--item-->
+</div><!--column-->
+<!-- /order_item.html -->
+
+{% comment %}
+order=
+{'id': 15,
+  'data': datetime.datetime(2022, 4, 18, 22, 5, 44, 871628),
+  'city': 4,
+  'trip_data': datetime.datetime(2022, 4, 18, 22, 5, 44, 871648),
+  'urgent': False,
+  'wf': 'Каштановая Аллея (Карла Маркса)',
+  'wf_point': <Point object at 0x7f43a4041de0>,
+  'wh': 'Ивана Земнухова',
+  'wh_point': <Point object at 0x7f43a4041f78>,
+  'passengers': '1',
+  'childs': 0,
+  'bags': 0,
+  'taxi_type': 0,
+  'car_class': 1,
+  'note': '',
+  'price': '100',
+  'distance': 10,
+  'duration': '14 мин.',
+  'trip_line': {
+    'type': 'LineString',
+    'coordinates': [[20.465742, 54.724536], ...]
+   },
+  'passenger': {'id': 2,
+   'user': 108660,
+   'gender': 0,
+   'agreement': datetime.datetime(2022, 4, 15, 19, 17, 28, 523962),
+   'name': None,
+   'phone': None,
+   'driver': False,
+   'driver_rating_cnt': 0,
+   'driver_rating': 0,
+   'passenger_rating_cnt': 0,
+   'passenger_rating': 0,
+   'last_join': datetime.datetime(2022, 4, 15, 14, 17, 29, 675424),
+   'gps_on': True,
+   'avatar': None},
+  'passenger_rating': 0,
+  'passenger_note': None,
+  'taxist': None,
+  'taxist_rating': 0,
+  'taxist_note': None,
+  'car': None,
+  'trip_price': None,
+  'trip_start': None,
+  'trip_end': None,
+  'trip_status': 0,
+  'passenger_deleted': None,
+  'taxist_deleted': None
+}
+{% endcomment %}

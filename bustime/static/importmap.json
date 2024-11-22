@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "howler": "/static/js/howler.min.js",
+    "maplibre-gl": "/static/maplibre/maplibre-gl.js",
+    "bustime-maplibre": "/static/js/bustime-maplibre.js?v6",
+    "leaflet-maplibre-gl": "/static/maplibre/leaflet-maplibre-gl.js?v1"
+  }
+}

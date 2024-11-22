@@ -1,0 +1,704 @@
+{% extends "base.html" %}{% load i18n %}{% load russia_or_not_tag %}
+
+{% block extra_head %}
+{%if force_city%}<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{us.city.get_absolute_url}}">{%endif%}
+{%if force_city%}<link rel="canonical" href="https://bustime.loc{{us.city.get_absolute_url}}?hl={{us.city.country.language}}">{%endif%}
+{% get_available_languages as LANGUAGES %}
+{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://bustime.loc{%if force_city%}{{us.city.get_absolute_url}}{%else%}/{%endif%}?hl={{ language_code }}" />
+{% endfor %}
+
+<script>{% include "_js_init.html" %}</script>
+<script>
+function onCityNewsClick(cn_id) {
+    citynews_watched(cn_id);
+    $("#citynews_message").remove();
+}
+</script>
+
+<style>
+{% if us.expert %}
+.sleep_bus {
+background-color: #ffff45;
+}
+.multi_bus {
+background-color: #ffff45;
+}
+{% endif %}
+/* this must be after include _js_init.html */
+#menu_ttype a.item {
+  width: calc(100% / {{us.city.transport_count}});
+}
+.ui.menu .xsfont {
+  font-size: 0.75rem;
+  height: 72px !important;
+  line-height:20px;
+}
+@media (max-width: 1100px) {
+    #para {
+        width: 100% !important;
+    }
+}
+.trip_menu .item.active .button {
+    background-color: #FFDF32;
+}
+{# для поля с type="search" мобильные браузеры добавляют иконку X для стирания введенного значения, отключим это: #}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+</style>
+<link rel="stylesheet" href="/static/taxi/css/taxi.css" />
+
+{% if ads_show and device and 0 %}{% include "bustime_pagelevel.html" %}{% endif %}
+{% endblock extra_head %}
+
+{% block nav_main %}active{%endblock%}
+
+{% block content %}
+{% if not us.premium and 0 %}
+<div class="ui error big message">
+    Требуется <a href="/work/" target="_blank">Python/Django программист</a>
+</div>
+{%endif%}
+
+<!-- mega -->
+{% if user.is_authenticated and us.city.car_passing %}
+<!--taxi, баннер-->
+<div style="margin:0 auto 1.5rem; text-align: center;">
+    <a href="/taxi/usage/driver/">
+        <img src="/static/taxi/img/banner_final.png" alt="{% trans 'Попутчик' %}"/>
+    </a>
+</div>
+{% else %}
+{% comment %}<div>
+<!--temporary disabled by norn--><a href="https://para.sh/about/" onclick="ajax_metric('redirect_para')" target="_blank" title="{% trans "Parabarter" %}"><img src="/static/img/banner_para2.gif" id="para" style="width: 600px; height: 40%; margin: 0 auto 2rem; display: block;" alt="parabarter"></a>
+</div>{% endcomment %}
+{% endif %}
+
+<!-- меню выбора города, погода, кнопки управления -->
+{% include 'index-menu.html' %}
+
+
+{% if ban %}
+<div class="ui massive red message">
+{% trans "Внимание!" %}<br/>{% trans "Акаунт заблокирован до" %}:<br/>{{ban}}.
+</div>
+{%endif%}
+
+{% if us.city.id == 999 %}
+<div class="ui icon large message">
+    <i class="fa-file-text icon"></i>
+    <div class="content">
+    Уважаемые пермяки,<br/>
+    к сожалению МБУ "Городское управление транспорта" заблокировало доступ к данным о местонахождении общественного транспорта г. Перми.
+    </div>
+</div>
+{%endif%}
+
+{% if us.city.id == 47000 %}
+<div class="ui icon huge error message">
+    <i class="fa-file-text icon"></i>
+    <div class="content">
+    МУП ГПТ «Яргортранс» заблокировал доступ к данным о местонахождении общественного транспорта в Ярославле.
+    </div>
+</div>
+{%endif%}
+
+<!--<div class="ui basic segment" style="font-size:1.5em;color:#733;margin-top:0.25em">
+<center><iframe width="320" height="240" style="margin-top:0.25em" src="https://www.youtube.com/embed/tJYpu38u7-Q?start=62" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+</div>-->
+
+{% if us.city.id == 45 %}
+<script>
+console.log("Навигационная информация для общественного транспорта должна быть открыта и размещена в форме открытых данных. Препятствия к доступу могут способствовать коррупционной деятельности, а также злоупотреблением должностных полномочий со стороны операторов навигационно-информационных систем.");
+</script>
+{% endif %}
+
+{% if us.city.id == 450 and not ads_ou %}
+<div class="ui positive message">
+Мы считаем, что навигационная информация для общественного транспорта должна
+быть доступна и размещена в форме открытых данных. Это значительно повышает прозрачность транспортных услуг, а также является благоприятной средой для инноваций в сфере пассажирских перевозок.
+<br/><br/>
+Закрытие доступа к этой информации устанавливает препятствия и может способствовать коррупционной деятельности, а также злоупотреблению должностных полномочий со стороны операторов навигационно-информационных систем.
+<br/><br/>
+Мы улучшаем качество услуг для пассажиров, не прибегая к бюджетным средствам. Переиспользуя государственные данные, мы создаем бесплатный продукт и предоставляем пассажирам свободу выбора.
+<br/><br/>
+команда Bustime.ru
+</div>
+{%endif%}
+
+<!--<div class="ui small icon message">
+<i class="fa-file-text icon"></i>
+<div class="content">
+  31 июля, с 00:00 до 03:00 по МСК будет происходить обновление сервера, возможны сбои. Приносим свои извинения.
+</div></div><br/>-->
+
+
+{% if us.city.id == 18 and 0 %}
+<div class="ui icon message">
+<i class="fa-file-text icon"></i>
+<div class="content">
+  В связи с работами по обновлению оборудования в <a href='http://coddvrn.ru/' target=_blank>МБУ ЦОДД Воронеж</a> определение местоположение транспорта не работает.
+</div></div><br/>
+{%endif%}
+
+{% if real_error and not us.city.is_ut and us.city.id != 30 and not us.city.block_info %}
+<div class="ui large negative message error_update">
+  <i class="close icon" onclick="$(this).parent().remove()" aria-label="{% trans "Закрыть объявление" %} "></i>
+  <div class="header">{% trans "Сервер данных" %} {% if us.city.gps_data_provider %}{{us.city.gps_data_provider}}{% endif %} {% trans "не работает" %}</div>
+    {% if error_update.last_error %}{{error_update.last_error|date:"F j, H:i"}}<br/>{% endif %}
+    {% trans "Невозможно принять координаты общественного транспорта" %}.<br/>{% trans "Информация, предоставляемая сервером данных в" %} {{us.city.name_gde}}, {% trans "не актуальна" %}.{% if us.city.good_time %}
+    <br/><br/>Последний раз данные успешно получены: {{us.city.good_time}}{% endif %}
+</div>
+<!-- Можно вас обнять? -->
+{%endif%}
+
+{% if us.city.block_info %}
+<div class="ui large negative message">
+    {{ us.city.block_info }}
+    <!-- <br/><br/> Мы улучшаем качество услуг для пассажиров, не прибегая к бюджетным средствам. Переиспользуя государственные данные, мы создаем бесплатный продукт и предоставляем пассажирам свободу выбора. -->
+</div>
+<!-- <center><a class="medium ui green button" href="/services/">предложение для города</a></center>
+<br/> -->
+{% endif %}
+
+{% if cn %}
+<div id="citynews_message" class="ui large message">
+  <i class="close icon" onclick="onCityNewsClick({{ cn.id }})"></i>
+  <div class="header"><center>{{cn.title|safe}}</center></div>
+  {{cn.ctime.date}}: {{cn.body|safe}}
+</div>
+{% endif %}
+
+{% if driver_warning %}
+<div class="ui icon large negative message">
+  <i class="fa-upload icon"></i>
+
+  <div class="content">
+    <div class="header">
+      {% trans "Ошибка отправки данных - гос .номер не установлен" %}!
+    </div>
+    <p>Установите в <a href="/settings/">настройках</a> номер маршрута и гос. номер вашего транспорта для активации режима отправки данных</p>
+  </div>
+</div>
+{%endif%}
+
+
+{% if 0 and real_error and transaction and not us.gps_send and transaction.key == "premium" %}
+<div class="ui huge positive message error_update">
+{% trans "Вы можете отправлять свои координаты напрямую в bustime.ru, чтобы ваш транспорт было видно даже если центральный диспетчерский пункт не работает" %}.
+<br/><br/>{% trans "Включите в" %} <a href="/settings/">{% trans "Настройках" %}</a> {% trans "Отправлять свои координаты, выберете свой маршрут и введите гос. номер" %}.
+</div>
+<!-- Можно вас обнять? -->
+{%endif%}
+
+{% if transaction.warning %}
+<div class="ui big warning message">
+{% trans "Срок подписки истекает через" %} {{ transaction.days_left }} {% if transaction.days_left == 1 %}день{%else%}дня{%endif%}. {% trans "Рекомендуется" %}
+<a href="/pro/">{% trans "продлить подписку" %}</a>.
+</div>
+{% endif %}
+
+{% if ads_show and us.city.id == 333 %}
+<center><a href="https://vk.com/bakenbooks" target="_blank" onclick='ajax_metric("redirect_baken_1", 1)' >
+<img src="/static/img/adgeo/baken_ny2016.png" style="width: 336px"></a></center>{%endif%}
+
+{% if us.city.id == 333 and device == "android" %}
+<center><a href="https://play.google.com/store/apps/details?id=com.jetberry.blacksky" target="_blank" onclick='ajax_metric("redirect_chn_1", 1)' >
+<img src="/static/img/adgeo/chn_1242x379.png" style="width: 336px"></a></center><br/>{%endif%}
+
+{% if us.city.id == 333 and device == "ios" %}
+<center><a href="https://itunes.apple.com/ru/app/id1241625144" target="_blank" onclick='ajax_metric("redirect_chn_1", 1)' >
+<img src="/static/img/adgeo/chn_1242x379.png" style="width: 336px"></a></center><br/>{%endif%}
+
+{% if ads_show and 0 %}
+<center><a href="https://vk.com/bustimeweb" target="_blank" onclick='ajax_metric("redirect_clevertee_1", 1)' >
+<img src="/static/img/kianu_1024x500.png" style="width: 336px"></a></center><br/>{%endif%}
+
+<!-- поиск маршрута, для компьютера -->
+{% include 'from-to3.html' %}
+
+<!--результат поиска маршрута-->
+<div id="search_result" class="ui container">
+    {% if order and order.taxist %}
+        {% include 'taxi/trip_item_pass.html' %}
+    {% elif trips %}
+        {% if order %}
+            {% include 'from-to4.html' with tab_active='taxi_trip' %}
+        {% else %}
+            {% include 'from-to4.html' %}
+        {% endif %}
+    {% endif %}
+</div>
+
+<!--панель предпочитаемых маршрутов-->
+<div class="busnumber_container bus_hide">
+{%for b in busfavor%}<a class="ui button busnumber busnumbers busfavor bid_{{b.id}} bt_{{b.ttype}} {% if b.amount_int < 1 or not b.amount_int %}coloramount0{%elif b.amount_int < 3%}coloramount1{%else%}coloramount2{%endif%}" href="#{{b.slug}}">
+<div class="bheader" aria-label="{% if b.ttype == 1%} {% trans "Троллейбус номер" %}{%endif%} {% if b.ttype == 2%}{% trans "Трамвай номер" %}{%endif%} {% if b.ttype == 3%}{% trans "Маршрутное такси номер" %} {%endif%} {% if b.ttype == 0%}{% trans "Автобус номер" %}{%endif%}{% if b.ttype == 5%}{% trans "Междугородний автобус номер" %}{%endif%}">
+{% if b.ttype == 1%}<div class="sprite sprite-trolleybus_mini"></div>{%endif%}{% if b.ttype == 2%}<div class="sprite sprite-tramway_mini"></div>{%endif%}{% if b.ttype == 3%}<div class="sprite sprite-bus-taxi_mini"></div>{%endif%}{% if b.ttype == 5%}<div class="sprite sprite-2bus_mini"></div>{%endif%}
+{%if b.discount%}%{%endif%}
+{% if not us.busfav_hold %}<i class="fa-heart icon"></i>{% endif %}
+</div>{{b.name}}<br/>
+<span class="busamount">{{b.ba_a}} / {{b.ba_b}}</span>
+</a>{%endfor%}
+</div><!--busnumber_container-->
+
+{% comment %}
+меню из кнопок Автобус, Троллейбус...
+включенная кнопка запоминается в us.city.default_ttype и восстанавливается в переменную mode_selected (_js_init.html)
+при обновлении страницы выбранный режим устанавливается функцией hashcheck(), вызываемой из websconnect() (bustime-main.js)
+на основе window.location.hash (#bus/#trolleybus...)
+{% endcomment %}
+<div class="ui container main_container matrix" {%if not us.matrix_show %}style="display:none"{%endif%}>
+    <div id="menu_ttype" class="ui pointing labeled icon fluid menu">
+      {% if us.city.bus %}
+      <a class="item modec_0 xsfont{% if us.matrix_show and us.city.default_ttype == 0 %} active{%endif%}" onclick="change_mode(0)" title="{% trans "Отобразить маршруты автобусов" %}" href="#bus" aria-label="{% trans "Автобусы" %}">
+        <div class="sprite sprite-bus {% if us.matrix_show and us.city.default_ttype == 0 %} active{%endif%}"></div><div class="floating orange ui label counters_by_type__0">{{ counters_by_type.0|default:0}}</div>{% trans "Автобусы" %}</a>
+      {% endif %}
+
+      {% if us.city.trolleybus %}
+      <a class="item modec_1 xsfont{% if us.matrix_show and us.city.default_ttype == 1 %} active{%endif%}" onclick="change_mode(1)" title="{% trans "Отобразить маршруты троллейбусов" %}" href="#trolleybus" aria-label="{% trans "Троллейбусы" %}">
+        <div class="sprite sprite-trolleybus {% if us.matrix_show and us.city.default_ttype == 1 %} active{%endif%}"></div><div class="floating orange ui label counters_by_type__1">{{ counters_by_type.1|default:0}}</div>{% trans "Троллейбусы" %}</a>
+      {% endif %}
+
+      {% if us.city.tramway %}
+      <a class="item modec_2 xsfont{% if us.matrix_show and us.city.default_ttype == 2 %} active{%endif%}" onclick="change_mode(2)" title="{% trans "Отобразить маршруты трамваев" %}" href="#tramway"
+        aria-label="{% trans "Трамваи" %}">
+        <div class="sprite sprite-tramway {% if us.matrix_show and us.city.default_ttype == 2 %} active{%endif%}"></div><div class="floating orange ui label counters_by_type__2">{{ counters_by_type.2|default:0}}</div>{% trans "Трамваи" %}</a>
+      {% endif %}
+
+      {% if us.city.bus_taxi %}
+      <a class="item modec_3 xsfont{% if us.matrix_show and us.city.default_ttype == 3 %} active{%endif%}" onclick="change_mode(3)" title="{% trans "Отобразить маршрутные такси" %}" href="#bus-taxi" aria-label="{% trans "Маршрутки" %}">
+        <div class="sprite sprite-bus-taxi{% if us.matrix_show and us.city.default_ttype == 3 %} active{%endif%}"></div><div class="floating orange ui label counters_by_type__3">{{ counters_by_type.3|default:0}}</div>{% trans "Маршрутки" %}</a>
+      {% endif %}
+
+      {% if us.city.water %}
+      <a class="item modec_4 xsfont{% if us.matrix_show and us.city.default_ttype == 4 %} active{%endif%}" onclick="change_mode(4)" title="{% trans "Отобразить водный транспорт" %}" href="#water" aria-label="{% trans "Водный" %}">
+        <div class="sprite sprite-ferry{% if us.matrix_show and us.city.default_ttype == 4 %} active{%endif%}"></div><div class="floating orange ui label counters_by_type__4">{{ counters_by_type.4|default:0}}</div>{% trans "Водный" %}</a>
+      {% endif %}
+
+      {% if us.city.bus_intercity %}
+      <a class="item modec_5 xsfont{% if us.matrix_show and us.city.default_ttype == 5 %} active{%endif%}" onclick="change_mode(5)" title="{% trans "Отобразить междугородние автобусы" %}" href="#bus-intercity" aria-label="{% trans "Междугородние" %}">
+        <div class="sprite sprite-2bus{% if us.matrix_show and us.city.default_ttype == 5 %} active{%endif%}"></div><div class="floating orange ui label counters_by_type__5">{{ counters_by_type.5|default:0}}</div>{% trans "Междугородние" %}</a>
+      {% endif %}
+
+      {% if us.city.car_passing %}
+      <a class="item modec_8 xsfont{% if us.matrix_show and us.city.default_ttype == 8 %} active{%endif%}"
+            onclick="change_mode(8)"
+            title="{% trans 'Отобразить попутки' %}"
+            href="#taxi"
+            aria-label="{% trans 'Попутки' %}">{# mustime-main.js::document_ready() & _js_init.html #}
+        <div class="sprite sprite-taxi{% if us.matrix_show and us.city.default_ttype == 8 %} active{%endif%}"></div>
+        <div class="floating orange ui label counters_by_type__8">{{ counters_by_type.8|default:0 }}</div>
+         {% trans 'Попутки' %}
+      </a>
+      {% endif %}
+    </div><!--menu_ttype-->
+</div><!--ui container main_container matrix-->
+
+<div id="modal_dialog" class="modal" style="z-index: 10">{# https://jquerymodal.com/ #}
+  <p></p>
+</div>
+
+
+{% comment %}
+Панель кнопок маршрутов.
+Каждый набор кнопок (Автобусы/Троллейбусы...) находится в собственном контейнере div class="icon mode_тип,
+где тип = 0|1|2...
+Активен (показан) набор, тип которого = mode_selected (JS переменная (_js_init.html)),
+все остальные контейнеры имеют класс fhidden (скрыты).
+При обновлении страницы активный набор устанавливается функцией hashcheck(), вызываемой из websconnect() (bustime-main.js)
+на основе window.location.hash (#bus/#trolleybus...)
+Обработка клика по кнопке маршрута: show_me_the_bus(bus_id) в static/js/bustime-main.js
+{% endcomment %}
+<div class="busnumber_container matrix bus_hide" {%if not us.matrix_show %}style="display:none"{%endif%}>
+    <!--маршруты-->
+    {% for b in buses %}
+        {% ifchanged b.ttype %}
+        {% if not forloop.first %}</div><!-- icon mode_ -->{%endif%}
+        <div class="icon mode_{{b.ttype}} {% if b.ttype != us.city.default_ttype %}fhidden{%endif%}">
+        {% endifchanged %}
+        <a class="ui button busnumber bid_{{b.id}} bt_0 {% if b.amount_int < 1 or not b.amount_int %}coloramount0{%elif b.amount_int < 3%}coloramount1{%else%}coloramount2{%endif%}"
+ href="{{b.get_absolute_url}}" title="{{b.napr_a}}">
+            <div class="bheader">{%if b.discount%}%{%endif%}</div>
+            {{b.name}}<br/>
+            <span class="busamount">{{b.ba_a}} / {{b.ba_b}}</span>
+        </a>
+    {%endfor%}
+    </div><!-- icon mode_ -->
+</div><!--busnumber_container matrix-->
+
+<!--попутчик (такси)-->
+<div class="icon mode_8 fhidden" style="margin-bottom: 1em;">
+    <div style="text-align:center; margin: 1rem;">
+        <!-- taxi, кнопка водителя -->
+        {% if taxiuser.car_count > 0 %}
+            <button id="taxiuser_driver_start_stop" class="ui button"
+                    style="color:black; background-color: rgba(255, 226, 22, 1); width: 328px; height: 48px;"
+                    onclick="set_taxi_user('driver');">{# bustime_main.js:set_taxi_user() => taxi/api.py:set_taxi_user() #}
+                {% if taxiuser.driver and taxiuser.gps_on %}Закончить подвозить{% else %}Начать подвозить{% endif %}
+            </button>
+        {% endif %}
+    </div>
+
+    <div id="pass_message1" style="text-align:center; display: {% if taxiuser.driver or stop_to or trips %}none{% else %}block{% endif %};">
+        <b>Если вы хотите, чтобы вас подвезли - заполните начальный и конечный пункт</b>
+    </div>
+
+    <!--машины-->
+    <div id="taxi_grid" class="ui four column centered stackable grid">
+        {% for key, value in tevents.items %}
+        {% include 'taxi/taxi_item.html' with taxi=value.taxi %}
+        {% endfor %}
+    </div><!--grid-->
+</div><!-- icon mode_8 -->
+
+{% if ads_show %}
+<div class="ui grid" style="margin-top:0;margin-bottom:0.5rem">
+    <div class="center aligned column adsense">
+        <br/>
+        <div style="width: 336px; height: 290px; display: inline-block;">
+        {% russia_or_not us.ip as is_russia %}
+        {% if is_russia %}
+        {% include "ads/index_yandex_ru_1.html" %}
+        {% else %}
+        {% include "ads/bustime_336x280_top_ou.html" %}
+        {% endif %}
+        </div>
+        <br/><br/>
+    </div>
+</div>
+{% endif %}
+
+<!--заголовок выбранного маршрута-->
+<div class="ui container main_container bus_hide" aria-label="{% if b.ttype == 1%} {% trans "Троллейбус номер" %}{%endif%} {% if b.ttype == 2%}{% trans "Трамвай номер" %}{%endif%} {% if b.ttype == 3%}{% trans "Маршрутное такси номер" %} {%endif%} {% if b.ttype == 0%}{% trans "Автобус номер" %}{%endif%}{% if b.ttype == 5%}{% trans "Междугородний автобус номер" %}{%endif%}{{b.name}}"> <!-- container again-->
+    {% if us.edit_mode %}
+    <div class="ui center aligned grid">
+      <div class="ui column edit_panel">
+        <span class="edit_panel_route hidden">
+          <a class="ui icon button route_edit" onclick="route_monitor()" title="Подробности расчетов">
+          <i class="fa-bus icon"></i></a>
+          <a class="ui icon button route_edit" onclick="route_journal()" title="Журнал маршрута">
+          <i class="fa-list-alt icon"></i></a>
+          <a class="ui icon button route_info" title="Редактировать в админке" onclick="route_info()">
+          <i class="fa-id-card-o icon"></i></a>
+          <a class="ui icon button" title="Определение направления. Тестирование подсистемы определения направления движения ТС по двум заданным точкам." onclick="route_detector()">
+          <i class="fa-magic icon"></i></a>
+          <a class="ui icon button route_edit" title="Редактировать" onclick="route_edit()">
+          <i class="fa-pencil icon" title="{% trans "редактировать" %}"></i></a>
+        </span>
+        <a class="ui icon button" href="/{{us.city.slug}}/new/" title="{% trans "Добавить новый маршрут" %}"><i class="plus icon"></i></a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="ui middle aligned center aligned grid bustable_head">
+        <div class="column" id="separ" style="padding:0.3rem 0">
+          <div class="bustable_head__icon"></div>
+          <div class="bustable_head__bus"></div>
+          <div class="bustable_head__provider"></div>
+          <div class="bustable_head__busamount"></div>
+        </div>
+    </div>
+
+</div> <!-- main_container -->
+
+<!--остановки выбранного маршрута-->
+<div class="ui two column grid bus_panel bustable bus_hide">
+  <div class="column">
+    <div id="napr_a"></div>
+    <div class="schedule">
+       <table class="ui unstackable center aligned very basic celled compact table schedule_0"><tr>
+          <td class="schedule_bar_l">{% trans "перв." %} <span class="schedule_0_0"></span></td>
+          <td class="schedule_bar_cur"><a href="/">{% trans "след." %} <span class="schedule_0_1"></span></a><div class="reschedule_0_1"></div></td>
+          <td class="schedule_bar_r">{% trans "посл." %} <span class="schedule_0_2"></span></td>
+        </tr></table>
+    </div>
+    <div class="htmlr a1"></div>
+  </div>
+
+  <div class="column">
+
+   <div id="napr_b"></div>
+   <div class="schedule">
+    <table class="ui unstackable center aligned very basic celled compact table schedule_1"><tr>
+          <td class="schedule_bar_l">{% trans "перв." %} <span class="schedule_1_0"></span></td>
+          <td class="schedule_bar_cur"><a href="/">{% trans "след." %} <span class="schedule_1_1"></span></a><div class="reschedule_1_1"></div></td>
+          <td class="schedule_bar_r">{% trans "посл." %} <span class="schedule_1_2"></span></td>
+        </tr></table>
+    </div>
+   <div class="htmlr b1"></div>
+ </div>
+</div><!--bus_panel bustable-->
+{% if ads_show %}
+<div class="ui grid" style="margin-top:0.5rem;margin-bottom:0.5rem">
+  <div class="center aligned column" style="padding:0">
+    <br/>
+        <div style="width: 336px; height: 290px; display: inline-block;">
+        {% russia_or_not us.ip as is_russia %}
+        {% if is_russia %}
+        {% include "ads/index_yandex_ru_2.html" %}
+        {% else %}
+        {% include "ads/bustime_336x280_middle_ou.html" %}
+        {% endif %}
+        </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="ui two column grid bus_panel bustable bus_hide">
+  <div class="column">
+    <div class="htmlr a2"></div>
+  </div>
+  <div class="column">
+   <div class="htmlr b2"></div>
+ </div>
+</div>
+<!-- /остановки выбранного маршрута-->
+
+
+<div class="ui container main_container" style="margin-top:-1rem"> <!-- container again a-->
+
+<!--карта (маршруты)-->
+<div id="main_bases_map" class="ui center aligned grid bustable bus_hide">
+   <div class="column">
+        <button class="ui large labeled icon button show_map_button">
+           <i class="fa-globe icon"></i> {% trans "Показать карту" %}
+        </button>
+       <div class="map"><div id="lmap"></div></div>
+   </div>
+</div>
+<!-- /карта-->
+
+<!-- поиск маршрута, для гаджетов -->
+{% if device %}{# {% include 'from-to3.html' %} #}{% endif %}
+
+{% if first_time and not device %}{% include "_welcome.html" %}{% endif %}
+
+{% if user.is_superuser %}<br/>
+<div class="ui horizontal link large list">
+<a class="item" href="/select-admin/"><i class="fa-building fa fa-fw"></i> Горстат</a>
+<div class="item"><i class="server icon"></i> {{ hostname }}</div>
+<div class="item">{% trans 'Посетителей вчера' %}: {{ counter_yesterday }}</div>
+<div class="item">{% trans 'сегодня' %}: <span class="counter_today">{{ counter_today }}</span></div>
+<div class="item">{% trans 'сейчас' %}: <span class="counter_online_сity">{{ counter_online_city_web }}</span> + <span class="counter_online">{{ counter_online_city_app }}</span> {% trans 'прил.' %}</div>
+</div>
+{% endif %}
+
+<!-- popup ввода комментария -->
+<div class="vehicle_info_gosnum">
+  <table class="responsive_table" style="width:100%;">
+      <tr>
+        <td class="border">
+            <div class="vehicle_info_name"></div><br/>
+            <img class="driver_ava" src="/static/img/stop_n_bus.png" style="max-height:180px" alt="{% trans 'Аватар водителя' %}">
+              <div class="ui three small brown statistics">
+                  <div class="statistic">
+                    <div class="value rating_wilson">
+                      0
+                    </div>
+                    <div class="label">
+                     {% trans "рейтинг" %}
+                    </div>
+                  </div>
+                  <div class="statistic">
+                    <div class="value vehicle_info_speed">
+                    </div>
+                    <div class="label">
+                      {% trans "км/ч" %}
+                    </div>
+                  </div>
+                  <div class="statistic">
+                    <div class="value">
+                        <i class="fa fa-fw fa-location-arrow vehicle_info_heading"></i>
+                        <!-- направление пока закоменчу <span class="vehicle_info_heading_w"></span> -->
+                    </div>
+                    <div class="label">
+                      {% trans "направление" %}
+                    </div>
+                  </div>
+                </div>
+            <br/>
+            <div class="ui yellow rating disabled massive" data-icon="star"></div>
+            <br/>
+
+            {% if request.user.is_authenticated %}
+            <div class="ui buttons" style="margin-right:0.5rem">
+              <button class="ui button rate_negative"><i class="fa-thumbs-o-down icon"></i></button>
+              <button class="ui button rate_positive"><i class="fa-thumbs-o-up icon"></i></button>
+            </div>
+
+            <div class="ui small action input">
+              <input type="text" class="vote_comment" name="msg" placeholder="{% trans "комментарий" %}" maxlength="140" style="max-width:10em"/>
+              <button class="ui small button" onclick="rating_submit()">{% trans "оценить" %}</button>
+            </div>
+            {% else %}
+              <p>{% trans "чтобы оставить отзыв, пройдите" %}  <a href="/register/">{% trans "регистрацию" %}</a></p>
+            {% endif %}
+            <!-- <div class="vehicle_info_img" onclick="vehicle_info_close()"></div> -->
+
+            {% if request.user.is_authenticated %}
+            <br/><br/>
+            <div class="ui big action input">
+  <button class="ui big icon button" onclick="gosnum_by_voice()"><i class="microphone icon"></i></button>
+  <input type="text" placeholder="{% trans 'введите номер' %}" maxlength="12" name="gosnum" style="max-width:8em"/>
+  <button class="ui big blue button" onclick="vehicle_info_gosnum()">{% trans "ввод" %}</button>
+</div>
+
+<!--             <div class="ui big left action input">
+                <button class="ui big icon button" onclick="gosnum_by_voice()">
+                <i class="microphone icon"></i></button>
+                <input type="text" placeholder="{% trans 'введите номер' %}" maxlength="12" name="gosnum" style="max-width:12em"/>
+            </div>
+            <button class="ui blue button" onclick="vehicle_info_gosnum()" style="margin: 4px 0 0 4px;">{% trans "ввод" %}</button> -->
+            {% else %}
+            <p>{% trans "для ввода номеров нужна" %}  <a href="/register/">{% trans "регистрация" %}</a></p>
+            {% endif %}
+
+            <br/><br/>
+            <div class="ui small buttons">
+                {% if us.gps_send %}
+                <div class="ui basic button gps_my" onclick="vehicle_info_itsme()">
+                    <span class="text">{% trans "это мой" %}</span>
+                </div>{% endif %}
+                 <a href="/" class="ui button vehicle_feedback_ts" target="_blank">{% trans "отзывы" %}</a>
+                <a href="/" class="ui button vehicle_journal" target="_blank">{% trans "журнал" %}</a>
+                <button class="ui button" onclick="vehicle_info_close()">{% trans "закрыть" %}</button>
+            </div>
+
+        </td>
+    </tr>
+  </table>
+</div> <!--end of gosnum -->
+<!-- /popup ввода комментария -->
+{% endblock content %}
+
+{% block body_end %}
+<!-- форма быстрого доступа -->
+<div class="ui four column grid express_dial">
+    <div class="row">
+        <div class="calc calc-mic hidden">
+            <i class="microphone fa fa-microphone"></i>
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="column"> <!--Автобусы-->
+          <div class="calc-mode calc-a{% if us.city.default_ttype == 0 %} calc-mode_selected{%endif%}">
+              <div class="sprite sprite-bus {% if us.city.default_ttype == 0 %} active{%endif%}"></div>
+          </div>
+      </div>
+      <div class="column"><div class="calc calc-1">1</div></div>
+      <div class="column"><div class="calc calc-2">2</div></div>
+      <div class="column"><div class="calc calc-3">3</div></div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+          <div class="calc-mode calc-t{% if us.city.default_ttype == 1 %} calc-mode_selected{%endif%}">
+              <div class="sprite sprite-trolleybus {% if us.city.default_ttype == 1 %} active{%endif%}"></div>
+          </div>
+      </div>
+      <div class="column"><div class="calc calc-4">4</div></div>
+      <div class="column"><div class="calc calc-5">5</div></div>
+      <div class="column"><div class="calc calc-6">6</div></div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+          <div class="calc-mode calc-tv{% if us.city.default_ttype == 2 %} calc-mode_selected{%endif%}">
+            <div class="sprite sprite-tramway"></div>
+          </div>
+      </div>
+      <div class="column"><div class="calc calc-7">7</div></div>
+      <div class="column"><div class="calc calc-8">8</div></div>
+      <div class="column"><div class="calc calc-9">9</div></div>
+    </div>
+
+    <div class="row">
+        <div class="column">
+            {% if us.city.bus_intercity %}
+            <div class="calc-mode calc-mg{% if us.city.default_ttype == 5 %} calc-mode_selected{%endif%}">
+                <div class="sprite sprite-2bus"></div>
+            </div>
+            {% else %}
+            <div class="calc-mode calc-last calc-up"><i class="fa fa-chevron-up fa-fw"></i></div>
+            {%endif%}
+        </div>
+        <div class="column"><div class="calc calc-last calc-backspace"><i class="fa fa-caret-left"></i></div></div>
+        <div class="column"><div class="calc calc-last calc-0">0</div></div>
+        <div class="column"><div class="calc calc-last calc-go"><i class="fa fa-arrow-right"></i></div></div>
+    </div>
+
+    <div class="row">
+        <div class="calc-mode calc-last calc-up" style="width:100%;text-align:center;padding: 12px 0;">{% trans "скрыть" %}</div>
+    </div>
+</div><!-- форма быстрого доступа -->
+
+ {% if us.expert %}
+<a class="express_fixed" onclick="express_dial_show()">
+    <i class="fa fa-th fa-fw"></i>
+</a>
+{%endif%}
+<a href="/" class="push_to_talk hidden">
+    <i class="fa fa-podcast fa-fw"></i>
+</a>
+<!-- /форма быстрого доступа -->
+
+{% if us.speed_show %}
+<div class="speed_show_warn"></div>
+<div class="speed_show_gauge_bg"></div>
+<div class="speed_show_odometer">{% if odometer != None %}{{odometer}} км{% endif %}</div>
+<div id="speed_show_gauge"></div>
+<div class="speed_show"></div>
+{% endif %}
+
+          <div id="ph_container">
+            {% if luck and not us.premium %}
+            <div class="lucky_message"><img src="/static/img/lucky_bird_born.png"></div>
+            {% endif %}
+
+             {% if us.premium and luck and not us.vip %}
+            <div class="lucky_message">
+
+              <img src="/static/img/lucky_bird_born.png"><br/>
+              <div class="lucky_message_advice">Удачи в дороге, хороших пассажиров!</div>
+            </div>
+            {% endif %}
+          </div>
+
+
+
+        <div class="osd_message"><img src='/static/img/bustime-splash-lq.png' alt="splash"/></div>
+        <div class="flash_message"></div>
+
+        <div class="osd_gui_panel">
+          {% if us.gps_send %}
+          <div class="ui mini statistic  {% if gps_send_enough %}green{%endif%}">
+            <div class="value"><i class="upload icon"></i></div>
+            <div class="label gps_send_cnt">{{gps_send_cnt}}</div>
+          </div>
+          <div class="ui mini statistic violet osdclock">
+            <div class="value"><b>{{us.city.now.time}}</b></div>
+          </div>
+          {% endif %}
+
+
+          {% if tcard and us.city.id == 3 and 0 %}
+          <div class="ui mini statistic">
+            <div class="value">
+            {{tcard.balance|floatformat:"0"}}
+            </div>
+            <div class="label">{%if tcard.social%}раз{%else%}<i class="fa fa-rub fa-fw"></i>{% endif %}</div>
+          </div>
+          {% endif %}
+          <div class="ui mini red statistic {% if not real_error %}hiddeni{% endif %}">
+            <div class="value"><i class="fa-unlink icon brand-red blink"></i> </div>
+            <div class="label">ERR</div>
+          </div>
+        </div>
+{% endblock body_end %}

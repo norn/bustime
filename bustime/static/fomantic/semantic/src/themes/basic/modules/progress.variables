@@ -1,0 +1,15 @@
+/*******************************
+            Progress
+*******************************/
+
+@background: transparent;
+@border: none;
+@padding: 0;
+
+@progressLeft: 0;
+@progressWidth: 100%;
+@progressTextAlign: center;
+
+@labelFontWeight: @normal;
+@labelTextAlign: left;
+@labelHeight: 1.5em;

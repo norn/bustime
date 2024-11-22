@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Время Автобуса" %}{% endblock %}
+{% block meta_descr %}{% trans "Онлайн автобусы, троллейбусы и трамваи по данным GPS"%}. {% trans "Маршруты, расписание в реальном времени и поиск проезда на общественном транспорте" %}.{% endblock %}
+
+{% block nav_select %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc/" />
+{% endfor %}
+
+<script>us_id = {{ us.id }};</script>
+{% endblock %}
+
+{% block content %}
+<!--<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+  <a class="active section" href="/select/">{% trans "Выбор города" %}</a>
+</div>-->
+{% trans "Выберите город для отображения маршрутов общественного транспорта онлайн в реальном времени" %}
+<div class="ui divider"></div>
+
+{% for country in countries_list %}
+<h2>{{country.name}}</h2>
+<div class="ui four column stackable grid">
+  {% for chunk in country.cities %}
+  <div class="column">
+    <div class="ui fluid vertical menu">
+      {% for c in chunk %}
+      <a class="{% if c.id == us.city.id %}active {% endif %}item" href="https://{{ LANGUAGE_CODE }}.bustime.loc/{{c.slug}}/"
+        title="{{c.name}}, {{c.nearest}} {% trans 'транспортных средств онлайн' %}">{{c.name}}<div
+          class="ui {% if c.nearest == 0 %} {% else %}orange{% endif %} label fl" id="{{c.id}}">{{c.nearest}}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endfor %}
+
+<br /><br /><br />
+
+<script>
+function js_page_extra() {
+    socket = io(); // nice
+
+    // http://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-ha
+    var onevent = socket.onevent;
+    socket.onevent = function (packet) {
+        var args = packet.data || [];
+        onevent.call (this, packet);    // original call
+        packet.data = ["*"].concat(args);
+        onevent.call(this, packet);      // additional call to catch-all
+    };
+
+
+    socket.on('connect', function() {
+        var d = new Date();
+        console.log(d + ": Socket connected");
+        socket.emit('authentication', {username: us_id, password: "", os:"web"});
+        socket.emit('join', "ru.bustime.nearest_for_select");
+    });
+
+    socket.on("*",function(event,data) {
+        update_nearest(data);
+    });
+
+    socket.on('disconnect', function() {
+        console.log("Disconnect");
+    });
+
+
+function update_nearest(data) {
+  var dat = data['nearest_for_select'];
+  var d;
+  for(var key in dat) {
+    d = data['nearest_for_select'][key];
+    $("#" + key).html(d);
+    if ($("#" + key).hasClass("orange")) {
+      $("#" + key).removeClass("orange").addClass('blue');
+    }
+  }
+  setTimeout(function() {
+    $(".fl.blue").removeClass('blue').addClass("orange");
+  }, 800);
+}
+
+
+}
+
+</script>
+
+{% endblock %}

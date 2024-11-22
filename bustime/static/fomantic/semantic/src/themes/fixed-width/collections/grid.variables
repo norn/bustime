@@ -1,0 +1,23 @@
+/* Fixed Page Grid */
+
+@mobileWidth: auto;
+@mobileMargin: 0;
+@mobileGutter: 0;
+
+@tabletWidth: auto;
+@tabletMargin: 0;
+@tabletGutter: 8%;
+
+@computerWidth: 960px;
+@computerMargin: auto;
+@computerGutter: 0;
+
+@largeMonitorWidth: 1180px;
+@largeMonitorMargin: auto;
+@largeMonitorGutter: 0;
+
+@widescreenMonitorWidth: 1300px;
+@widescreenMargin: auto;
+@widescreenMonitorGutter: 0;
+
+@tableWidth: "";

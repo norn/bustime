@@ -1,43 +1,34 @@
-# Bustime - public trasport online
-Checkout [busti.me](https://busti.me/) for live example.
+# Bustime - public transport online
 
-Python/Django app process and visualize public transport vehicle positions using GPS coordinates.
-This collection of programs are able to detect current nearest stop, vehicle direction,
-real-time timetable, sleeping state (not moved for a long time), zombie state (broken vehicles).
+**Live Demo Available at:** [busti.me](https://busti.me/)
 
-## Supported transport types:
-* bus
-* trolleybus
-* tramway
-* inter-city bus
-* shuttle bus
+Bustime is a full-stack software solution built with Python/Django to process and visualize real-time public transport data. Designed to manage the complete lifecycle of transport tracking, Bustime collects GPS data, including direct communication with tracking devices via low-level protocols, ensuring precise, real-time positioning of vehicles. The platform includes route management, data processing, user rights administration, track history storage, arrival time prediction, and an open-source API for mobile applications. Additionally, Bustime supports the processing of GTFS and GTFS-RT data formats to enhance integration with other transit systems.
 
-## Features
-* high optimization for rapid server replies
-* websocket real-time updates
-* modern HTML5 standard compliance
-* simplified version for older devices and browsers (even with no JS)
-* OpenStreetmap support
-* Rainsys system updates only changed information (broadcasted via websocket)
-* "MultiBus" technology allows to track all vehicles of selected route
+## Key Features
 
-## How to install
-1. Install Ubuntu 14.04 LTS (tested)
-2. Make virtualenv and install pip packages from ```docs/pips/pips.freeze```
-3. Initialize Django environment
-4. Fill in city, bus, bus stop and route tables
-5. Generate list of stops for JS at ```utils/nbusstops-export.py```
-6. Edit zbusupd.py according to active cities
-7. Install supervisor and daemons from the ```addons``` list
-8. Run
+- **Real-Time GPS Data Collection:** Captures vehicle positions directly from trackers via low-level protocols, offering high accuracy.
+- **Nearest Stop Detection and Direction Tracking:** Calculates the closest stop and tracks the vehicle’s direction to estimate accurate arrival times.
+- **Route and Data Management:** Includes comprehensive tools for editing routes, adjusting timetables, and processing real-time data.
+- **GTFS and GTFS-RT Integration:** Supports GTFS static and real-time feeds for extended compatibility with other transit platforms and services.
+- **User Access Control:** Manages user permissions to provide secure access and customized functionality based on user roles.
+- **Track History and Analytics:** Stores track history for in-depth analysis, enabling monitoring of vehicle performance and route efficiency.
+- **API for Mobile Applications:** Provides a robust, open-source API for seamless mobile integration, giving end-users access to real-time data and features.
+- **Advanced State Detection:** Identifies “sleeping” (inactive) and “zombie” (potentially malfunctioning) states to maintain optimal service reliability.
 
-Optionally you could install:
-* [Semantic UI](http://semantic-ui.com/) (CSS framework)
-* [r.js optimizer](http://requirejs.org/docs/optimization.html) (compile collection of JS in one file)
-* [GeoLite2](http://dev.maxmind.com/geoip/geoip2/geolite2/) (for user's city detection by IP address)
+## Supported Transport Types
 
-Scripts for building CSS and JS: 99-release-*.sh
+- Bus
+- Trolleybus
+- Tramway
+- Inter-city Bus
+- Shuttle Bus
+- Ferry
+- Train
+- Metro
+
+---
+
+Bustime offers an all-in-one solution for managing, visualizing, and optimizing public transport services with flexible integration options and robust, real-time data handling capabilities.
 
 #### License
 Published under [MIT](LICENSE) license.
-

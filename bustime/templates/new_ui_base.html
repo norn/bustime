@@ -1,0 +1,878 @@
+{% load i18n %}{% load european_union_tag %}{% load russia_or_not_tag %}{% get_current_language as LANGUAGE_CODE %}{% load static %}{% spaceless %}<!doctype html>
+{% with js_ver="88" css_ver="30" %}
+<html lang="{{LANGUAGE_CODE}}">
+<head>
+  {% if not test and not noga and not user.is_staff %}
+
+    {% russia_or_not us.ip as is_russia %}
+    {% if ads_show and is_russia %}
+      <script>window.yaContextCb=window.yaContextCb||[]</script>
+      <script src="https://yandex.ru/ads/system/context.js" async></script>
+    {% endif %}
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KEXKX7GE6D"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KEXKX7GE6D');
+    </script>
+  {%endif%}
+  <meta charset="UTF-8"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon-16x16.png' %}">
+  <link rel="manifest" href="https://bustm.net/static/img/favicons/bustime.webmanifest">
+  <link rel="mask-icon" href="{% static 'img/favicons/safari-pinned-tab.svg' %}" color="#ffe216">
+  <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
+  <meta name="msapplication-TileColor" content="#ffe216">
+  <meta name="msapplication-config" content="{% static 'img/favicons/browserconfig.xml' %}">
+  <title>{% block titlee %}{% if place %}{{place.name}} - {% trans "Маршруты" %} {% trans "онлайн" %}{%else%}{% trans "Время Автобуса" %}{%endif%}{% endblock %}</title>
+
+<meta name="description" content="{% block meta_descr %}{% if place %}{% trans "Отслеживает, где автобусы онлайн в" %}
+{% if LANGUAGE_CODE == "ru" %}{{place.name}}{% else %}{{place.name}}{%endif%}{% else %}
+{% trans "Онлайн автобусы, троллейбусы и трамваи по данным GPS"%}{% endif %}.
+{% trans "Маршруты, расписание в реальном времени и поиск проезда на общественном транспорте" %}.{% endblock %}">
+  {% if main_page %}
+    <meta property="og:url" content="https://{{domain}}/">
+  <meta property="og:description" content="{% if place %}{{place.name}} - {% trans "Подробная информация об общественном транспорте" %}. {% trans "Непрерывные обновления в реальном времени" %}. {% trans "Автобусы на карте, маршруты, расписание" %}.{%else%}{% trans "Сервис отслеживает онлайн где сейчас едут автобусы, троллейбусы и трамваи по данным GPS" %}. {% trans "Маршруты городского транспорта, расписание и другая информация для пассажиров" %}.{%endif%}">
+  {% endif %}
+  <meta name="keywords" content="{% trans "автобусы" %}, {% trans "маршруты online" %}, {% trans "городской транспорт" %} {{us.city.name}}, {% trans "где едет" %}, {% trans "движение" %}, {% trans "положение" %}, {% trans "информационное табло" %}, {% trans "в режиме реального времени" %}, {% trans "на карте" %}, {% trans "остановки" %}, {% trans "схема движения" %}, {% trans "транспорт онлайн" %}{% if LANGUAGE_CODE == "ru" %}, бастайм{% endif %}">
+  <meta property="og:title" content="{% block title %}{% trans "Время Автобуса" %}{% endblock %}">
+  <meta property="og:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta property="vk:image" content="https://{{domain}}/static/img/bustime-2.0.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#b30000">
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="image_src" href="https://{{domain}}/static/img/bustime-2.0.png">
+  <link rel="apple-touch-icon" href="{% static 'img/icon_60px.png' %}" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/icon_76px.png' %}" />
+  <link rel="apple-touch-icon" sizes="120x120" href="{% static 'img/icon_120px.png' %}" />
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icon_152px.png' %}" />
+  <script src="{% static 'js/fast-json-patch.min.js' %}"></script>
+  <!-- <link rel="icon" sizes="192x192" href="{% static 'img/icon_192.png' %}"> -->
+  {% if test %}
+    <!-- <link rel="stylesheet" href="{% static 'css/semantic-full.min.css' %}" type="text/css" /> -->
+    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/semantic-full.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-page.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-main.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/bustime-maplibre.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/jquery.modal.min.css' %}" type="text/css" />
+  {% else %}
+    <link rel="preload" as="script" href="{% static 'js/system.min.js' %}">
+    <!-- <link rel="preload" as="script" href="{% static 'js' %}/bundle-built-{{ js_ver }}.js"/> -->
+    <link rel="preload" href="{% static 'fonts/fontawesome-webfont.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{% static 'css' %}/base-union-{{css_ver}}.css" type="text/css" />
+    {% if main_page %}
+      <link rel=preload as=image href="{% static 'img/bustime-splash-lq.png' %}">
+    {% endif %}
+  {% endif %}
+
+  {% if us.theme %}<link rel="stylesheet" href="{% static 'css/bustime-theme-{{us.theme}}.css' %}" type="text/css" />{% endif %}
+  {% if main_page and 'alex' in us.get_groups %}<link rel="stylesheet" href="{% static 'css/bustime-premium-vip.css' %}" type="text/css" />{% endif %}
+
+  {% if us.font_big %}<!-- mmm, sexy -->
+  <style>html,body {font-size:15px;}
+    @font-face {
+    font-family: 'PT Sans';
+    src: url("{% static 'fonts/PTS55F_W.eot' %}");
+    src:
+    url("{% static 'fonts/PTS55F_W.eot?#iefix' %}") format('embedded-opentype'),
+    url("{% static 'fonts/PTS55F_W.woff' %}") format('woff'),
+    url("{% static 'fonts/PTS55F_W.ttf' %}") format('truetype'),
+    url("{% static 'fonts/PTS55F_W.svg#PTSans-Regular' %}") format('svg');
+    font-weight: 400;
+    font-style: normal;
+  } @font-face {
+    font-family: 'PT Sans';
+    src: url("{% static 'fonts/PTS75F_W.eot' %}");
+    src:
+    url("{% static 'fonts/PTS75F_W.eot?#iefix' %}") format('embedded-opentype'),
+    url("{% static 'fonts/PTS75F_W.woff' %}") format('woff'),
+    url("{% static 'fonts/PTS75F_W.ttf' %}") format('truetype'),
+    url("{% static 'fonts/PTS75F_W.svg#PTSans-Bold' %}") format('svg');
+    font-weight: 700;
+    font-style: normal;
+  }</style>{% endif %}
+
+  {% if us.speed_show and main_page %}<script src="{% static 'js/raphael-2.2.1.min.js' %}"></script>{% endif %}
+  {% block extra_head %}{% endblock %}
+  <script>{% include "_js_init.html" %}</script>
+
+  <script>
+{% if place %} {% if main_page or uevents_on_map_page %}
+  var path_dump = "{% static 'other/db/v8/' %}" + {{place.id}} + '-' + {{place.dump_version}} + '.json';    // + '?v={{dump_size|default:0}}';
+  var path_diff = "{% static 'other/db/v8/' %}" + {{place.id}} + '-' + {{place.dump_version}} + '-' + {{place.patch_version}} + '.json.patch';
+  {% if dump_size %}var dump_size = {{dump_size}};var diff_size = {{diff_size}};{% endif %}
+{% endif %} {% endif %}
+
+function loading_done() {
+      osd = document.querySelector('.osd_message');
+      osd_text = document.querySelector('.osd_message_text');
+      if (osd_text) {osd_text.textContent = ''}
+
+      setTimeout(function() {
+       if (osd) {osd.style.display = 'none'}
+      }, 250); // give user time to enjoy
+    if (typeof hashcheck === "function") {
+      hashcheck();
+    }
+}
+
+function diff_dump(db) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', path_diff);
+
+  xhr.onprogress = function(event) {
+      const prc = Math.round(event.loaded / diff_size * 100);
+      if (osd_text) { osd_text.textContent = 'DB patch: '+prc+'%'; }
+  };
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      diff_from_server = JSON.parse(xhr.responseText);
+      // применяем разницу к исходной бд
+      jsonpatch.applyPatch(db, diff_from_server);
+      loading_done();
+    } else {
+      console.error(`Error ${xhr.status}: ${xhr.statusText}`);
+      loading_done();
+    }
+  };
+
+  xhr.onerror = function() {
+    console.error('Patch request error');
+  };
+ xhr.send();
+}
+
+function dbget(model, id=null, field=null, meta=false) {
+    let db = DB;
+    if (db == null) return null;
+    if (id == null) return DB[model];
+    if (field != null) {
+        let index = db[model + '__meta'] != null && db[model + '__meta']['fields'] != null ?
+            db[model + '__meta']['fields'].indexOf(field) : -1
+        if (index < 0) return null;
+        if (db[model] != null && db[model][id] != null) {
+            return db[model][id][index];
+        }
+    } else if (meta && db[model + '__meta'] != null && db[model + '__meta']['fields'] != null) {
+        if (db[model] != null && db[model][id] != null) {
+            let o = {};
+            db[model][id].forEach(function(e, i) {
+                o[db[model + '__meta']['fields'][i]] = e;
+            });
+            return o;
+        }
+    } else if (!meta && db[model] != null && db[model][id] != null) {
+        return db[model][id]
+    }
+    return null;
+}
+
+function dbgetsafe(model, id=null, field=null, meta=false) {
+  return dbget(model, id, field, meta) || {}
+}
+
+
+
+
+</script>
+
+<style>
+
+</style>
+</head>
+
+{% block body %}<body style="position: relative;">
+  <div class="ui sidebar inverted vertical massive menu yellow_menu" style="width:19rem; position: absolute;">
+<!--
+    <a href="/{% if us.place %}{{us.place.slug}}/{% else %}spb/{% endif %}settings_profile/" id="link_profile" class="item {% block nav_settings_profile %}{% endblock %} profile_in_menu">
+        <img id="avatar_profile" src="{%  if us.driver_ava %} {% static 'img/ava/{{us.driver_ava}}.png' %} {% else %} {% static 'img/empty_ava.png' %}{% endif %}">
+        <div style="margin: 10px; display: inline-block;">{% if user.is_authenticated %} {% if us.user.first_name %}{{us.user.first_name}} {{us.user.last_name}} {% else %} {% trans "Имя не установлено" %} {% endif %} {% else %} {% trans "Войти в профиль" %} {% endif %}</div>
+    </a>
+-->
+    <div class="yellow_menu_logo"><a href="/"><img src="{% static 'img/bustime_logo_menu.svg' %}"></a></div>
+
+    {% if not select %}
+    <a class="item {% block nav_main %}{%endblock%} yellow_menu_item" href="/{% if us.place %}{{us.place.slug}}{% else %}spb{% endif %}/">{% if us.place %}{{us.place.name}}{% else %}{% trans "Санкт-Петербург" %}{% endif %} <i class="fa fa-search icon" aria-hidden="true"></i></a>
+
+    <a class="item {% block nav_stop %}{%endblock%} yellow_menu_item" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}stop/">{% trans "Остановки" %} <i class="fa fa-hand-paper-o fa-flip-horizontal icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_company %}{%endblock%} yellow_menu_item" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}company/">{% trans "Перевозчики" %} <i class="fa fa-building-o icon " aria-hidden="true"></i></a>
+    <a class="item {% block nav_transport %}{% endblock %} yellow_menu_item" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}transport/" title="{% trans "Транспортный журнал - обмен данными, события и трэки" %}">{% trans "Журнал" %}<i class="fa fa-undo icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_chat %}{% endblock %} yellow_menu_item" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}chat/">{% trans "Чат" %} <i class="fa fa-comment-o icon" aria-hidden="true"></i></a>
+    <a class="item {% block nav_rating %}{% endblock %} yellow_menu_item" href="{% if us.place %}{{us.place.get_absolute_url}}{% else %}/spb/{% endif %}top/">{% trans "Рейтинг" %} <i class="fa fa-star-o icon" aria-hidden="true"></i></a>
+    {% endif %}
+     <!-- <a class="item" href="/about/">Блог</a> -->
+    <div style="position: absolute; bottom: 0;">
+    <a class="item {% block nav_version %}{% endblock %} yellow_menu_item yellow_menu_bot" href="/about/">{% trans "Версия" %}</a>
+    <a class="item {% block nav_status %}{% endblock %} yellow_menu_item yellow_menu_bot" href="/about/">{% trans "Статус системы" %}</a>
+    <a class="item {% block nav_settings %}{% endblock %} yellow_menu_item yellow_menu_bot" href="/about/">{% trans "Настройки" %}</a>
+    <a class="item yellow_menu_item yellow_menu_bot" href="/about/">{% trans "Погода" %}</a>
+    <a class="item {% block nav_about %}{% endblock %} yellow_menu_item yellow_menu_bot" href="/about/">{% trans "О проекте" %}</a>
+    </div>
+
+    {% if main_page %}
+    <audio id="groove" preload="none">
+     {% if us.radio == "lay" %}
+      <source src="http://ice1.somafm.com/groovesalad-64-aac" />{% endif %}
+     {% if us.radio == "rok" %}
+      <source src="http://nashe.streamr.ru/rock-64.mp3" />{% endif %}
+     {% if us.radio == "shans" %}
+     <source src="http://chanson.hostingradio.ru:8041/chanson64.mp3" /> {% endif %}
+      {% if us.radio == "elect" %}
+    <source src="http://r1.electron.fm:8000/256" />{% endif %}
+      {% if us.radio == "pop" %}
+    <source src="https://bustime.loc/radio1.aac" />{% endif %}
+    </audio>
+    {% endif %}
+    </div>
+
+
+  <div class="pusher">
+    <div class="ui padded stackable {% if template_name == "demo_show.html" %}three column{% endif %} center aligned horizontally grid yheader" {% if weather == "fog" %} style="filter:blur(2px)"{%endif%}> <!-- mobile tablet computer only -->
+
+    {% if template_name == "demo_show.html" %}<div class="center aligned column color-0-bg">
+    <br/><br/>
+    <div style="font-size:2rem;font-weight:bold;color:#555">{% if avg_temp > 0 %}+{%endif%}{{avg_temp}}˚</div><br/><br/><div style="font-size:2rem;font-weight:bold;color:#555">{{domain}}</div>
+    </div>
+    {% endif %}
+
+        <div class="center aligned column color-0-bg" style="padding-top: 1.5rem!important">
+
+                {% block headbread %}
+                {% if main_page %}
+                <div class="ui search search_all">
+                    <div class="ui icon input">
+                        <input class="prompt" style="background: #fff99e;" type="text" placeholder="{% trans "Поиск" %}...">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+                {% else %}
+                <a href="/" class="hidden bustime-logo{% if us.premium or 1 %}-pro{%endif%}"></a>
+                <a class="logo_header" href="/{% if us.place %}{{us.place.slug}}/{% endif %}">{% if LANGUAGE_CODE == "ru" %}{% trans "Время Автобуса" %}{% else %}Bustime{% endif %}</a>
+                {%endif%}
+                {% endblock headbread %}
+
+                {% if main_page and 0 %}
+                <div class="ui labeled button" onclick="ajax_gvote(0)">
+                  <div class="ui small icon button">
+                    <i class="{% if gvote.positive == False %}fa-thumbs-down{%else%}fa-thumbs-o-down{%endif%} icon"></i>
+                  </div>
+                  <div class="ui basic label gvote_down_cnt">
+                  {{gvotes.0}}
+                  </div>
+                </div>
+                <div class="ui labeled button" onclick="ajax_gvote(1)">
+                  <div class="ui small icon button">
+                    <i class="{% if gvote.positive == True %}fa-thumbs-up{%else%}fa-thumbs-o-up{%endif%} icon"></i>
+                  </div>
+                  <div class="ui basic label gvote_up_cnt">
+                    {{gvotes.1}}
+                  </div>
+                </div>
+                {%endif%}
+
+          </div>
+
+          {% if template_name == "demo_show.html" %}<div class="column color-0-bg"></div>{% endif %}
+      </div>
+      <div id="loader" class="ui active slow blue double massive loader" style="display: none;"></div>
+
+      <div id="map_container">
+          <!--maplibre-->
+          <div id="maplibre" style="display:none; z-index:1;">
+              <div class="layers_selection">
+
+                  <div class="ui icon toggle button layers_button">
+                      <i class="fa-clone link icon"></i>
+                  </div>
+
+                  <div id="layers_checkbox" style="display: none;">
+                      <input type="checkbox" class="layers_checkbox" id="poi-level-1" value="poi-level-1"><label for="poi-lever-1">  POI </label><br>
+                  </div>
+              </div>
+
+              <div class="ui search address from_to from search_address" style="margin-top: .6rem;">
+                  <div class="ui icon input">
+                      <input type="text" class="prompt from" placeholder="{% trans "Откуда" %}">
+                      <i id="from_icon" class="fa-map-marker link icon"></i>
+                  </div>
+              </div>
+              <div class="ui search address from_to to search_address" style="margin-top:3.5rem;">
+                  <div class="ui icon input">
+                      <input type="text" class="prompt to" placeholder="{% trans "Куда" %}">
+                      <i id="to_icon" class="fa-map-marker link icon"></i>
+                  </div>
+              </div>
+
+              <div class="ui search search_stop stop_from" style="margin-top:.6rem; display: none;">
+                  <div class="ui input">
+                      <input type="text" class="prompt" placeholder="{% trans "Откуда(остановка)" %}">
+                  </div>
+              </div>
+              <div class="ui search search_stop stop_to" style="margin-top: 3.5rem; display: none;">
+                  <div class="ui input">
+                      <input type="text" class="prompt" placeholder="{% trans "Куда(остановка)" %}">
+                  </div>
+              </div>
+
+              <div class="selection_type_transport" style="margin-top: 7rem; z-index: 2;">
+                  <div class="ui icon compact menu selection_transport" style="font-size: .8rem;">
+                      <a class="active item" id="car"><i class="fa fa-car" aria-hidden="true"></i></a>
+                      <a class="item" id="bus"><i class="fa fa-bus" aria-hidden="true"></i></a>
+                      <a class="item" id="foot"><i class="fa fa-male" aria-hidden="true"></i></a>
+                      <a class="item" id="bike"><i class="fa fa-bicycle" aria-hidden="true"></i></a>
+                  </div>
+              </div>
+
+              {% if user.is_staff and 0 %}<pre id="lonlatinfo"></pre>{% endif %}
+
+          </div>
+      </div>
+
+
+
+      <div id="main_container" {% if not main_page or status_page %}class="ui container"{% endif %} style="margin-top:1rem">
+      {% if ads_show and 0 %}<center><span id="vk_sharez"></span></center><br/>{%endif%}
+
+      {% block content %}{% endblock %}
+
+      {% if not us.city.sat %}
+      <div class="ui equal width column stackable grid">
+
+        {% if us.expert %}
+        <div class="column">
+          <div class="ui fluid two item labeled icon secondary menu">
+              <a class="item" onclick="radio_gplay()"><i class="fa-music fa fa-fw" title="{% trans "Включить радио" %}"></i>{% trans "Радио" %}</a>
+              <a class="item show_matrix_button" title="{% trans "Скрыть или показать таблицу маршрутов" %}"><i class="fa-table fa fa-fw"></i><span id="show_matrix_button">{% trans "Скрыть" %}</span>{% trans " маршруты" %}</a>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="column">
+          <div class="ui fluid five item labeled icon secondary small menu" style="opacity: 0.8;">
+            <a class="item" href="https://play.google.com/store/apps/details?id=com.indie.bustime"><i class="fa-android icon" aria-hidden="true"></i>Google Play</a>
+            <a class="item" href="https://itunes.apple.com/app/bustime-vrema-avtobusa!/id879310530"><i class="fa-apple icon" aria-hidden="true"></i>App Store</a>
+            <a class="item" href="/services/"><i class="fa-plus icon" aria-hidden="true"></i> {% trans "Подключение" %}</a>
+            <a class="item" rel="noreferrer" target="_blank" href="https://github.com/norn/bustime" aria-label="{% trans "Исходные коды Bustime на Github" %}"><i class="fa-github icon"></i> Github</a>
+            <a class="item" href="/help/"><i class="fa-question-circle-o icon" aria-hidden="true"></i>{% trans "Помощь" %}</a>
+          </div>
+        </div>
+
+        {% comment %}
+         <div class="column center aligned">
+          <a rel="noopener" href="https://play.google.com/store/apps/details?id=com.indie.bustime" target="_blank"><img src="{% static 'img/stores/{{LANGUAGE_CODE}}_generic_rgb_wo_60.png' %}" alt="Google Play" style="height:40px;width: 115px;margin-right: 15px;opacity: 0.33"></a>
+
+          <a rel="noopener" href="{% if LANGUAGE_CODE == "ru" %}https://itunes.apple.com/ru/app/bustime-vrema-avtobusa!/id879310530{%else%}https://itunes.apple.com/app/bustime-vrema-avtobusa!/id879310530{%endif%}" target="_blank"><img src="{% if LANGUAGE_CODE == "ru" %}{% static 'img/app-store-ru.png'{%else%}{% static 'img/app-store-black-en.svg'{%endif%}" alt="App Store" style="height:40px;{% if LANGUAGE_CODE == "ru" %}width: 133px;{%else%}width: 120px;{%endif%}opacity: 0.33"></a>
+        </div>
+        {% endcomment %}
+      </div>
+
+        {% if main_page and city.gps_data_provider %}
+          <div class="ui grid">
+            <div class="center aligned column">
+          <div class="ui horizontal large link list">
+            <span class="item">{% trans "Данные" %}: </span>
+            <a class="item" rel="noopener" href="{{city.gps_data_provider_url}}" target="_blank">{{city.gps_data_provider}}</a>
+
+            {% if city.name == "Красноярск" or city.name == "Норильск" or city.name == "Железногорск" %}
+            <a class="item" rel="noopener" href="http://www.krasinform.ru/" target="_blank">ЗАО КрасИнформ</a>
+            {% endif %}
+
+            {% if city.name == "Пермь" %}
+            <a class="item" rel="noopener" href="http://gortransperm.ru/" target="_blank">МБУ Городское управление транспорта</a>
+            {% endif %}
+
+          </div></div></div>
+        {% endif %}
+
+        <br/><div class="ui center aligned grid">
+           <div class="column">
+            <select name="select_language" class="ui selection dropdown sel_lang_ftr">
+                   {% for code, lang in languages %}
+                   <option value="{{code}}"{% if LANGUAGE_CODE == code %} selected {% endif %}>{{lang}}</option>{{ linebreaks }}
+                   {% endfor %}
+               </select><br/><br/>
+               <a href="mailto:support@bustime.loc"> support@bustime.loc </a>
+               {% if LANGUAGE_CODE == "ru" %} |
+               <a class="item" rel="noreferrer" target="_blank" href="https://vk.com/bustimeweb" aria-label="{% trans "Страница Bustime в Вконтакте" %}"><i class="fa-vk icon"></i></a>
+               {% endif %}
+           </div></div>
+      <br/>
+      {% if test %}<center><img src="{% static 'img/footer_stop_bw_light.png' %}" /></center>{% endif %}
+      {% if main_page %}
+      <!-- hack to prevent hiding of quick access -->
+      {% if us.expert %}<br/><br/>{% endif %}
+      {% endif %}
+
+
+    </div>
+
+
+    {% if main_page %}
+    <div class="ui grid live_indicators">
+        <div class="ui circular label live_indicators">
+            <div class="ui mini red empty circular label" id="status_city_circular"></div><span id="status_city_text">{% trans " Offline" %}</span>
+        </div>
+        <div class="center aligned column" style="padding:0;">
+            <div class="inf_about_data live_indicators"></div>
+            <div class="ui attached progress live_indicators"><div class="bar live_indicators" style="left: 0;"></div></div>
+        </div>
+    </div>
+    {% endif %}
+
+
+</div> <!-- ui container -->
+
+    <!-- <div class="ui mobile only grid"> -->
+    <div class="ui blue icon launch right attached fixed big button" onclick="$('.ui.sidebar').sidebar('toggle')">
+        <i class="fa-bars icon"></i>
+    </div>
+    {% if main_page and not status_page %}
+    <!--base.html: кнопка карты maplibre, обработчик в static/js/bustime-maplibre.js-->
+    <div class="ui blue icon left attached fixed big button toggle maplibre_button">
+        <i class="fa-map-o icon"></i>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+  {% block js_extra %}{% endblock %}
+
+  {% block js %}
+    {% if main_page %}
+    <script>
+    // заменяет ссылки на пустые
+    var busnumbers  = document.getElementsByClassName("busnumber");
+    for (var q = 0; q < busnumbers.length; q++) {
+        busnumbers[q].setAttribute('href', "#");
+    }
+    </script>
+    {% endif %}
+      <script src="{% static 'js/system.min.js' %}"></script>
+  {% if test %}
+      <script type="systemjs-importmap" src="{% static 'importmap-test.json' %}"></script>
+        <script type="systemjs-importmap">
+        {
+            "imports": {
+                "bundle_built": "/static/js/bustime-main-entry.js"
+            }
+        }
+        </script>
+    <script type="systemjs-module" src="import:bundle_built"></script>
+  {%else%}
+      <script type="systemjs-importmap" src="{% static 'importmap.json' %}?v6"></script>
+        <script type="systemjs-importmap">
+        {
+            "imports": {
+                "bundle_built": "{% static 'js' %}/bundle-built-{{ js_ver }}.js"		
+            }
+        }
+        </script>
+    <script type="systemjs-module" src="import:bundle_built"></script>
+  {%endif%}
+  {% endblock %}
+<!--
+{% is_european_union us.ip as is_in_european_union %}
+{% if is_in_european_union %}
+<div class="cookie_policy hidden">
+  <button class="ui right floated button" onclick="cookie_policy_agree()">
+    {% trans "Я согласен" %}
+  </button>
+  {% trans "Куки помогают нам предоставлять наши услуги" %}. {% trans "Используя сервис или нажимая Я согласен, вы соглашаетесь на использование куки"%}.
+  <a href="/cookies-policy/">{% trans "Узнать Больше" %}</a>.
+</div>
+{% endif %}
+-->
+
+{% block body_end %}{% endblock %}
+</div><!--pusher-->
+
+{% if place %} {% if main_page or uevents_on_map_page %}
+<script>
+const xhr = new XMLHttpRequest();
+xhr.open('GET', path_dump);
+var osd = document.querySelector('.osd_message');
+var osd_text = document.querySelector('.osd_message_text');
+var starttime = performance.now();
+
+xhr.onprogress = function(event) {
+    const prc = Math.round(event.loaded / dump_size * 100);
+    let executiontime = performance.now() - starttime;
+    if (osd) {
+        osd.style.opacity = prc/100;
+        if (executiontime>750) { // don't blink on cached fully loaded data
+          osd.style.display = 'inline';
+        }
+        if (osd_text) { osd_text.textContent = 'DB loaded: '+prc+"%"; }
+    }
+};
+
+xhr.onload = function() {
+  if (xhr.status === 200) {
+    if (osd) {
+        osd.style.opacity = 1;
+    }
+    if (osd_text) {osd_text.textContent = ''}
+    DB = JSON.parse(xhr.responseText);
+
+    if (path_diff) {
+      diff_dump(DB); // после загрузки вызываем ф-ю применения дифа
+    } else {
+      loading_done();
+    }
+  } else {
+    console.error(`Error ${xhr.status}: ${xhr.statusText}`);
+  }
+};
+
+xhr.onerror = function() {
+  console.error('DB request error');
+};
+
+xhr.send();
+
+
+
+
+
+// КОД ДЛЯ НОВОГО ИНТЕРФЕЙСА, КОТОРЫЙ ПЕРЕНЕСЕТСЯ В BUSTIME-MAIN.JS
+
+setTimeout(function() {
+
+
+
+// УНИВЕРСАЛЬНАЯ СТРОКА ПОИСКА
+
+    var bus_name_source = [];
+    var nbusstop_name_source = [];
+    var nbusstop_with_double = [];
+
+    // достаем каждый маршрут и его тип
+    for (key in dbgetsafe('bus')){
+        var ttype_bus = dbget('bus', key, 'ttype');
+        if (ttype_bus == "0"){
+            ttype_bus = "Автобус";
+        }else if (ttype_bus == "1"){
+            ttype_bus = "Троллейбус";
+        }else if (ttype_bus == "2"){
+            ttype_bus = "Трамвай";
+        }else if (ttype_bus == "3"){
+            ttype_bus = "Маршрутное такси";
+        }else if (ttype_bus == "4"){
+            ttype_bus = "Водный";
+        }else if (ttype_bus == "5"){
+            ttype_bus = "Междугородний";
+        }else if (ttype_bus == "6"){
+            ttype_bus = "Метро";
+        }
+
+        // записываем полное название "номер маршрута + его тип" и добавляем в массив для поиска
+        var bus_name_full = ttype_bus + " " + dbget('bus', key, 'name');
+        bus_name_source.push({title: bus_name_full, type_search: 'bus', id: key, ttype: ttype_bus, points: dbget('bus', key, 'routeline_0')});
+
+    }
+
+
+    // берем все остановки и записываем название, коррдинаты для массива поиска
+    for (key in dbgetsafe('nbusstop')){
+        var points = [dbget('nbusstop', key, 'point_x'), dbget('nbusstop', key, 'point_y')];
+        nbusstop_with_double.push({title: dbget('nbusstop', key, 'name'), type_search: 'nbusstop', id: dbget('nbusstop', key, 'unistop'), points: points, ttype: 'Остановка'})
+    }
+
+    // убираем дубли остановок по названию
+    nbusstop_name_source = nbusstop_with_double.reduce(function (p, c) {
+        if (!p.some(function (el) { return el.title === c.title; })) p.push(c);
+          return p;
+    }, []);
+
+
+    console.log(bus_name_source);
+    console.log(nbusstop_name_source);
+
+
+
+     // из routeline из бд делаем массив координат для отрисовки линии на миникарте
+    function parse_coordinates(points_str) {
+        return JSON.parse(points_str.replace(/\(([^)]+)\)/g, '[$1]').replace(/\(/g, '[').replace(/\)/g, ']'));
+    }
+
+
+
+    // инициализирует миникарту и рисует нужное обозначение
+    function create_mini_map(container_id, coordinates, type_search) {
+
+        // инициализация мини карты в блок определенного результата поиска
+        const map_mini = new maplibregl.Map({
+            container: container_id,
+            style: 'https://demotiles.maplibre.org/style.json',
+
+
+            // coordinates - тут хранится либо координаты точки (остановки), либо массив координат (линия маршрута)
+            // для определения центра и зума карты, сначала определяем, что именнно в coordinates
+            // определяем так: берем первый элемент coordinates[0] - если он является массивом, значит это линия маршрута, иначе это точка, значит остановка
+
+
+            center: Array.isArray(coordinates[0]) ? coordinates[Math.floor(coordinates.length / 2)] : coordinates, // если линия (маршрут), то берем за центр точку из середины линии, иначе просто точку (остановку)
+            zoom: Array.isArray(coordinates[0]) ? 8 : 15                                                           // если линия (маршрут) зум 8, если точка(остановка) зум 15
+        });
+
+        if (type_search === 'nbusstop') {            // если результат поиска остановка
+            new maplibregl.Marker({scale: 0.5})
+            .setLngLat(coordinates).addTo(map_mini); // ставим на карту маркер
+
+        } else if (type_search === 'bus') {          // если результат поиска маршрут
+            map_mini.on('load', () => {              // рисуем линию этого маршрута
+                map_mini.addSource('line', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [{
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'LineString',
+                                'coordinates': coordinates
+                            }
+                        }]
+                    }
+                });
+                map_mini.addLayer({                 // и добавляем эту линию маршрута на карту
+                    'id': 'line',
+                    'type': 'line',
+                    'source': 'line',
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                        'line-color': '#3fb1ce',
+                        'line-width': 3
+                    }
+                });
+            });
+            // устанавливаем карту, чтоб было видно всю линию маршрута
+            map_mini.fitBounds([coordinates[0], coordinates[(coordinates.length-1)]]);
+        }
+    }
+
+
+
+
+
+
+    $('.ui.search.search_all').search({                              // инициализируем строку поиска
+        minCharacters: 1,
+        source: nbusstop_name_source.concat(bus_name_source),        // совмещенный источник для поиска: остановки + маршруты
+        searchFields: ['title'],                                     // поиск только по полю title
+        ignoreDiacritics: true,
+        cache: false,
+        maxResults: 10,                                              // максимальное количество результатов
+
+
+        templates: {
+            standard: function(response) {                           // переделываем вид вывода результата поиска
+
+                var html = '';
+                $.each(response.results, function(index, result) {   // идем по всем результатам поиска
+                    var map_id = 'map_' + result.id;                 // создаем для каждой мини карты id блока
+                                                                     // отрисовываем карточку результата с блоком для карты
+                    html += '<a class="result"><div class="content"><div class="ui horizontal card"><div class="image"><div id="' + map_id + '" style="height: 100%; width: 100%;"></div></div><div class="content" style="margin: 0;"><div class="header">' + result.title + '</div><div class="meta"><span class="category">' + result.ttype + '</span></div></div></div></div></a>';
+
+
+                    setTimeout(function() {                                        // timeout чтобы успели загрузиться блоки на страницу, иначе карте негде создаваться
+                        if (result.type_search == "bus") {                         // если маршрут
+                            var coordinates = parse_coordinates(result.points);    // его routeline преобразуем в массив координат для линии
+                        } else {                                                   // если остановка
+                            var coordinates = result.points;                       // берем ее координаты для маркера
+                        }
+                        create_mini_map(map_id, coordinates, result.type_search);  // вызываем ф-ю создания мини карты и посылаем в нее координаты для отрисовки линии или маркера
+                    }, 1);
+
+                });
+
+                return html;                                                       // выводим результаты поиска на страницу
+
+            }
+        },
+
+
+
+        onSelect: function(result) {                                  //действия при клике на один из результатов поиска
+
+            // обработка выбранного результата поиска
+            if (result.type_search == "bus") {                        // если ищем маршрут, то при клике на результат поиска открываем маршрут
+                show_me_the_bus(result.id);
+            } else if (result.type_search == "nbusstop") {            // если ищем остановку, то при клике на результат поиска открываем остановку на основной большой карте, для этого:
+
+                $('.maplibre_button').click();                        // скрываем ненужное, открываем нужное и инициализируем карту кликом
+                ml_map.setZoom(12);
+                $('.selection_transport .active').removeClass('active');
+                $('#bus').addClass('active');
+                $('.search_stop').css('display', '');
+                $('.search_address').css('display', 'none');
+
+                                                                     // достаем всю информацию о выбранной остановке
+                var nbusstop_result = nbusstop_name_source.find(item => item.title === result.title);
+                console.log(nbusstop_result.id);
+                                                                     // записываем координаты и название выбранной остановки в поле поиска
+                $('.stop_from input').attr('id', nbusstop_result.id).val(nbusstop_result.title);
+
+
+                from_place = new maplibregl.Marker()                 // добавляем маркер на карту
+                    .setLngLat(nbusstop_result.points)
+                    .addTo(ml_map);
+
+                ml_map.easeTo({                                     // горизонтальное перемещение камеры по карте до координат
+                    center: nbusstop_result.points,
+                    duration: 3000,                                 // продолжительность перемещения
+                    easing: t => t                                  // линейное замедление
+                });
+
+
+                setTimeout(function() {                             // приближение камеры, вызываем с задержкой, чтобы началось после предыдущего перемещения камеры
+                    ml_map.flyTo({
+                        center: nbusstop_result.points,
+                        zoom: 17,
+                        duration: 5000
+                    });
+                }, 2000);
+            }
+
+            //$('.ui.search.search_all input').val('');
+            $('.results').removeClass('visible').addClass('hidden').css('display', 'none');
+        }
+
+
+
+    });
+
+
+
+
+
+// ИНДИКАТОРЫ ВНИЗУ СТРАНИЦЫ
+
+    if (socket) {                                                         // если Socket connected
+        socket.emit('join', "ru.bustime.updater__"+ {{place.id}});        // подключаемся к каналу
+        $('#status_city_circular').removeClass('red').addClass('green');  // меняем цвет индикатора на зеленый
+        $('#status_city_text').text(' Online');                           // меняем текст индикатора с Offline на Online
+    }
+
+    var message_queue = [];
+    var current_item = null;
+    var interval_id = null;
+
+    socket.on("*", function(event, data) {
+
+        if (data['updater'] && data['updater']['state'] == 'idle') {                           // событие "Загрузка данных через Х сек"
+
+            // сколько секунд до обновления
+            var timeout = data['updater']['timeout'];
+
+            // устанавливаем прогресс в прогрессбаре
+            $('.ui.progress').progress('set progress', (100 - (timeout * 10)));
+
+
+            if (timeout >= 1 && timeout <= 3) { // добавляем в inf_about_data только если timeout от 1 до 3
+
+                // иконка  для отображения события
+                var icon_idle = '<i class="fa fa-spinner" aria-hidden="true"></i>';
+
+                // надпись для отображения события
+                var idle_message = trans_idle_message_load + timeout + trans_idle_message_sec;
+
+                // добавляем это событие в очередь
+                message_queue.push(icon_idle + idle_message);
+
+                if (current_item === null) {// если нет текущего отображаемого события, то смотрим очередь
+                    process_queue();
+                }
+
+            }
+        } else if (data['updater'] && data['updater']['state'] == 'update') {                  // событие "Данные обновлены"
+
+            // иконка  для отображения события
+            var icon_update = '<i class="fa fa-check" aria-hidden="true"></i>';
+
+            // добавляем это событие в очередь
+            message_queue.push(icon_update + trans_update_message);
+
+            // если нет текущего отображаемого события, то смотрим очередь
+            if (current_item === null) {
+                process_queue();
+            }
+
+            // устанавливаем прогресс 100% в прогрессбаре
+            $('.ui.progress').progress('set progress', 100);
+
+        } else if (data['updater'] && data['updater']['state'] == 'post_turbine_update') {     // событие " Обработано Х событий"
+
+            // иконка  для отображения события
+            var icon_post_update = '<i class="fa fa-refresh" aria-hidden="true"></i>';
+
+            // надпись для отображения события
+            var post_update_message = trans_post_update_message_processing + data['updater']['events_count'];
+
+            // добавляем это событие в очередь
+            message_queue.push(icon_post_update + post_update_message);
+
+            // если нет текущего отображаемого события, то смотрим очередь
+            if (current_item === null) {
+                process_queue();
+            }
+
+        } else if (data['updater'] && data['updater']['state'] == 'post_update') {             // событие "Принято от поставщика Х  событий за W сек"
+
+            // иконка  для отображения события
+            var icon_post_turbine_update = '<i class="fa fa-clock-o" aria-hidden="true" style="font-size:14px;"></i>';
+
+            // надпись для отображения события
+            var post_turbine_update_message = trans_post_turbine_update_message_provid + data['updater']['provider_events_count'] + trans_post_turbine_update_message_for +  data['updater']['provider_delay'] + trans_post_turbine_update_message_sec;
+
+            // добавляем это событие в очередь
+            message_queue.push(icon_post_turbine_update + post_turbine_update_message);
+
+            // если нет текущего отображаемого события, то смотрим очередь
+            if (current_item === null) {
+                process_queue();
+            }
+        }
+    });
+
+
+    function process_queue() {                       // ф-я для обработки очереди
+
+        if (message_queue.length > 0) {              // если в очереди что-то есть
+            current_item = message_queue.shift();    // удаляем первое событие из очереди и сохраняем его в переменную
+
+            $('.inf_about_data').html(current_item); // добавляем это событие на страницу
+
+            setTimeout(function() {                  // задержка в 1 секунду для отображения события
+                current_item = null;                 // сбрасываем текущее событие
+                if (message_queue.length > 0) {      // если сообытия в очереди есть
+                    process_queue();                 // запускаем следующую итерацию очереди
+                }
+            }, 1000);
+        }
+    }
+
+
+
+
+}, 3000);
+
+
+
+</script>
+{% endif %} {% endif %}
+</body>
+{% endblock %}
+</html>{% endwith %}{% endspaceless %}

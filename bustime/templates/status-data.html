@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% load next %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{{place.name}} {{day}}{%endblock%}
+{% block meta_descr %}{% trans "Диспетчерский журнал на" %} {{day|date:"Y-m-d"}}. {% trans "Трэки и события общественного транспорта" %}.{% endblock %}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url}}transport/{{day}}/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url}}transport/{{day}}/">
+{% get_available_languages as LANGUAGES %}{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url}}transport/{{day}}/" />
+{% endfor %}
+
+<style>
+.uptime-90-days-wrapper {
+padding-top: 5px;
+margin-bottom: -2px;
+height: 34px;
+width: 100%;
+}
+svg:not(:root), symbol, image, marker, pattern, foreignObject {
+    overflow: hidden;
+}
+.availability-time-line-graphic {
+width: 100%
+}
+
+#rect-tooltip {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 50px;
+    min-width: 100px;
+    border: 1px solid #858585;
+    color: #404040;
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+    padding: 5px;
+}
+.bar #head, .bar #head a {
+    color: #707070;
+    font-weight: bold;
+    text-decoration: none;
+}
+.legend
+{
+    display: flex;
+    display: -ms-flexbox;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    top: -2px;
+    padding: 0;
+    min-width: 830px;
+    max-width: 830px;
+}
+.legend .legend-item
+{
+    color: #707070;
+    flex: 0 0 auto;
+    font-size: .875rem;
+    opacity: 0.8;
+    position: relative;
+}
+.legend .legend-item.light
+{
+    color: #707070;
+    opacity: 0.5;
+}
+.legend .spacer
+{
+    background: #707070;
+    flex: 1;
+    height: 1px;
+    margin: 0.75rem 1rem 0 1rem;
+    opacity: 0.3;
+}
+</style>
+{% endblock %}
+{% block nav_transport %}active{% endblock %}
+{% block content %}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+   <a class="section" href="/{{place.slug}}/transport/">{% trans "Журнал" %}</a>
+   <i class="right angle icon divider"></i>
+   {% if bus %}
+   <a class="section" href="/{{place.slug}}/transport/{{day}}/">{{day}}</a>
+   <i class="right angle icon divider"></i>
+   <span class="active section">{{bus.ttype_name}} {{bus.name}}</span>
+   {% else %}
+   <span class="active section">{{day}}</span>
+   {% endif %}
+</div>
+<div class="ui divider"></div>
+
+{% if old_day %}
+<div class="ui icon message">
+  <i class="exclamation icon"></i>
+  <div class="content">
+    <div class="header">
+      {% trans "Внимание" %}
+    </div>
+    <p>{% trans "Данные доступны только до" %} {{ old_day.date }}</p>
+  </div>
+</div>
+{% endif %}
+
+<script>
+var day = '{{day}}';
+var secInInterval = {{secInInterval}};
+
+function rect_onmouseout()
+{
+    $('#rect-tooltip').hide();
+}
+
+function rect_onmouseover(rect)
+{
+    var ypos = $(rect).offset().top + 35;
+    var xpos = $(rect).offset().left;
+    $('#rect-tooltip').css('top', ypos);
+    $('#rect-tooltip').css('left', xpos);
+    var x = parseInt($(rect).attr('x'));
+    var sec = x / 5 * secInInterval;
+    var h = (3+Math.floor(sec / 3600)).toString();
+    if(h >= 24) h = h - 24;
+    if( h.length == 1 ) h = '0' + h;
+    var m = (sec % 3600 / 60).toString();
+    if( m.length == 1 ) m = m + '0';
+    var t1 = h + ':' + m;
+    sec += secInInterval;
+    h = (3+Math.floor(sec / 3600)).toString();
+    if(h >= 24) h = h - 24;
+    if( h.length == 1 ) h = '0' + h;
+    m = (sec % 3600 / 60).toString();
+    if( m.length == 1 ) m = m + '0';
+    var t2 = h + ':' + m;
+
+    var aHint =  $(rect).data('hint').split(';');
+    a1 = JSON.parse(aHint[0]);   // Нет данных по ТС
+    a4 = JSON.parse(aHint[1]);   // Пришел на конечную
+    a7 = JSON.parse(aHint[2]);   // Сошел с маршрута
+    index = parseInt(aHint[3]);  // array index
+
+    var hint = '';
+    if( a1[index] == '-1' )
+        hint = '{% trans "Интервал" %}: ' + t1 + '-' + t2 + '<br>{% trans "Данных нет" %}';
+    else
+        hint = '{% trans "Интервал" %}: ' + t1 + '-' + t2 + '<br>{% trans "Отключений" %}: ' + a1[index];
+
+    if( a4[index] > 0 )
+        hint += '<br>{% trans "Приходов на конечную" %}: ' + a4[index];
+
+    if( a7[index] > 0 )
+        hint += '<br>{% trans "Сходов с маршрута" %}: ' + a7[index];
+
+    if(hint.length > 0){
+        $('#rect-tooltip').html(hint);
+        $('#rect-tooltip').show();
+    }
+}
+
+function rect_click(rectIndex, uid)
+{
+    var sec = (1 + rectIndex) * secInInterval;
+    var h = (3+Math.floor(sec / 3600)).toString();
+    if(h >= 24) h = h - 24;
+    if( h.length == 1 ) h = '0' + h;
+    var m = (sec % 3600 / 60).toString();
+    if( m.length == 1 ) m = m + '0';
+    var t1 = h + ':' + m;
+    var url = "/{{place.slug}}/transport/{{day}}/"+uid+"/#time="+t1;
+    console.log('rect_click: ', url);
+    //get
+    window.location.href = url;
+}
+
+function headClick(uid)
+{
+    var url = "/{{place.slug}}/transport/{{day}}/";
+    var bus_id = {% if bus %}{{bus.id}}{% else %}0{% endif %};
+    $.redirectPost(url, {city_name: '{{place.slug}}', "uid": uid, day: '{{day}}', bus_id: bus_id });
+}
+
+function js_page_extra() {
+    $('.ui.dropdown').dropdown({
+        fullTextSearch: true,
+        ignoreCase: true,
+        minCharacters: 1,
+        match: 'text',
+        message: {
+            noResults: "Не найдено"
+        }
+    });
+    // jquery extend function for POST open
+    $.extend(
+    {
+        redirectPost: function(location, args)
+        {
+            var form = '{% csrf_token %}';
+            $.each( args, function( key, value ) {
+                form += '<input type="hidden" name="'+key+'" value="'+value+'">';
+            });
+            $('<form action="'+location+'" method="POST">'+form+'</form>').appendTo('body').submit();
+        }
+    });
+    // var labels = ["03:00", "05:00", "07:00", "08:00",
+    // "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+    // "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
+    // "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00"];
+    // $('.timeslider').slider({
+    //     interpretLabel: function(value) {
+    //       return labels[value];
+    //     }
+    // });
+}
+
+function busonselect(bus_id)
+{
+    var url = "/{{place.slug}}/transport/{{day}}/";
+    if(bus_id != "0")
+        window.location = url+"?bus_id="+bus_id;
+    else
+        window.location = url;
+}
+</script>
+
+<div class="ui three column stackable grid">
+    <div class="column">
+        <div class="ui calendar" id="calendar">
+            <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" placeholder="Date" value="4/25/2015 3pm">
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <select name="bus_id" class="ui search dropdown" onchange="busonselect(this.value)">
+          <option value="0">{% trans "Все маршруты" %}</option>
+          {% for b in buses %}
+          <option value="{{b.id}}" {% if bus and bus.id == b.id %}selected="selected"{% endif %}>{{b.ttype_name}} {{b.name}}</option>
+          {% endfor %}
+        </select>
+    </div>
+
+    <div class="column">
+        <div class="ui right action left icon input">
+            <i class="circular search link icon" id="search_gn_i"></i>
+            <input type="text" id="search_gn" name="search_gn" size="8" value="{% if search_gn %}{{search_gn}}{% endif %}" maxlength="16" placeholder="{% trans "Поиск..." %}">
+            <select class="ui compact selection dropdown" id=search_for>
+                <option value="search_gn" selected>{% trans "Гос. №" %}</option>
+                <option value="search_bn">{% trans "Борт. №" %}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<br/><br/>
+
+<div id="rect-tooltip"></div>
+<!-- <div class="ui labeled ticked slider timeslider"></div> -->
+
+
+{% for k, v in statCars %}
+<div class="ui bar" {% if not forloop.first %}style="margin-top:2em"{%endif%}>
+    <span id="head"><a href="/{{place.slug}}/transport/{{day}}/{{v.uid}}/" title="Подробно">{{k}} {% if v.label|length > 0 %} [{{v.label}}] {% endif %}</a></span>
+    <svg class="availability-time-line-graphic" preserveAspectRatio="none" height="34" viewBox="0 0 648 34">
+        {% for val in v.1 %}
+            {% with iterator|next_item as x %}
+            <rect height="34" width="3" x="{{x}}" y="0" id="rect_x"
+                    fill="{% if forloop.counter0 > gray_value %}rgb(160,160,160){% elif val > 1 %}rgb(255,0,0){% elif val %}rgb(255,181,129){% else %}rgb(67,181,129){% endif %}"
+                    class="tool tooltipstered" data-html="true" data-hint="{{v.1}};{{v.4}};{{v.7}};{{forloop.counter0}}"
+                    onmouseout="rect_onmouseout()" onmouseover="rect_onmouseover(this)"
+                    onclick="rect_click({{forloop.counter0}}, '{{v.uid}}')"
+                    cursor="pointer">
+            </rect>
+            {% endwith %}
+        {%endfor%}
+        <!--<text x="2" y="22" font-family="sans-serif" font-size="16px" fill="black" font-weight="bold">{{k}}</text>-->
+    </svg>
+</div>
+{%endfor%}
+
+<!--кнопки страниц-->
+<!-- заменить на обновленный пагинатор -->
+<!--для компьютеров-->
+{% if not device and statCars.paginator and statCars.paginator.num_pages > 1 %}
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right menu">
+
+<!--кнопки 1ая и следующая страница-->
+            {% if statCars.has_previous %}
+            <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{statCars.previous_page_number}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"><i class="arrow left icon" style="color:#81899E;"></i></a>
+            {% endif %}
+
+            {% if statCars.next_page_number > 11 or not statCars.has_next and statCars.number > 11  %}
+            <a class="item" href="/{{place.slug}}/transport/{{day}}/page-1/{% if bus %}?bus_id={{bus.id}}{% endif %}">1</a>
+            <div class="disabled item">...</div>
+            {% endif %}
+
+<!--основное постраничное меню-->
+            {% for p in statCars.paginator.page_range %}
+                {% if p == statCars.number %}
+                <a class="current active item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"><b>{{p}}</b></a>
+
+                {% elif statCars.number < 10 and p < 20 %}
+                <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"> {{p}} </a>
+
+                {% elif statCars.number|add:'10' > statCars.paginator.num_pages and p > statCars.paginator.num_pages|add:'-20' %}
+                <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"> {{p}}</a>
+
+                {% elif p > statCars.number|add:'-10' and p < statCars.number|add:'10' %}
+                <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"> {{p}} </a>
+                {% endif %}
+            {% endfor %}
+<!--кнопки следующая и последняя страница-->
+            {% if statCars.number|add:'9' < statCars.paginator.num_pages %}
+            <div class="disabled item">...</div>
+            <a class="item" href=" /{{place.slug}}/transport/{{day}}/page-{{statCars.paginator.num_pages}}/{% if bus %}?bus_id={{bus.id}}{% endif %}">{{statCars.paginator.num_pages}}</a>
+            {% endif %}
+
+            {% if statCars.has_next %}
+            <a class="item" href=" /{{place.slug}}/transport/{{day}}/page-{{statCars.next_page_number}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"><i class="arrow right icon" style="color:#81899E;"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if not statCars %}
+<div class="ui message">
+  <div class="header">
+    {% trans "Данных нет" %}
+  </div>
+  <p>{% trans "На данный период времени данные отсутствуют" %}.</p>
+</div>
+{% endif %}
+
+<!--для мобильных-->
+{% if device and statCars.paginator and statCars.paginator.num_pages > 1 %}
+<div class="ui grid" style="margin-top:1em">
+    <div class="column">
+        <div class="ui pagination right mini menu">
+<!--кнопки 1ая и следующая страница-->
+            {% if statCars.has_previous %}
+            <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{statCars.previous_page_number}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"><i class="arrow left icon" style="color:#81899E; width:3px;"></i></a>
+            {% endif %}
+
+            {% if statCars.next_page_number > 3 or not statCars.has_next and statCars.number > 3 %}
+            <a class="item" href="/{{place.slug}}/transport/{{day}}/page-1/{% if bus %}?bus_id={{bus.id}}{% endif %}">1</a>
+            <div class="disabled item">...</div>
+            {% endif %}
+
+<!--основное постраничное меню-->
+            {% for p in statCars.paginator.page_range %}
+                {% if p == statCars.number %}
+                <a class="current active item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"><b>{{p}}</b></a>
+
+                {% elif statCars.number < 2 and p < 5 %}
+                <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"> {{p}} </a>
+
+                {% elif statCars.number|add:'2' > statCars.paginator.num_pages and p > statCars.paginator.num_pages|add:'-3' %}
+                <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"> {{p}}</a>
+
+                {% elif p > statCars.number|add:'-2' and p < statCars.number|add:'2' %}
+                <a class="item" href="/{{place.slug}}/transport/{{day}}/page-{{p}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"> {{p}} </a>
+                {% endif %}
+            {% endfor %}
+<!--кнопки следующая и последняя страница-->
+            {% if statCars.number|add:'1' < statCars.paginator.num_pages %}
+            <div class="disabled item">...</div>
+            <a class="item" href=" /{{place.slug}}/transport/{{day}}/page-{{statCars.paginator.num_pages}}/{% if bus %}?bus_id={{bus.id}}{% endif %}">{{statCars.paginator.num_pages}}</a>
+            {% endif %}
+
+            {% if statCars.has_next %}
+            <a class="item" href=" /{{place.slug}}/transport/{{day}}/page-{{statCars.next_page_number}}/{% if bus %}?bus_id={{bus.id}}{% endif %}"><i class="arrow right icon" style="color:#81899E; width:3px;"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<br/><br/><br/><br/>
+{% endblock %}
+
+{% block body_end %}
+<script>
+function js_page_extra() {
+    $('#calendar').calendar({
+      type: 'date',
+      firstDayOfWeek: 1,
+      ampm: false,
+      today: false, // кнопка "Сегодня", из-за странностей работы сдвигается месяц, не включать
+      text: {
+          days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+          months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+          monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+          today: 'Сегодня',
+          now: 'Сейчас',
+          am: 'ПП',
+          pm: 'ДП'
+      },
+      formatter: {
+        date: function (date, settings) {
+          if (!date) return '';
+          var day = date.getDate().toString();
+          if( day.length < 2 ) day = '0' + day;
+          var month = (date.getMonth()+1).toString();
+          if( month.length < 2 ) month = '0' + month;
+          var year = date.getFullYear().toString();
+          return day + '.' + month + '.' + year;
+        }
+      },
+      parser: {
+          date: function (text, settings) {
+            //return a date parsed from 'text' - initialDate = 2019-04-25
+            if( text.indexOf('-') === -1 ){
+                text = "{{date|date:'Y-m-d'}}"
+            }
+            var year = parseInt(text.substring(0, 4));
+            var month = parseInt(text.substring(5, 7));
+            var day = parseInt(text.substring(8));
+            return new Date(year, month-1, day, 0, 0, 0, 0);
+          }
+      },
+      // callback when date changes, return false to cancel the change
+      onChange: function (date, text, mode) {
+        var year = text.substring(6);
+        var month = text.substring(3, 5);
+        var day = text.substring(0,2);
+        var data = year + '-' + month + '-' + day;
+        var href = document.location.protocol+'//'+document.location.host+document.location.pathname.replace('{{day}}', data);
+        var bus_id = {% if bus %}{{bus.id}}{% else %}0{% endif %};
+        if(bus_id)
+            href = href +"?bus_id="+bus_id;
+        document.location.href = href;
+      }
+    });
+
+    $("#search_gn").on('keypress',function(e) {
+        if(e.which == 13) {
+            search_f();
+        }
+    });
+    $("#search_gn_i").on('click', function(e) {
+        search_f();
+    });
+}   // js_page_extra
+
+function search_f() {
+    let search_value = $("#search_gn").val();
+    console.log(`search_f: ${search_value}`);
+    if (search_value) {
+        let search_for = $('#search_for').val();
+        let url = document.location.protocol+'//' + document.location.host + "/{{place.slug}}/transport/{{day}}/";
+        let href = url + '?' + search_for + '=' + encodeURIComponent(search_value);
+        document.location.href = href;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}
+<!--такси, пользовательское соглашение, таксист-->
+<h2 class="ui header" >
+    {% trans "Пользовательское соглашение использования сервиса bustime-попутчик" %}
+</h2>
+
+<div style="background-color:#F2F2F2; padding:1.5em 1em;">
+    <h4>{% trans "bustime.loc не является интегратором такси, не имеет в штате водителей и парка машин" %}</h4>
+    {% trans "Мы только связываем пассажира и водителя. Все остальные вопросы, касающиеся поездки пассажир и водитель должны решать по обоюдному согласию" %}.
+
+    <h4>{% trans "Для использования сервиса bustime-попутчик Вы должны согласиться со следующим:" %}</h4>
+    <ol class="ui list">
+        <li>Все параметры поездки являются добровольным соглашением между пассажиром и водителем.</li>
+        <li>bustime.loc не несёт прямой или косвенной ответственности за результат использования сервиса bustime-попутчик как перед пассажиром, так и перед водителем.</li>
+        <li>bustime.loc не является стороной возможных конфликтов между пассажиром и водителем и не принимает претензий, касающихся любых аспектов использования сервиса bustime-попутчик.</li>
+        <li>Пассажир и водитель принимают на себя все возможные риски, касающиеся поездки.</li>
+    </ol>
+</div>
+
+<div style="padding:1.5em 1em; margin-top:1em;">
+    <h4>{% trans "Используйте сервис bustime-попутчик только если Вы согласны с условиями выше" %}</h4>
+
+    {% if showname %}
+    <div class="ui two column grid" style="margin-bottom: 1em;">
+        <div class="column">
+            <div class="setting_name">{% trans "Имя" %}:</div>
+            <div class="ui input" style="width: 100%">
+                <input type="text" id="taxi_user_name" name="taxi_user_name" value="{{user.first_name|default:user.username}}" autocomplete="off">
+            </div>
+        </div>
+        <div class="column">
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="inline field">
+        <div class="ui checkbox">
+            <input id="taxi_agreement" name="taxi_agreement" type="checkbox" tabindex="0" class="hidden">{# обработчики в from-to3.html и settings_profile.html #}
+            <label>{% trans "Я прочитал условия и согласен с ними" %}</label>
+        </div>
+    </div>
+</div>

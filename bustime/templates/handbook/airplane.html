@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% load cache %}{% load i18n %}
+{% block extra_head %}{% include "handbook/_style.html" %}{% endblock %}
+
+{% block content %}
+<div class="ui big breadcrumb">
+    <a class="section" href="/">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+    <a class="section" href="/help/">{% trans "Справочник" %}</a>
+    <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Самолёт" %}</span>
+</div>
+
+<div class="ttype">
+<img src="/static/img/help/airplane.png" />
+</div>
+
+<div class="ui large segment">
+  <p>{% trans "Самолёт — это летательный аппарат с неподвижными крыльями, предназначенный для перевозки пассажиров и грузов по воздуху. Самолёты используются для коммерческих, грузовых, военных и частных полётов, обеспечивая быстрое перемещение на большие расстояния." %}</p>
+</div>
+<br/><br/>
+{% endblock %}

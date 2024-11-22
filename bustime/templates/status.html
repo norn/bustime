@@ -1,0 +1,717 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load i18n %}
+{% load index %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block titlee %}{% trans "Состояние системы" %}{%endblock%}
+{% block meta_descr %}{% trans "Показывает статистику системы мониторинга онлайн и активность пассажиров, наблюдающих за общественным транспортом в г." %} {{place.name}}.{% endblock %}
+{% block nav_status %}active{%endblock%}
+
+{% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://bustime.loc{{place.get_absolute_url}}status/">
+<link rel="canonical" href="https://{{ LANGUAGE_CODE }}.bustime.loc{{place.get_absolute_url}}status/">
+{% get_available_languages as LANGUAGES %}
+{% for language_code, language_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ language_code }}" href="https://{{ language_code }}.bustime.loc{{place.get_absolute_url}}status/" />
+{% endfor %}
+<script src="https://cdn.bustime.loc/static/js/jamline-{{place.id}}-{{place.rev}}.js" type="text/javascript"></script>
+<script src="https://cdn.bustime.loc/static/js/Chart.bundle.min.js"></script>
+{% endblock extra_head %}
+
+{% block content %}
+
+<div class="ui big breadcrumb">
+    <a class="section" href="/?page=select">{% trans "Выбор города" %}</a>
+    <i class="right angle icon divider"></i>
+   <a class="section" href="/{{place.slug}}/">{{place.name}}</a>
+   <i class="right angle icon divider"></i>
+  <span class="active section">{% trans "Состояние системы" %}</span>
+</div>
+<div class="ui divider"></div>
+
+
+<div class="ui two column stackable grid">
+<div class="column">
+{% trans "Пассажиров с GPS за последнюю минуту" %}: <span class="passengers_amount" style="font-weight:bold">0</span>
+</div>
+<div class="right aligned column">
+<a href='../passengers/{{prev_day.date|date:"Y-m-d"}}/'>{% trans "все пассажиры на" %} {{prev_day.date}}</a>
+</div>
+</div>
+<!-- <br/><br/> -->
+<div class="ui grid">
+<div class="center aligned column">
+<div id="lmap"></div>
+</div></div>
+
+<br/>
+<center><a class="ui green icon labeled button" href='../transport/{{today_day.date|date:"Y-m-d"}}/'><i class="fa-list-alt icon"></i> {% trans "Транспортный журнал" %}</a></center>
+<br/>
+
+<div class="ui two column stackable grid">
+<div class="column">
+<div class="ui three statistics">
+  <div class="ui grey statistic">
+    <div class="value allevents">
+      {{counter.allevents}}
+    </div>
+    <div class="label">
+      {% trans "ТС" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value nearest">
+      {{counter.nearest}}
+    </div>
+    <div class="label">
+      {% trans "ТС на маршруте" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value away">
+      {{counter.away}}
+    </div>
+    <div class="label">
+      {% trans "ТС вне маршрута" %}
+    </div>
+  </div>
+</div>
+<br/>
+<div class="ui three statistics">
+  <div class="ui grey statistic">
+    <div class="value sleeping">
+      {{counter.sleeping}}
+    </div>
+    <div class="label">
+      {% trans "ТС на конечных" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value zombie">
+      {{counter.zombie}}
+    </div>
+    <div class="label">
+      {% trans "ТС зомби" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value device_connected">
+      {{counter.device_connected}}
+    </div>
+    <div class="label">
+      {% trans "пассажиров" %}
+    </div>
+  </div>
+</div>
+<div class="ui two statistics">
+  <div class="ui grey statistic">
+    <div class="value api_duration">
+      -
+    </div>
+    <div class="label">
+      {% trans "время ответа" %} API
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value windmill_duration">
+      -
+    </div>
+    <div class="label">
+      {% trans "время обработки" %}
+    </div>
+  </div>
+</div>
+
+<br/>
+    {% if not user.is_superuser %}
+    <div class="ui message">
+    {% trans "Транспортное средство приобретает статус зомби если случилось хоть одно из перечисленного" %}:
+    <div class="ui bulleted list">
+      <div class="item">{% trans "за последние 5 минут координаты местоположения не передавались" %};</div>
+      <div class="item">{% trans "за последние 5 минут передаваемые координаты не изменились" %};</div>
+      <div class="item">{% trans "остановочный пункт не изменялся в течении 15 минут" %}.</div>
+    </div></div>
+    {% else %}
+        <table class="ui celled table">
+          <thead>
+          <tr>
+              <th colspan="5">SQL Replication Status</th>
+          </tr>
+            <tr>
+                <th>IP</th>
+                <th>Status</th>
+                <th>Write Lag</th>
+                <th>Flush Lag</th>
+                <th>Replay Lag</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for rep_info in status_server.stat_replication %}
+              {% if rep_info and rep_info|length >= 5 %}
+                <tr class="statistic">
+                  <td data-label="IP" class="stat_replication_ip{{ forloop.counter0 }}">{{ rep_info|index:0 }}</td>
+                  <td data-label="Status" class="stat_replication_status{{ forloop.counter0 }}">{{ rep_info|index:1 }}</td>
+                  <td data-label="Write Lag" class="stat_replication_write_lag{{ forloop.counter0 }}">{{ rep_info|index:2 }}</td>
+                  <td data-label="Flush Lag" class="stat_replication_flush_lag{{ forloop.counter0 }}">{{ rep_info|index:3 }}</td>
+                  <td data-label="Replay Lag" class="stat_replication_replay_lag{{ forloop.counter0 }}">{{ rep_info|index:4 }}</td>
+                </tr>
+              {% endif %}
+          {% endfor %}
+          </tbody>
+        </table>
+
+        <table class="ui celled table">
+          <thead>
+          <tr>
+              <th colspan="6">Redis Status</th>
+          </tr>
+            <tr>
+                <th>connected clients</th>
+                <th>used memory</th>
+                <th>role</th>
+                <th>connected slaves</th>
+                <th>slaves</th>
+                <th>db0 keys</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="statistic">
+              <td data-label="Connected Clients" class="redis_connected_clients">{{status_server.redis.connected_clients}}</td>
+              <td data-label="Used memory human" class="redis_used_memory_human">{{status_server.redis.used_memory_human}}</td>
+              <td data-label="Role" class="redis_role">{{status_server.redis.role}}</td>
+              <td data-label="Connected Slaves" class="redis_connected_slaves">{{status_server.redis.connected_slaves}}</td>
+              <td data-label="Slave0" class="redis_slave0 }}">{{status_server.redis.slave0}}</td>
+              <td data-label="DB0 keys" class="redis_db0_keys">{{status_server.redis.db0_keys}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+    {% endif %}
+
+</div> <!--column-->
+
+<div class="center aligned column">
+<div class="ui three statistics">
+  <div class="ui grey statistic">
+    <div class="value cpu">
+      {{status_server.cpu}}
+    </div>
+    <div class="label">
+      {% trans "Процессор" %} %
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value mem">
+      {{status_server.mem}}
+    </div>
+    <div class="label">
+      {% trans "Память" %} %
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value disk">
+      {{status_server.disk}}
+    </div>
+    <div class="label">
+      {% trans "Диск" %} %
+    </div>
+  </div>
+</div>
+<br/>
+<div class="ui three statistics">
+  <div class="ui grey statistic">
+    <div class="value pids">
+      {{status_server.pids}}
+    </div>
+    <div class="label">{% trans "Процессов" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value uptime">
+      {{status_server.uptime}}
+    </div>
+    <div class="label">
+      {% trans "Аптайм" %} {% trans "дней" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value active_cities">{{status_server_cities}}
+    </div>
+    <div class="label">{% trans "городов" %}
+    </div>
+  </div>
+</div>
+<br/>
+<div class="ui two statistics">
+  <div class="ui grey statistic">
+    <div class="value us_online">
+      {{us_online}}
+    </div>
+    <div class="label">
+      {% trans "подкл. сайт" %}
+    </div>
+  </div>
+  <div class="ui grey statistic">
+    <div class="value ms_online">
+      {{ms_online}}
+    </div>
+    <div class="label">
+      {% trans "подкл. приложений" %}
+    </div>
+  </div>
+</div>
+<label>{% trans "Журнал" %}</label>
+<textarea rows="10" cols="60" style="width:100%" class="log">
+{% for l in log.errors %}{{l.date}} {{l.message}}&#13;&#10;{% endfor %}{% for l in log.ups %}{{l.date}} {{l.message}}&#13;&#10;{% endfor %}</textarea>
+</div>
+</div>
+
+<canvas id="myChart"  style="width:75%;margin-bottom:2em"></canvas>
+
+
+<div class="ui">
+  <canvas id="dauChart" height="200"></canvas>
+</div>
+
+<div class="ui">
+    <canvas id="monthChart" height="200"></canvas>
+</div>
+
+<div class="ui" style="margin-top:2em">
+    <canvas id="dayChart" height="200"></canvas>
+</div>
+<div class="ui" style="margin-top:2em">
+    <canvas id="citiesChart" height="200"></canvas>
+</div>
+<br>
+<!-- <script src="https://code.jquery.com/jquery-2.1.4.js"></script> -->
+<script>
+
+city_monitor_mode = 1;
+
+
+var visits_data = [{% for v in visits %}{{v.count}},{%endfor%}];
+var app_installs = [{% for v in visits %}{{v.app_installs}},{%endfor%}];
+var visits_label = [{% for v in visits %}"{{v.date|date:"d.m.y"}}",{%endfor%}];
+var dau_app_count = [{% for v in visits %}{{v.daily_app_count}},{%endfor%}]
+var dau_web_count = [{% for v in visits %}{{v.daily_web_count}},{%endfor%}]
+
+
+Chart.scaleService.updateScaleDefaults('linear', {
+    ticks: { min: 0 }
+});
+var chartDate = '{{statMonth.date}}'
+/*month*/
+var monthChartDates = [{% for v in statMonth.data %}'{{v.date}}',{%endfor%}];
+var monthChartLabelsX = [{% for v in statMonth.data %}{{v.date|slice:"0:2"}},{%endfor%}];
+var monthChartDelay = [{% for v in statMonth.data %}{{v.delay_avg}},{%endfor%}];
+var monthChartNearest = [{% for v in statMonth.data %}{{v.nearest}},{%endfor%}];
+/*day*/
+var dayChartLabelsX = [{% for v in statDay.data %}{{v.hour}},{%endfor%}];
+var dayChartDelay = [{% for v in statDay.data %}{{v.delay_avg}},{%endfor%}];
+var dayChartNearest = [{% for v in statDay.data %}{{v.nearest}},{%endfor%}];
+/*active_cities*/
+var active_cities_label = [{% for v in active_cities %}'{{v.date|date:"d.m.y"}}',{%endfor%}];
+var active_cities_data = [{% for v in active_cities %}{{v.count}},{%endfor%}];
+var url = document.location.href;
+
+
+// called from bustime-main.js
+function onMapLoaded(map) {
+    request_jam({{place.id}});   // bustime-main.js
+}   // onMapLoaded
+
+
+window.onload = function() {
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var lineChartData = {
+        labels: visits_label,
+        datasets: [{
+            label: '{% trans "посещений" %}',
+            // steppedLine: true,
+            data: visits_data,
+            borderWidth: 1,
+            backgroundColor: ['#2ace22'],
+            borderColor:  ['#face22'],
+            fill: false,
+            yAxisID: 'y-axis-1',
+       }, {
+            label: '{% trans "установок приложений" %}',
+            // steppedLine: true,
+            data: app_installs,
+            borderWidth: 1,
+            backgroundColor: ['#ff9999'],
+            borderColor:  ['#ff9999'],
+            fill: false,
+            yAxisID: 'y-axis-2',
+       }]
+    };  // var lineChartData
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: lineChartData,
+        options: {
+          scales: {
+            yAxes: [{
+              type: 'linear',
+              display: true,
+              position: 'left',
+              id: 'y-axis-1',
+              gridLines: {
+                drawOnChartArea: false,
+              }
+            }, {
+              type: 'linear',
+              position: 'right',
+              id: 'y-axis-2',
+              gridLines: {
+                drawOnChartArea: false,
+              }
+            }],
+          }}
+    }); // var myChart
+
+
+    var ctxac = document.getElementById("citiesChart").getContext('2d');
+    var acChartData = {
+        labels: active_cities_label,
+        datasets: [{
+            label: '{% trans "Активных городов" %}',
+            // steppedLine: true,
+            data: active_cities_data,
+            borderWidth: 1,
+            backgroundColor: ['#2ace22'],
+            borderColor:  ['#face22'],
+            fill: false,
+            yAxisID: 'y-axis-1',
+       }]
+    };  // var acChartData
+
+    var acChart = new Chart(ctxac, {
+        type: 'line',
+        data: acChartData,
+
+        options: {
+          scales: {
+            yAxes: [{
+              type: 'linear',
+              display: true,
+              position: 'left',
+              id: 'y-axis-1',
+              gridLines: {
+                drawOnChartArea: false,
+              }
+            }, {
+              type: 'linear',
+              position: 'right',
+              id: 'y-axis-2',
+              gridLines: {
+                drawOnChartArea: false,
+              }
+            }],
+          },
+          title: {
+              display: true,
+              text: '{% trans "Активных городов" %}'
+          },
+        }
+    }); // var acChart
+
+    /*dau*/
+    var ctxd = document.getElementById('dauChart').getContext('2d');
+    var dauChart = new Chart(ctxd, {
+        type: 'line',
+        data: {
+            labels: visits_label,
+            datasets: [{
+                label: '{% trans "Уникальных пользователей (Web)" %}',
+                data: dau_web_count,
+                borderWidth: 1,
+                backgroundColor: ['#2ace22'],
+                borderColor:  ['#face22'],
+                fill: false,
+                yAxisID: 'y-axis-1',
+            },{
+                label: '{% trans "Уникальных пользователей (Mobile)" %}',
+                data: dau_app_count,
+                borderWidth: 1,
+                backgroundColor: ['#ff9999'],
+                borderColor:  ['#ff9999'],
+                fill: false,
+                yAxisID: 'y-axis-2',
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'DAU'
+            },
+            animation: { duration: 500 },
+            tooltips: {
+                mode: 'x',
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        var title = tooltipItem[0].xLabel;
+                        var i = parseInt(title);
+                        var ii = i - 1;
+                        if(title.length == 1)
+                            title = '0'+title;
+                        title += ':00'
+                        if(ii >= 0){
+                            ii = ii.toString()
+                            if(ii.length == 1)
+                                ii = '0'+ii;
+                            ii += ':00'
+                            title = ii+'-'+title;
+                        }
+                        return title;
+                    },
+                    labelColor: function(tooltipItem, data) {
+                        if(tooltipItem.datasetIndex){
+                            return {
+                                borderColor: 'rgb(0, 0, 0)',
+                                backgroundColor: '#ff9999'
+                            };
+                        }
+                        else {
+                            return {
+                                borderColor: 'rgb(0, 0, 0)',
+                                backgroundColor: '#2ace22'
+                            };
+                        }
+                    }
+                }
+            },  // tooltips
+            scales: {
+                yAxes: [{
+                  type: 'linear',
+                  display: true,
+                  position: 'left',
+                  id: 'y-axis-1',
+                  gridLines: {
+                    drawOnChartArea: false,
+                  }
+                }, {
+                  type: 'linear',
+                  display: true,
+                  position: 'right',
+                  id: 'y-axis-2',
+                  gridLines: {
+                    drawOnChartArea: false,
+                  }
+                }]
+            }
+        }
+    }); // var dauChart
+
+    /*month*/
+    var ctxm = document.getElementById('monthChart').getContext('2d');
+    var monthChart = new Chart(ctxm, {
+        type: 'line',
+        data: {
+            labels: monthChartLabelsX,
+            datasets: [{
+                label: '{% trans "Средняя задержка передачи координат (сек)" %}',
+                data: monthChartDelay,
+                borderWidth: 1,
+                backgroundColor: ['#2ace22'],
+                borderColor:  ['#face22'],
+                fill: false,
+                yAxisID: 'y-axis-1',
+            },{
+                label: '{% trans "Количество транспорта по данным GPS (шт)" %}',
+                data: monthChartNearest,
+                borderWidth: 1,
+                backgroundColor: ['#ff9999'],
+                borderColor:  ['#ff9999'],
+                fill: false,
+                yAxisID: 'y-axis-2',
+            }]
+        },  // data
+        options: {
+            title: {
+                display: true,
+                text: '{% trans "Статистика за предшествующие 30 дней" %}'
+            },
+            events: ['click'],
+            animation: { duration: 500 },
+            tooltips: {
+                mode: 'x',
+                intersect: false,
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        console.log('callbacks.title', tooltipItem);
+                        var title = monthChartDates[tooltipItem[0].index];
+                        status_data_request(title);
+                        return title;
+                    },
+                    labelColor: function(tooltipItem, data) {
+                        if(tooltipItem.datasetIndex){
+                            return {
+                                borderColor: 'rgb(0, 0, 0)',
+                                backgroundColor: '#ff9999'
+                            };
+                        }
+                        else {
+                            return {
+                                borderColor: 'rgb(0, 0, 0)',
+                                backgroundColor: '#2ace22'
+                            };
+                        }
+                    }
+                }
+            },  // tooltips
+            scales: {
+                yAxes: [{
+                  type: 'linear',
+                  display: true,
+                  position: 'left',
+                  id: 'y-axis-1',
+                  gridLines: {
+                    drawOnChartArea: false,
+                  }
+                }, {
+                  type: 'linear',
+                  position: 'right',
+                  id: 'y-axis-2',
+                  gridLines: {
+                    drawOnChartArea: false,
+                  }
+                }]
+            }
+        }   // options
+    }); // var monthChart
+
+    function status_data_request(day)
+    {
+        $.ajax({
+            url: "/ajax/status_data/",
+            type: "post",
+            data: {
+                city_id: {{place.id}},
+                date: day
+            },
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            cache: false,
+            success: function(data){
+                status_data_response(data);  // отображаем ответ на карте
+            },
+            error: function(jqXHR, sStatus, sErrorText){
+                console.log("ajax:", sStatus, sErrorText);
+            }
+        });
+    }   // status_data_request
+
+    function status_data_response(data)
+    {
+        statDay = data[0];
+        chartDate = statDay.date
+        dayChart.options.title.text = 'Статистика за '+chartDate;
+        console.log('statDay.data', statDay.data);
+        for(var i=0; i<statDay.data.length; i++){
+            dayChartDelay[i] = statDay.data[i].delay_avg;
+            dayChartNearest[i] = statDay.data[i].nearest;
+        }
+        dayChart.update();
+        var date_arr = chartDate.split('.');
+        var chartDate_new = "20" + date_arr[2] + "-" + date_arr[1] + "-" + date_arr[0];
+        var url_arr = url.split('?');
+        if (url_arr[1]) {
+            url = url_arr[0] }
+        var newUrl = url + "?date=" + chartDate_new;
+        history.pushState(null, null, newUrl);
+        console.log(newUrl);
+
+    }   // status_data_response
+
+    /*day*/
+    var ctxd = document.getElementById('dayChart').getContext('2d');
+    var dayChart = new Chart(ctxd, {
+        type: 'line',
+        data: {
+            labels: dayChartLabelsX,
+            datasets: [{
+                label: '{% trans "Средняя задержка передачи координат (сек)" %}',
+                data: dayChartDelay,
+                borderWidth: 1,
+                backgroundColor: ['#2ace22'],
+                borderColor:  ['#face22'],
+                fill: false,
+                yAxisID: 'y-axis-1',
+            },{
+                label: '{% trans "Количество транспорта по данным GPS (шт)" %}',
+                data: dayChartNearest,
+                borderWidth: 1,
+                backgroundColor: ['#ff9999'],
+                borderColor:  ['#ff9999'],
+                fill: false,
+                yAxisID: 'y-axis-2',
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: '{% trans "Статистика за" %} '+chartDate
+            },
+            animation: { duration: 500 },
+            tooltips: {
+                mode: 'x',
+                callbacks: {
+                    title: function(tooltipItem, data) {
+                        var title = tooltipItem[0].xLabel;
+                        var i = parseInt(title);
+                        var ii = i - 1;
+                        if(title.length == 1)
+                            title = '0'+title;
+                        title += ':00'
+                        if(ii >= 0){
+                            ii = ii.toString()
+                            if(ii.length == 1)
+                                ii = '0'+ii;
+                            ii += ':00'
+                            title = ii+'-'+title;
+                        }
+                        return title;
+                    },
+                    labelColor: function(tooltipItem, data) {
+                        if(tooltipItem.datasetIndex){
+                            return {
+                                borderColor: 'rgb(0, 0, 0)',
+                                backgroundColor: '#ff9999'
+                            };
+                        }
+                        else {
+                            return {
+                                borderColor: 'rgb(0, 0, 0)',
+                                backgroundColor: '#2ace22'
+                            };
+                        }
+                    }
+                }
+            },  // tooltips
+            scales: {
+                yAxes: [{
+                  type: 'linear',
+                  display: true,
+                  position: 'left',
+                  id: 'y-axis-1',
+                  gridLines: {
+                    drawOnChartArea: false,
+                  }
+                }, {
+                  type: 'linear',
+                  display: true,
+                  position: 'right',
+                  id: 'y-axis-2',
+                  gridLines: {
+                    drawOnChartArea: false,
+                  }
+                }]
+            }
+        }
+    }); // var dayChart
+};  // window.onload
+</script>
+{% endblock %}
